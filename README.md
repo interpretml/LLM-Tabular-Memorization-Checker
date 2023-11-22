@@ -1,4 +1,6 @@
 # 🐘 Testing Language Models for Memorization of Tabular Data
+![License](https://img.shields.io/github/license/interpretml/TalkToEBM.svg?style=flat-square)
+![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
 
 This open-source package provides different functions to test LLMs for memorization and prior experience with tabular datasets. 
 
