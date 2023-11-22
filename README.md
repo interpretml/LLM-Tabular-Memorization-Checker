@@ -1,6 +1,6 @@
 # 🐘 Testing Language Models for Memorization of Tabular Data
 
-This is an open-source package that provides different functions to test LLMs for prior experience with tabular datasets. This package is currently under active development.
+This open-source package provides different functions to test LLMs for memorization and prior experience with tabular datasets. 
 
 
 Features:
