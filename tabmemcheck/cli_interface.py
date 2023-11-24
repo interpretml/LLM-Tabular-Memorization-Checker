@@ -108,9 +108,6 @@ def main():
     if args.pp:
         tabmem.config.print_prompts = True
         tabmem.config.print_responses = True
-    if args.debug:
-        tabmem.config.print_next_prompt = True
-        tabmem.config.print_responses = True
     tabmem.config.temperature = args.temperature
     tabmem.config.sleep = args.sleep
 
@@ -191,7 +188,7 @@ def main():
                 csv_file,
                 llm,
                 num_queries=args.num_queries,
-                few_shot=few_shot_csv_files,
+                few_shot_csv_files=few_shot_csv_files,
                 cond_feature_names=args.cond,
                 out_file=args.out,
             )

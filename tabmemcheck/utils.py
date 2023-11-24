@@ -133,7 +133,7 @@ def load_csv_array(csv_file, add_feature_names=False):
         # convert all the entries to strings
         df = df.astype(str)
         # strip whitespaces at beginning and end
-        df = df.applymap(lambda x: x.strip())
+        df = df.map(lambda x: x.strip())
         # if add_feature_names is true, then convert each entry to the format "feature_name = feature_value"
         if add_feature_names:
             for feature_name in feature_names:
