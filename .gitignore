@@ -7,7 +7,7 @@ notebooks/figures/*
 notebooks/private
 
 # raw config files
-tabmemcheck/resouces/configs/*.yaml
+tabmemcheck/resouces/config/*.yaml
 
 .vscode/*
 !.vscode/settings.json
