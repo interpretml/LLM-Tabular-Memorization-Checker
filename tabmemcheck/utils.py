@@ -465,3 +465,11 @@ def find_nth(s, substring, n):
         start = s.find(substring, start + len(substring))
         n -= 1
     return start
+
+
+def strip_strings_in_dataframe(df: pd.DataFrame):
+    """Strip all strings in a dataframe"""
+    for column in df.columns:
+        if df[column].dtype == object:
+            df[column] = df[column].str.strip()
+    return df

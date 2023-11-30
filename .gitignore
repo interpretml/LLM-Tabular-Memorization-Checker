@@ -6,6 +6,9 @@ chatlogs/
 notebooks/figures/*
 notebooks/private
 
+# raw config files
+tabmemcheck/resouces/configs/*.yaml
+
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json

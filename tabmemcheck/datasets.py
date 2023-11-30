@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 
+import importlib.resources as resources
+import yaml
 
 import tabmemcheck.utils as utils
 
@@ -26,6 +28,15 @@ def __validate_inputs(version):
     )
 
 
+def __load_yaml_config(dataset_name: str):
+    """Load from the resources folder of the package"""
+    with resources.open_text(
+        "tabmemcheck.resources.config", f"{dataset_name}.yaml"
+    ) as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+    return config
+
+
 def __check_perturbed_rows(df_original, df_perturbed):
     df_common = pd.merge(df_original, df_perturbed, how="inner")
     if df_common.empty:
@@ -35,6 +46,93 @@ def __check_perturbed_rows(df_original, df_perturbed):
         print(
             f"{df_common.shape[0]} perturbed rows appear in the original dataset (that is {per_cent:.2f}% of all perturbed rows)."
         )
+
+
+def __apply_perturbations(df: pd.DataFrame, config: dict, seed=None):
+    """Perturb the values of the features according to the perturbations specified in the configuration file."""
+    df = df.copy(deep=True)
+    PERTURBATION_METHODS = {
+        "integer_perturbation": integer_perturbation,
+        "value_perturbation": value_perturbation,
+    }
+    perturbations = config["Perturbations"]  # a dict with the perturbations
+    for feature_name in perturbations.keys():
+        if feature_name in df.columns:
+            schedule = perturbations[feature_name]
+            method = schedule[0]  # string
+            parameters = schedule[1]  # dict with key-word arguments
+            parameters["seed"] = seed  # add the seed
+            assert (
+                method in PERTURBATION_METHODS.keys()
+            ), f"Unknown perturbation method {method}."
+            pert_fn = PERTURBATION_METHODS[method]
+            df[feature_name] = pert_fn(df[feature_name].values, **parameters)
+        else:
+            print(f"Warning: Feature {feature_name} could not be found to the dataset.")
+    return df
+
+
+def __apply_feature_maps(df: pd.DataFrame, config: dict):
+    """Re-name the featues and their values according to the maps specified in the configuration file."""
+    # for all the keys in the configuration file
+    for key in config.keys():
+        # if the key specifies a map
+        if key[-4:] == "_Map":
+            if key == "FeatureNames_Map":  # not for the feature names map
+                continue
+            feature_name = key[:-4]
+            if feature_name in df.columns:
+                df[feature_name] = df[feature_name].replace(config[key])
+            else:
+                print(f"Warning: {key} could not be matched to the dataset")
+    # now the feature names map
+    if "FeatureNames_Map" in config.keys():
+        df = df.rename(columns=config["FeatureNames_Map"])
+    return df
+
+
+####################################################################################
+# Generic dataset loading function
+####################################################################################
+
+
+def __load_dataset(
+    csv_file: str, dataset_name: str, version=ORIGINAL_VERSION, seed=None
+):
+    """Generic dataset loading function. All the tranformations are specified in a yaml configuration file."""
+    __validate_inputs(version)
+    rng = np.random.default_rng(seed=seed)
+    config = __load_yaml_config(dataset_name)
+
+    # original
+    df_original = utils.load_csv_df(csv_file)
+    df_original = utils.strip_strings_in_dataframe(df_original)
+
+    # move the target to the last column
+    if "Target" in config.keys():
+        df_original = move_column_to_position(
+            df_original, config["Target"], len(df_original.columns) - 1
+        )
+
+    if version == ORIGINAL_VERSION:
+        return df_original
+
+    # perturbed
+    df_perturbed = __apply_perturbations(df_original, config, seed=rng)
+    if version == PERTURBED_VERSION:
+        __check_perturbed_rows(df_original, df_perturbed)
+        return df_perturbed
+
+    # task
+    df_task = __apply_feature_maps(df_perturbed, config)
+    if version == TASK_VERSION:
+        return df_task
+
+    # statistical
+
+
+def load_dataset(dataset_name: str, version=ORIGINAL_VERSION, *args, **kwargs):
+    pass
 
 
 ####################################################################################
@@ -101,63 +199,10 @@ def load_iris(version=ORIGINAL_VERSION, seed=None):
 # Adult Income
 ####################################################################################
 
-ADULT_CATEGORICAL_FEATURES = [
-    "WorkClass",
-    "Education",
-    "MaritalStatus",
-    "Occupation",
-    "Relationship",
-    "Race",
-    "Gender",
-    "NativeCountry",
-]
-
 
 def load_adult(csv_file: str = "adult-train.csv", version=ORIGINAL_VERSION, seed=None):
     """The Adult Income dataset. http://www.cs.toronto.edu/~delve/data/adult/adultDetail.html"""
-    __validate_inputs(version)
-    rng = np.random.default_rng(seed=seed)
-
-    # original
-    df_original = utils.load_csv_df(csv_file)
-    if version == ORIGINAL_VERSION:
-        return df_original
-
-    # perturbed
-    y_data = df_original["Income"].values
-    df_original = df_original.drop(columns=["Income"])  # drop the target
-
-    X_data_T = np.array(df_original.values)
-    # perturb age by one
-    X_data_T[:, 0] = integer_perturbation(X_data_T[:, 0].astype(int), size=1)
-    # perturb fnlwgt by 100
-    X_data_T[:, 2] = integer_perturbation(X_data_T[:, 2].astype(int), size=100)
-    # perturb education-num by one
-    X_data_T[:, 4] = integer_perturbation(X_data_T[:, 4].astype(int), size=1)
-    # for capital gain and capital loss, only perturb the non-zero values
-    X_data_T[:, 10] = integer_perturbation(
-        X_data_T[:, 10].astype(int),
-        size=100,
-        frozen_indices=np.where(X_data_T[:, 10] == 0)[0],
-    )
-    X_data_T[:, 11] = integer_perturbation(
-        X_data_T[:, 11].astype(int),
-        size=100,
-        frozen_indices=np.where(X_data_T[:, 11] == 0)[0],
-    )
-    # for hours per week, apply value perturbation (hours 41 and 39 exist in the data)
-    # X_data_T[:, 12] = integer_perturbation(X_data_T[:, 12].astype(int), size=1)
-    X_data_T[:, 12] = value_perturbation(X_data_T[:, 12].astype(int), size=1)
-
-    df_perturbed = pd.DataFrame(
-        X_data_T, columns=df_original.columns
-    )  # data frame with perturbed data
-    df_perturbed["Income"] = " <=50K"
-    df_perturbed["Income"][y_data == 1] = " >50K"
-
-    if version == PERTURBED_VERSION:
-        __check_perturbed_rows(df_original, df_perturbed)
-        return df_perturbed
+    return __load_dataset(csv_file, "adult", version=version, seed=seed)
 
 
 ####################################################################################
@@ -262,7 +307,12 @@ def load_openml_diabetes(csv_file: str, version=ORIGINAL_VERSION, seed=None):
 
 
 def integer_perturbation(
-    x, size: int, respect_bounds: bool = True, frozen_indices=None, seed=None
+    x,
+    size: int,
+    respect_bounds: bool = True,
+    frozen_indices=None,
+    frozen_values=None,
+    seed=None,
 ):
     """Perturb integer values. Does not modify nan values
 
@@ -278,7 +328,7 @@ def integer_perturbation(
     Returns: The perturbed array.
     """
     rng = np.random.default_rng(seed=seed)
-    x = np.array(x).copy()
+    x = np.array(x.astype(int)).copy()
     # if x contains nan values, perturbe only the non-nan values
     if np.any(np.isnan(x)):
         x[~np.isnan(x)] = integer_perturbation(
@@ -289,6 +339,20 @@ def integer_perturbation(
             seed=seed,
         )
         return x
+    # do not pertub frozen values
+    if frozen_values is not None:
+        # determine the indices of the frozen values, then go via the frozen_indices parameter
+        if frozen_indices is None:
+            frozen_indices = []
+        frozen_indices.extend(np.argwhere(np.isin(x, frozen_values)))
+        return integer_perturbation(
+            x,
+            size=size,
+            respect_bounds=respect_bounds,
+            frozen_indices=frozen_indices,
+            frozen_values=None,
+            seed=seed,
+        )
     # do not pertub frozen indies
     if frozen_indices is not None:
         x_result = integer_perturbation(
