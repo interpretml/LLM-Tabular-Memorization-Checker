@@ -6,7 +6,7 @@ chatlogs/
 notebooks/figures/*
 notebooks/private
 
-# raw config files
+# yaml configuration files
 tabmemcheck/resources/config/*.yaml
 
 .vscode/*

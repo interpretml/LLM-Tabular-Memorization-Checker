@@ -7,25 +7,31 @@ import yaml
 import tabmemcheck.utils as utils
 
 
-ORIGINAL_VERSION = "original"
-PERTURBED_VERSION = "perturbed"
-TASK_VERSION = "task"
-STATISTICAL_VERSION = "statistical"
+ORIGINAL_TRANSFORM = "original"
+PERTURBED_TRANSFORM = "perturbed"
+TASK_TRANSFORM = "task"
+STATISTICAL_TRANSFORM = "statistical"
 
-DATASET_VERSIONS = [
-    ORIGINAL_VERSION,
-    PERTURBED_VERSION,
-    TASK_VERSION,
-    STATISTICAL_VERSION,
+DATASET_TRANSFORM = [
+    ORIGINAL_TRANSFORM,
+    PERTURBED_TRANSFORM,
+    TASK_TRANSFORM,
+    STATISTICAL_TRANSFORM,
 ]
 
 
-def __validate_inputs(version):
-    assert version in DATASET_VERSIONS, (
+def __validate_inputs(transform):
+    assert transform in DATASET_TRANSFORM, (
         "dataset version must be one of "
-        + ", ".join(DATASET_VERSIONS)
-        + f"got {version}"
+        + ", ".join(DATASET_TRANSFORM)
+        + f"got {transform}"
     )
+
+
+####################################################################################
+# Apply perturbations and transformations to a dataframe as specified
+# in a YAML configuration file
+####################################################################################
 
 
 def __load_yaml_config(dataset_name: str):
@@ -37,22 +43,12 @@ def __load_yaml_config(dataset_name: str):
     return config
 
 
-def __check_perturbed_rows(df_original, df_perturbed):
-    df_common = pd.merge(df_original, df_perturbed, how="inner")
-    if df_common.empty:
-        print("None of the perturbed rows appear in the original dataset.")
-    else:
-        per_cent = 100.0 * df_common.shape[0] / df_perturbed.shape[0]
-        print(
-            f"{df_common.shape[0]} perturbed rows appear in the original dataset (that is {per_cent:.2f}% of all perturbed rows)."
-        )
-
-
 def __apply_perturbations(df: pd.DataFrame, config: dict, seed=None):
     """Perturb the values of the features according to the perturbations specified in the configuration file."""
-    df = df.copy(deep=True)
+    df = df.copy(deep=True)  # create a deep copy of the data frame
     PERTURBATION_METHODS = {
         "integer_perturbation": integer_perturbation,
+        "float_perturbation": float_perturbation,
         "value_perturbation": value_perturbation,
     }
     perturbations = config["Perturbations"]  # a dict with the perturbations
@@ -69,6 +65,50 @@ def __apply_perturbations(df: pd.DataFrame, config: dict, seed=None):
             df[feature_name] = pert_fn(df[feature_name].values, **parameters)
         else:
             print(f"Warning: Feature {feature_name} could not be found to the dataset.")
+    return df
+
+
+def __check_perturbed_rows(df_original, df_perturbed):
+    df_common = pd.merge(df_original, df_perturbed, how="inner")
+    if df_common.empty:
+        print("None of the perturbed rows appear in the original dataset.")
+    else:
+        per_cent = 100.0 * df_common.shape[0] / df_perturbed.shape[0]
+        print(
+            f"{df_common.shape[0]} perturbed rows appear in the original dataset (that is {per_cent:.2f}% of all perturbed rows)."
+        )
+
+
+def __apply_transform(df: pd.DataFrame, config: dict, key):
+    """Transform the values of the different features as specified in the config file."""
+    df = df.copy(deep=True)  # create a deep copy of the data frame
+    if (
+        not key in config.keys()
+    ):  # the user does not have to specify all the different transformations
+        return df
+    task_transform = config[key]  # a dict with the transformations
+    TRANSFORMATION_METHODS = {
+        "to_numeric": pd.to_numeric,
+        "to_int": lambda x: x.apply(
+            lambda x: np.NaN if pd.isna(x) or np.isinf(x) else int(x)
+        ),
+        "round": lambda x, decimals: x.round(decimals=decimals),
+        "astype": lambda x, dtype: x.astype(dtype),
+        "append": lambda x, value: x.astype(str) + value,
+    }
+    for feature_name in task_transform.keys():
+        schedule = task_transform[feature_name]
+        # check if the schedule is a list of lists
+        if not isinstance(schedule[0], list):
+            schedule = [schedule]
+        for transform in schedule:
+            method = transform[0]  # function name as string
+            parameters = transform[1]  # dict with key-word arguments
+            assert (
+                method in TRANSFORMATION_METHODS.keys()
+            ), f"Unknown task transform {method}."
+            pert_fn = TRANSFORMATION_METHODS[method]
+            df[feature_name] = pert_fn(df[feature_name], **parameters)
     return df
 
 
@@ -92,47 +132,85 @@ def __apply_feature_maps(df: pd.DataFrame, config: dict):
 
 
 ####################################################################################
-# Generic dataset loading function
+# Generic dataset loading function, with YAML configuration file
 ####################################################################################
 
 
-def __load_dataset(
-    csv_file: str, dataset_name: str, version=ORIGINAL_VERSION, seed=None
+def load_dataset(
+    csv_file: str,
+    dataset_name: str,
+    transform=ORIGINAL_TRANSFORM,
+    permute_columns=True,  # for perturbed transform
+    seed=None,
 ):
     """Generic dataset loading function. All the tranformations are specified in a yaml configuration file."""
-    __validate_inputs(version)
+    __validate_inputs(transform)
     rng = np.random.default_rng(seed=seed)
     config = __load_yaml_config(dataset_name)
 
     # original
-    df_original = utils.load_csv_df(csv_file)
+    df_original = utils.load_csv_df(csv_file, dtype=config.get("dTypes", None))
     df_original = utils.strip_strings_in_dataframe(df_original)
 
-    # move the target to the last column
-    if "Target" in config.keys():
-        df_original = move_column_to_position(
-            df_original, config["Target"], len(df_original.columns) - 1
-        )
+    if not "Target" in config.keys():  # assume that the target is the last column
+        config["Target"] = df_original.columns[-1]
 
-    if version == ORIGINAL_VERSION:
+    # move the target to the last column
+    df_original = move_column_to_position(
+        df_original, config["Target"], len(df_original.columns) - 1
+    )
+
+    if transform == ORIGINAL_TRANSFORM:
         return df_original
 
     # perturbed
     df_perturbed = __apply_perturbations(df_original, config, seed=rng)
-    if version == PERTURBED_VERSION:
+    if permute_columns:  # permute columns, but keep the target in the last column
+        df_perturbed = permute_all_columns(df_perturbed, seed=rng)
+        df_perturbed = move_column_to_position(
+            df_perturbed, config["Target"], len(df_original.columns) - 1
+        )
+
+    if transform == PERTURBED_TRANSFORM:
         __check_perturbed_rows(df_original, df_perturbed)
         return df_perturbed
 
     # task
-    df_task = __apply_feature_maps(df_perturbed, config)
-    if version == TASK_VERSION:
+    df_task = __apply_transform(df_perturbed, config, key="TaskTransform")
+    if (
+        transform == TASK_TRANSFORM
+    ):  # apply formatting that would cause problems for the statistical transform
+        df_task = __apply_transform(df_task, config, key="TaskTransformOnly")
+    df_task = __apply_feature_maps(df_task, config)
+    if transform == TASK_TRANSFORM:
         return df_task
 
     # statistical
+    categorical_features = df_task.select_dtypes(
+        include="object"
+    ).columns  # categorical features are those with dtype object
 
+    # convert categorical features to integers
+    for feature in categorical_features:
+        df_task[feature] = to_categorical(
+            df_task[feature].values, random=True, seed=rng
+        )
 
-def load_dataset(dataset_name: str, version=ORIGINAL_VERSION, *args, **kwargs):
-    pass
+    # to all columns that are not categorical, apply the statistical transform
+    for feature in df_task.columns:
+        if feature not in categorical_features:
+            df_task[feature] = statistical_transform(
+                df_task[feature].values.reshape(-1, 1), seed=rng
+            )
+
+    # rename columns to X1, X2, X3, ...
+    df_statistical = df_task.rename(
+        columns={feature: f"X{idx+1}" for idx, feature in enumerate(df_task.columns)}
+    )
+    # the last column is the target, rename it to Y
+    df_statistical = df_statistical.rename(columns={df_statistical.columns[-1]: "Y"})
+
+    return df_statistical
 
 
 ####################################################################################
@@ -140,13 +218,13 @@ def load_dataset(dataset_name: str, version=ORIGINAL_VERSION, *args, **kwargs):
 ####################################################################################
 
 
-def load_iris(version=ORIGINAL_VERSION, seed=None):
-    __validate_inputs(version)
+def load_iris(transform=ORIGINAL_TRANSFORM, seed=None):
+    __validate_inputs(transform)
     rng = np.random.default_rng(seed=seed)
 
     # original
     df_original = utils.load_csv_df("iris.csv")
-    if version == ORIGINAL_VERSION:
+    if transform == ORIGINAL_TRANSFORM:
         return df_original
     X_data, y_data = df_original.iloc[:, :-1].values, df_original.iloc[:, -1].values
 
@@ -159,7 +237,7 @@ def load_iris(version=ORIGINAL_VERSION, seed=None):
     )
     df_perturbed = permute_all_columns(df_perturbed, seed=rng)
     df_perturbed = move_column_to_position(df_perturbed, "species", 4)
-    if version == PERTURBED_VERSION:
+    if transform == PERTURBED_TRANSFORM:
         __check_perturbed_rows(df_original, df_perturbed)
         return df_perturbed
 
@@ -180,12 +258,12 @@ def load_iris(version=ORIGINAL_VERSION, seed=None):
     df_task = df_task.replace(rename_map)
     df_task = add_normal_noise_and_round(df_task, noise_std=0.02, digits=2, seed=rng)
 
-    if version == TASK_VERSION:
+    if transform == TASK_TRANSFORM:
         return df_task
 
     # statistical
     X_data_S = statistical_transform(df_task.iloc[:, :-1].values, seed=seed)
-    y_data_S = to_random_categorical(df_task.iloc[:, -1].values, seed=seed)
+    y_data_S = to_categorical(df_task.iloc[:, -1].values, random=True, seed=seed)
 
     df_statistical = pd.DataFrame(
         np.concatenate([X_data_S, y_data_S.reshape(-1, 1)], axis=1),
@@ -200,9 +278,9 @@ def load_iris(version=ORIGINAL_VERSION, seed=None):
 ####################################################################################
 
 
-def load_adult(csv_file: str = "adult-train.csv", version=ORIGINAL_VERSION, seed=None):
+def load_adult(csv_file: str = "adult-train.csv", *args, **kwargs):
     """The Adult Income dataset. http://www.cs.toronto.edu/~delve/data/adult/adultDetail.html"""
-    return __load_dataset(csv_file, "adult", version=version, seed=seed)
+    return load_dataset(csv_file, "adult", *args, **kwargs)
 
 
 ####################################################################################
@@ -210,18 +288,8 @@ def load_adult(csv_file: str = "adult-train.csv", version=ORIGINAL_VERSION, seed
 ####################################################################################
 
 
-def load_housing(
-    csv_file: str = "california-housing.csv", version=ORIGINAL_VERSION, seed=None
-):
-    __validate_inputs(version)
-    rng = np.random.default_rng(seed=seed)
-
-    # original
-    df_original = utils.load_csv_df(csv_file)
-    if version == ORIGINAL_VERSION:
-        return df_original
-
-    # perturbed
+def load_housing(csv_file: str, *args, **kwargs):
+    return load_dataset(csv_file, "housing", *args, **kwargs)
 
 
 ####################################################################################
@@ -229,14 +297,14 @@ def load_housing(
 ####################################################################################
 
 
-def load_titanic(csv_file: str, version=ORIGINAL_VERSION, seed=None):
+def load_titanic(csv_file: str, transform=ORIGINAL_TRANSFORM, seed=None):
     """csv_file: either the train or the test split of the datasets at https://www.kaggle.com/competitions/titanic"""
-    __validate_inputs(version)
+    __validate_inputs(transform)
     rng = np.random.default_rng(seed=seed)
 
     # original
     df_original = utils.load_csv_df(csv_file)
-    if version == ORIGINAL_VERSION:
+    if transform == ORIGINAL_TRANSFORM:
         return df_original
 
 
@@ -245,13 +313,13 @@ def load_titanic(csv_file: str, version=ORIGINAL_VERSION, seed=None):
 ####################################################################################
 
 
-def load_openml_diabetes(csv_file: str, version=ORIGINAL_VERSION, seed=None):
-    __validate_inputs(version)
+def load_openml_diabetes(csv_file: str, transform=ORIGINAL_TRANSFORM, seed=None):
+    __validate_inputs(transform)
     rng = np.random.default_rng(seed=seed)
 
     # original
     df_original = utils.load_csv_df(csv_file)
-    if version == ORIGINAL_VERSION:
+    if transform == ORIGINAL_TRANSFORM:
         return df_original
 
     # deepcopy of X_data
@@ -302,76 +370,138 @@ def load_openml_diabetes(csv_file: str, version=ORIGINAL_VERSION, seed=None):
 
 
 ####################################################################################
-# Perturbation Functions
+# Function for perturbation and transformation of data
 ####################################################################################
 
 
+def numeric_perturbation(
+    X: np.ndarray,
+    perturbation_matrix: np.ndarray,
+    respect_bounds: bool = True,
+    frozen_values=None,
+    frozen_indices=None,
+):
+    """Perturb a np.ndarray of numeric values using the perturbations in perturbation_matrix.
+
+    The pertubation is done in the following way:
+
+        - Does not perturb nan values.
+        - If respect bounds is true (default), does not perturb beyond the min/max values in the dat.
+        - Does not perturb frozen values (if specified) and frozen indices (if specified).
+
+    Returns: The perturbed array.
+    """
+    # assert that x contains only numeric values
+    assert np.issubdtype(
+        X.dtype, np.number
+    ), f"Expected numeric values, found {X.dtype}."
+    # do not pertub frozen values
+    if frozen_values is not None:
+        # determine the indices of the frozen values, then go via the frozen_indices parameter
+        if frozen_indices is None:
+            frozen_indices = []
+        frozen_indices.extend(np.argwhere(np.isin(X, frozen_values)))
+        return numeric_perturbation(
+            X,
+            perturbation_matrix=perturbation_matrix,
+            respect_bounds=respect_bounds,
+            frozen_indices=frozen_indices,
+            frozen_values=None,
+        )
+    # do not pertub frozen indies
+    if frozen_indices is not None:
+        x_result = numeric_perturbation(
+            X, perturbation_matrix=perturbation_matrix, respect_bounds=respect_bounds
+        )
+        x_result[frozen_indices] = X[frozen_indices]
+        return x_result
+    # if x contains nan values, perturbe only the non-nan values
+    if np.any(np.isnan(X)):
+        X[~np.isnan(X)] = numeric_perturbation(
+            X[~np.isnan(X)],
+            perturbation_matrix=perturbation_matrix[~np.isnan(X)],
+            respect_bounds=respect_bounds,
+            frozen_indices=None,  # frozen values and indices have already been taken care of at this point
+            frozen_values=None,
+        )
+        return X
+    # store min/max
+    minimum = np.min(X)
+    maximum = np.max(X)
+    # apply the perturbation
+    X = X + perturbation_matrix
+    # respect the bounds
+    if respect_bounds:
+        X = np.maximum(X, minimum)
+        X = np.minimum(X, maximum)
+    return X
+
+
 def integer_perturbation(
-    x,
+    X: np.ndarray,
     size: int,
     respect_bounds: bool = True,
     frozen_indices=None,
     frozen_values=None,
     seed=None,
 ):
-    """Perturb integer values. Does not modify nan values
+    """Perturb integer values with values in the range [-size, size], but never zero (except if at the boundaries).
 
-        - does not modify nan values
-        - does not change the min/max values in the data if respect bounds is true (default)
-        - has the option not to change certain indices in the data (the frozen_indices parameter, a numpy array of indices)
-
-    size: the maximum absolute size of the perturbation. Note that the perturbation is never zero (EXCEPT IF AT THE BOUNDARIES, todo change that)
-    respect_bounds: if True, then the perturbed values are within the bounds of the original values
-
-    perturbs only non-nan values.
-
-    Returns: The perturbed array.
+    Returns: The perturbed array (an array of integers).
     """
+    # assert that x does not have any significant digits after the decimal point
+    assert np.all(np.equal(np.mod(X, 1), 0)), f"Expected integer values, found {X}."
+    # convert x to integer
+    X = np.array(X.astype(int)).copy()
+    # generate the perturbation matrix
     rng = np.random.default_rng(seed=seed)
-    x = np.array(x.astype(int)).copy()
-    # if x contains nan values, perturbe only the non-nan values
-    if np.any(np.isnan(x)):
-        x[~np.isnan(x)] = integer_perturbation(
-            x[~np.isnan(x)],
-            size=size,
-            respect_bounds=respect_bounds,
-            frozen_indices=frozen_indices,
-            seed=seed,
-        )
-        return x
-    # do not pertub frozen values
-    if frozen_values is not None:
-        # determine the indices of the frozen values, then go via the frozen_indices parameter
-        if frozen_indices is None:
-            frozen_indices = []
-        frozen_indices.extend(np.argwhere(np.isin(x, frozen_values)))
-        return integer_perturbation(
-            x,
-            size=size,
-            respect_bounds=respect_bounds,
-            frozen_indices=frozen_indices,
-            frozen_values=None,
-            seed=seed,
-        )
-    # do not pertub frozen indies
-    if frozen_indices is not None:
-        x_result = integer_perturbation(
-            x, size=size, respect_bounds=respect_bounds, seed=seed
-        )
-        x_result[frozen_indices] = x[frozen_indices]
-        return x_result
-    # assert that x contains only integers
-    assert np.all(np.equal(np.mod(x, 1), 0)), f"expected int values, found {x}"
-    # apply the perturbation
-    minimum = np.min(x)
-    maximum = np.max(x)
     perturb = np.linspace(-size, size, 2 * size + 1)
     perturb = perturb[perturb != 0].astype(int)
-    x = x + rng.choice(perturb, size=x.shape)
-    if respect_bounds:
-        x = np.maximum(x, minimum)
-        x = np.minimum(x, maximum)
-    return x
+    perturbation_matrix = rng.choice(perturb, size=X.shape)
+    # apply the perturbation
+    return numeric_perturbation(
+        X,
+        perturbation_matrix,
+        respect_bounds=respect_bounds,
+        frozen_indices=frozen_indices,
+        frozen_values=frozen_values,
+    )
+
+
+def float_perturbation(
+    X: np.ndarray,
+    size: float,
+    respect_bounds: bool = True,
+    frozen_indices=None,
+    frozen_values=None,
+    seed=None,
+):
+    """Perturb numeric values with values in the range [-size, size], but never zero (except if at the boundaries).
+
+    Returns: The perturbed array (an array of floats).
+    """
+    # assert that x contains only numeric values
+    assert np.issubdtype(
+        X.dtype, np.number
+    ), f"Expected numeric values, found {X.dtype}."
+    # determine the relevant scaling factor
+    scaling_factor = 1.0
+    while scaling_factor * size % 1 != 0:
+        scaling_factor *= 10.0
+    size = int(scaling_factor * size)
+    # generate the perturbation matrix
+    rng = np.random.default_rng(seed=seed)
+    perturb = np.linspace(-size, size, 2 * size + 1)
+    perturb = perturb[perturb != 0]
+    perturbation_matrix = rng.choice(perturb, size=X.shape) / scaling_factor
+    # apply the perturbation
+    return numeric_perturbation(
+        X,
+        perturbation_matrix,
+        respect_bounds=respect_bounds,
+        frozen_indices=frozen_indices,
+        frozen_values=frozen_values,
+    )
 
 
 def value_perturbation(x: np.ndarray, size: int = 1, seed=None):
@@ -428,37 +558,45 @@ def add_normal_noise_and_round(df, noise_std=0.02, digits=2, seed=None):
     return noisy_df
 
 
-def to_random_categorical(x: np.ndarray, seed=None):
-    """Transform the input X to randomly chosen consecutive categorical values."""
+def to_categorical(x: np.ndarray, random=False, seed=None):
+    """Transform the input X to randomly chosen categorical values."""
     # random seed
     rng = np.random.default_rng(seed=seed)
     # to categorical
     unique_values = np.unique(x)
-    unique_values = rng.permutation(unique_values)  # random permutation
+    if random:  # assign randomly permutated values
+        unique_values = rng.permutation(unique_values)
     mapping = {value: i for i, value in enumerate(unique_values)}
     x = np.vectorize(mapping.get)(x)
     return x
 
 
 def statistical_transform(
-    X: np.ndarray, factor=-3.33, noise_std=0.05, decimals=2, seed=None
+    X: np.ndarray,
+    factor=-3.33,
+    noise_std=0.05,
+    decimals=2,
+    seed=None,
 ):
     """The statistical transform is a combination of the following steps:
     - scale to zero mean and unit variance
     - multiplily data by a constant factor (default: -3.33)
     - addition of normal noise with (default standard deviation: 0.05)
     - rounding (default: to two digits)
-    - randomly permute the columns
 
     X: A numpy.ndarray with numeric values (a dataset).
 
     Returns: the transformed data (numpy.ndarray with the same shape as X)
     """
     assert X.ndim == 2, "X must be a 2D array"
+    # assert that X contains only numeric values
+    assert np.issubdtype(
+        X.dtype, np.number
+    ), f"expected numeric values, found {X.dtype}"
     # random seed
     rng = np.random.default_rng(seed=seed)
     # zero mean and unit variance
-    X_statistical = (X - X.mean(axis=0)) / X.std(axis=0)
+    X_statistical = (X - np.nanmean(X, axis=0)) / np.nanstd(X, axis=0)
     # transformation
     X_statistical = factor * X_statistical
     # add normal noise
@@ -466,8 +604,13 @@ def statistical_transform(
     # round to two digits
     X_statistical = np.round(X_statistical, decimals=decimals)
     # permute the columns
-    X_statistical = X_statistical[:, rng.permutation(X_statistical.shape[1])]
+    # X_statistical = X_statistical[:, rng.permutation(X_statistical.shape[1])]
     return X_statistical
+
+
+####################################################################################
+# Other functions to transform and organize the data
+####################################################################################
 
 
 def permute_all_columns(df: pd.DataFrame, seed=None):
