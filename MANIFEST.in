@@ -1,0 +1,4 @@
+# this file specifies additional files that are part of the source distribution
+
+recursive-include tabmemcheck/resources *.yaml
+recursive-include tabmemcheck/resources *.csv

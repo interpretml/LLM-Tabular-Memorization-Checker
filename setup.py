@@ -1,11 +1,19 @@
 import setuptools
 
+from setuptools import find_packages
+
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
+# Read the version from the version file
+version = {}
+with open("tabmemcheck/version.py") as fp:
+    exec(fp.read(), version)
+
+
 setuptools.setup(
     name="tabmemcheck",
-    version="0.1.0",
+    version=version['__version__'],
     author="Sebastian Bordt, Harsha Nori, Rich Caruana",
     author_email="sbordt@posteo.de",
     description="Testing Language Models for Memorization of Tabular Data",
@@ -18,7 +26,11 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     package_dir={"": "."},
-    packages=["tabmemcheck"],
+    packages=find_packages(),
+    package_data={
+        '': ['*.yaml', '*.csv'],
+    },
+    include_package_data=True,
     python_requires=">=3.9",
     entry_points={
         "console_scripts": ["tabmemcheck=tabmemcheck.cli_interface:main"],

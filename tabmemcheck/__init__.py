@@ -12,8 +12,7 @@ from .functions import (
     sample,
 )
 
-
-__version__ = "0.1.0"
+from .version import __version__
 
 
 def load_default_system_prompts():
