@@ -3,8 +3,7 @@
 ![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
 
 This open-source package provides different functions to test LLMs for memorization and prior experience with tabular datasets. 
-
-
+ 
 Features:
 - [x] Test GPT-3.5, GPT-4, and other LLMs for prior experience with tabular datasets.
 - [x] Supports chat models and (base) language models. In chat mode, the prompts are designed toward GPT-3.5 and GPT-4. With other LLMs, we recommend to test the base models. 
