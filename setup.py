@@ -41,7 +41,7 @@ setuptools.setup(
         "scikit-learn",
         "xgboost",
         "scipy",
-        "pandas",
+        "pandas>=2.1.0",
         "tiktoken",
         "openai>=1.3.3",
         "tenacity",
