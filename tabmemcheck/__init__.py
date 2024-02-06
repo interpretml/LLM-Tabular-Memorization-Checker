@@ -12,6 +12,9 @@ from .functions import (
     sample,
 )
 
+# data loading and transform
+import tabmemcheck.datasets as datasets
+
 from .version import __version__
 
 

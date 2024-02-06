@@ -365,7 +365,7 @@ def pretty_print_messages(messages):
     for message in messages:
         print(
             bcolors.BOLD
-            + message["role"]
+            + message["role"].capitalize()
             + ": "
             + bcolors.ENDC
             + bcolors.Green
