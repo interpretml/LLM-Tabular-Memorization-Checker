@@ -47,8 +47,26 @@ CONFIG_DTYPE = "dtype"
 CONFIG_TARGET = "target"
 CONFIG_PERTURBATIONS = "perturbations"
 CONFIG_TRANSFORM = "transform"
+CONFIG_TASK_ONLY_TRANSFORM = "task_only_transform"
 CONFIG_RENAME = "rename"
 CONFIG_RECODE = "recode"
+
+PERTURBATION_METHODS_REGISTER = {
+    "integer": integer_perturbation,
+    #"float": float_perturbation,
+    #"value": value_perturbation,
+}
+
+TRANSFORMATION_METHODS_REGISTER = {
+    "add_normal_noise_and_round": add_normal_noise_and_round_array
+    #"to_numeric": pd.to_numeric,
+    #"to_int": lambda x: x.apply(
+    #        lambda x: np.NaN if pd.isna(x) or np.isinf(x) else int(x)
+    #),
+    #"round": lambda x, decimals: x.round(decimals=decimals),
+    #"astype": lambda x, dtype: x.astype(dtype),
+    #"append": lambda x, value: x.astype(str) + value,
+}
 
 def __load_yaml_config(dataset_name: str): # TODO also load other config files
     """Load from the resources folder of the package"""
@@ -59,9 +77,7 @@ def __load_yaml_config(dataset_name: str): # TODO also load other config files
     return config
 
 
-
-
-def __apply_to_dataframe(df: pd.DataFrame, schedule :list, methods_register: dict, seed=None):
+def apply_transform(df: pd.DataFrame, schedule :list, methods_register: dict, seed=None):
     """Apply the transformations in schedule to the features in a dataframe.
 
     Valid transformations are specified in the methods_register.
@@ -91,50 +107,21 @@ def __apply_to_dataframe(df: pd.DataFrame, schedule :list, methods_register: dic
     return df
 
 
-def __apply_perturbations(df: pd.DataFrame, perturbations: list, seed=None):
-    """ Apply perturbations to the feature in a dataframe. Perturbations are specified as a list of dictonaries. For example:
-    
-    perturbations: 
-    - name: sepal_length, sepal_width, petal_length
-        type: integer
-        size: 3
-        scale: 0.1
-    - name: petal_width
-        type: integer
-        size: 1
-        scale: 0.1
-    """
-    PERTURBATION_METHODS = {
-        "integer": integer_perturbation,
-        #"float": float_perturbation,
-        #"value": value_perturbation,
-    }
-    df = df.copy(deep=True)  # create a deep copy of the data frame
-    for ptb in perturbations:
+def rename_and_recode(df: pd.DataFrame, rename: dict, recode: dict):
+    """Re-name featues and re-code their values according to the provided dictionaries."""
+    # first recode
+    for feature_name, recode_dict in recode.items():
         # feature name
-        feature_names = ptb['name'] # can be a single feature or a list of features
-        if not isinstance(feature_names, list):
-            feature_names = [feature_names]
-        for feature_name in feature_names:
-            if not feature_name in df.columns:
-                print(f"Warning: Feature {feature_name} could not be found to the dataset.")
-                continue
-            # perturbation method
-            method = ptb['type']  
-            if not method in PERTURBATION_METHODS.keys():
-                print(f"Warning: Unknown perturbation method {method}.")
-                continue
-            pert_fn = PERTURBATION_METHODS[method]
-            # the remaining entries in the dictionary are key-word arguments
-            parameters = copy.deepcopy(ptb)
-            del parameters['name']
-            del parameters['type']
-            parameters["seed"] = seed  # add the seed
-            df[feature_name] = pert_fn(df[feature_name].values, **parameters)
+        if not feature_name in df.columns:
+            print(f"Warning: Feature {feature_name} could not be found to the dataset.")
+            continue
+        df[feature_name] = df[feature_name].replace(recode_dict)    
+    # then rename
+    df = df.rename(columns=rename)
     return df
 
 
-def __check_perturbed_rows(df_original, df_perturbed):
+def check_perturbed_rows(df_original, df_perturbed):
     df_common = pd.merge(df_original, df_perturbed, how="inner")
     if df_common.empty:
         print("None of the perturbed rows appear in the original dataset.")
@@ -145,70 +132,9 @@ def __check_perturbed_rows(df_original, df_perturbed):
         )
 
 
-def __apply_transform(df: pd.DataFrame, transforms: dict):
-    """Transform the values of the different features as specified in the config file."""
-    TRANSFORMATION_METHODS = {
-        "to_numeric": pd.to_numeric,
-        "to_int": lambda x: x.apply(
-            lambda x: np.NaN if pd.isna(x) or np.isinf(x) else int(x)
-        ),
-        "round": lambda x, decimals: x.round(decimals=decimals),
-        "astype": lambda x, dtype: x.astype(dtype),
-        "append": lambda x, value: x.astype(str) + value,
-    }
-    df = df.copy(deep=True)  # create a deep copy of the data frame
-    for trafo in transforms:
-        # feature name
-        feature_names = trafo['name'] # can be a single feature or a list of features
-        if not isinstance(feature_names, list):
-            feature_names = [feature_names]
-        for feature_name in feature_names:
-            if not feature_name in df.columns:
-                print(f"Warning: Feature {feature_name} could not be found to the dataset.")
-                continue
-            # transformation method
-            method = trafo['type']
-
-
-            schedule = task_transform[feature_name]
-            # check if the schedule is a list of lists
-            if not isinstance(schedule[0], list):
-                schedule = [schedule]
-            for transform in schedule:
-                method = transform[0]  # function name as string
-                parameters = transform[1]  # dict with key-word arguments
-                assert (
-                    method in TRANSFORMATION_METHODS.keys()
-                ), f"Unknown task transform {method}."
-                pert_fn = TRANSFORMATION_METHODS[method]
-                df[feature_name] = pert_fn(df[feature_name], **parameters)
-    return df
-
-
-def __apply_feature_maps(df: pd.DataFrame, config: dict):
-    """Re-name the featues and their values according to the maps specified in the configuration file."""
-    # for all the keys in the configuration file
-    for key in config.keys():
-        # if the key specifies a map
-        if key[-4:] == "_Map":
-            if key == "FeatureNames_Map":  # not for the feature names map
-                continue
-            feature_name = key[:-4]
-            if feature_name in df.columns:
-                df[feature_name] = df[feature_name].replace(config[key])
-            else:
-                print(f"Warning: {key} could not be matched to the dataset")
-    # now the feature names map
-    if "FeatureNames_Map" in config.keys():
-        df = df.rename(columns=config["FeatureNames_Map"])
-    return df
-
-
 ####################################################################################
 # Generic dataset loading function, with YAML configuration file
 ####################################################################################
-
-
 
 
 def load_dataset(
@@ -239,8 +165,7 @@ def load_dataset(
         return df_original
 
     # perturbed
-    perturbations = config[CONFIG_PERTURBATIONS]  # the perturbations
-    df_perturbed = __apply_perturbations(df_original, perturbations, seed=rng)
+    df_perturbed = apply_transform(df_original, config[CONFIG_PERTURBATIONS], PERTURBATION_METHODS_REGISTER, seed=rng)
     if permute_columns:  # permute columns, but keep the target in the last column
         df_perturbed = permute_all_columns(df_perturbed, seed=rng)
         df_perturbed = move_column_to_position(
@@ -248,23 +173,18 @@ def load_dataset(
         )
 
     if transform == PERTURBED_TRANSFORM:
-        __check_perturbed_rows(df_original, df_perturbed)
+        check_perturbed_rows(df_original, df_perturbed)
         return df_perturbed
 
     # task
-
-if (
-        not key in config.keys()
-    ):  # the user does not have to specify all the different transformations
-        return df
-    task_transform = config[key]  # a dict with the transformations
-
-    df_task = __apply_transform(df_perturbed, config, key="TaskTransform")
+    df_task = df_perturbed
+    if CONFIG_TRANSFORM in config.keys():
+        df_task = apply_transform(df_perturbed, config[CONFIG_TRANSFORM], TRANSFORMATION_METHODS_REGISTER, seed=rng) 
     if (
         transform == TASK_TRANSFORM
     ):  # apply formatting that would cause problems for the statistical transform
-        df_task = __apply_transform(df_task, config, key="TaskTransformOnly")
-    df_task = __apply_feature_maps(df_task, config)
+        df_task = apply_transform(df_task, config.get(CONFIG_TASK_ONLY_TRANSFORM, {}), TRANSFORMATION_METHODS_REGISTER, seed=rng) 
+    df_task = rename_and_recode(df_task, config.get(CONFIG_RENAME, {}), config.get(CONFIG_RECODE, {}))
     if transform == TASK_TRANSFORM:
         return df_task
 
@@ -303,59 +223,9 @@ if (
 ####################################################################################
 
 
-def load_iris(transform=ORIGINAL_TRANSFORM, seed=None):
-    __validate_inputs(transform)
-    rng = np.random.default_rng(seed=seed)
-
-    # original
-    df_original = utils.load_csv_df("iris.csv")
-    if transform == ORIGINAL_TRANSFORM:
-        return df_original
-    X_data, y_data = df_original.iloc[:, :-1].values, df_original.iloc[:, -1].values
-
-    # perturbed
-    X_data_T = integer_perturbation(X_data * 10, size=3, seed=rng) / 10
-    X_data_T[:, 3] = integer_perturbation(X_data[:, 3] * 10, size=1, seed=rng) / 10
-    df_perturbed = pd.DataFrame(
-        np.concatenate([X_data_T, y_data.reshape(-1, 1)], axis=1),
-        columns=df_original.columns,
-    )
-    df_perturbed = permute_all_columns(df_perturbed, seed=rng)
-    df_perturbed = move_column_to_position(df_perturbed, "species", 4)
-    if transform == PERTURBED_TRANSFORM:
-        __check_perturbed_rows(df_original, df_perturbed)
-        return df_perturbed
-
-    # task
-    rename_map = {
-        "sepal_length": "Measured Length of Sepal (cm)",
-        "sepal_width": "Measured Width of Sepal (cm)",
-        "petal_length": "Measured Length of Petal (cm)",
-        "petal_width": "Measured Width of Petal (cm)",
-        "species": "Kind of Flower",
-    }
-    df_task = df_perturbed.rename(columns=rename_map)
-    rename_map = {
-        "Iris-setosa": "Setosa",
-        "Iris-virginica": "Virginica",
-        "Iris-versicolor": "Versicolor",
-    }
-    df_task = df_task.replace(rename_map)
-    df_task = add_normal_noise_and_round(df_task, noise_std=0.02, digits=2, seed=rng)
-
-    if transform == TASK_TRANSFORM:
-        return df_task
-
-    # statistical
-    X_data_S = statistical_transform(df_task.iloc[:, :-1].values, seed=seed)
-    y_data_S = to_categorical(df_task.iloc[:, -1].values, random=True, seed=seed)
-
-    df_statistical = pd.DataFrame(
-        np.concatenate([X_data_S, y_data_S.reshape(-1, 1)], axis=1),
-        columns=["X1", "X2", "X3", "X4", "Y"],
-    )
-    df_statistical["Y"] = df_statistical["Y"].astype(int)  # the label should be integer
-    return df_statistical
+def load_iris(csv_file: str = "iris.csv", *args, **kwargs):
+    """The Iris dataset. https://archive.ics.uci.edu/ml/datasets/iris"""
+    return load_dataset(csv_file, "iris", *args, **kwargs)
 
 
 ####################################################################################

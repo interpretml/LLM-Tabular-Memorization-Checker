@@ -1,0 +1,30 @@
+
+target: Income
+
+perturbations: 
+  - name: [Age, EducationNum]
+    type: integer
+    size: 1
+    
+transform: 
+  - name: [sepal_length, sepal_width, petal_length]
+    type: add_normal_noise_and_round
+    noise_std: 0.02
+    digits: 2
+  - name: petal_width
+    type: add_normal_noise_and_round
+    noise_std: 0.01
+    digits: 2
+
+rename:
+  sepal_length: Measured Length of Sepal (cm)
+  sepal_width: Measured Width of Sepal (cm)
+  petal_length: Measured Length of Petal (cm)
+  petal_width: Measured Width of Petal (cm)
+  species: Kind of Flower
+
+recode:
+  species:
+    Iris-setosa: Setosa
+    Iris-virginica: Virginica
+    Iris-versicolor: Versicolor

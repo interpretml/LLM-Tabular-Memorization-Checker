@@ -178,6 +178,27 @@ def value_perturbation(x: np.ndarray, size: int = 1, seed=None):
     return res
 
 
+def add_normal_noise_and_round_array(X: np.array, noise_std=0.02, digits=2, seed=None):
+    """
+    Adds normal (Gaussian) noise to all float values in a numpy array.
+
+    Parameters:
+    X (np.ndarray): The array to be modified.
+    std (float): Standard deviation of the noise.
+
+    Returns:
+    np.ndarray: A new array with noise added to float columns.
+    """
+    rng = np.random.default_rng(seed=seed)
+    # Create a new array to avoid modifying the original one
+    noisy_X = X.copy()
+    noise = rng.normal(0, noise_std, size=noisy_X.shape)
+    noisy_X += noise
+    # round the array to the specified number of digits
+    noisy_X = np.round(noisy_X, digits)
+    return noisy_X
+
+
 def to_categorical(x: np.ndarray, random=False, seed=None):
     """Transform the input X to randomly chosen categorical values."""
     # random seed
