@@ -1,20 +1,25 @@
-
-target: Income
+target: median_house_value
 
 perturbations: 
-  - name: [Age, EducationNum]
+  - name: [longitude, latitude]
     type: integer
     size: 3
-  - name: fnlwgt
+    scale: 0.01
+  - name: housing_median_age
+    type: integer
+    size: 1
+  - name: [total_rooms, total_bedrooms, population, households]
+    type: integer
+    size: 10
+  - name: median_income
     type: integer
     size: 100
-  - name: [CapitalGain, CapitalLoss]
+    scale: 0.001
+  - name: median_house_value
     type: integer
-    size: 100
-    frozen_values: [0]
-  - name: HoursPerWeek
-    type: swap
     size: 3
+    scale: 100
+
 
 transform: 
   - name: [CapitalGain, CapitalLoss]

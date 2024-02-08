@@ -1,20 +1,15 @@
-
-target: Income
+target: Transported
 
 perturbations: 
-  - name: [Age, EducationNum]
+  - name: Age
     type: integer
     size: 3
-  - name: fnlwgt
+  - name: [RoomService, FoodCourt, ShoppingMall, Spa, VRDeck]
     type: integer
-    size: 100
-  - name: [CapitalGain, CapitalLoss]
-    type: integer
-    size: 100
+    size: 10
     frozen_values: [0]
-  - name: HoursPerWeek
-    type: swap
-    size: 3
+
+
 
 transform: 
   - name: [CapitalGain, CapitalLoss]

@@ -1,0 +1,9 @@
+target: Target
+
+perturbations: 
+  - name: Age
+    type: integer
+    size: 3
+  - name: "Usual hours worked per week past 12 months"
+    type: swap
+    size: 3

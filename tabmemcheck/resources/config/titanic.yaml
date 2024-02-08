@@ -1,20 +1,29 @@
-
-target: Income
+target: Survived
 
 perturbations: 
-  - name: [Age, EducationNum]
+  - name: Age
     type: integer
-    size: 3
-  - name: fnlwgt
-    type: integer
-    size: 100
-  - name: [CapitalGain, CapitalLoss]
-    type: integer
-    size: 100
-    frozen_values: [0]
-  - name: HoursPerWeek
+    size: 1
+  - name: Fare
     type: swap
-    size: 3
+    size: 1
+  - name: PassengerId
+    type: integer
+    size: 1
+  - name: [SibSp, Parch]
+    type: integer
+    size: 1
+    frozen_values: [0, 1]
+  - name: Ticket
+    type: integer
+    size: 10
+    ignore_object: True
+  - name: Ticket
+    type: astype
+    dtype: int
+    lazy: True
+
+
 
 transform: 
   - name: [CapitalGain, CapitalLoss]

@@ -18,17 +18,40 @@ def numeric_perturbation(
     respect_bounds: bool = True,
     frozen_values=None,
     frozen_indices=None,
+    ignore_object=False,
 ):
-    """Perturb a np.ndarray of numeric values using the perturbations in perturbation_matrix.
+    """Perturb a np.ndarray X of numeric values using the perturbations in perturbation_matrix.
 
-    The pertubation is done in the following way:
+    X and perturbation_matrix must have the same shape.
 
+    The pertubation respects the following boundary conditions:
         - Does not perturb nan values.
-        - If respect bounds is true (default), does not perturb beyond the min/max values in the dat.
         - Does not perturb frozen values (if specified) and frozen indices (if specified).
+        - If respect bounds is true (default), does not perturb beyond the min/max values in the data.
 
     Returns: The perturbed array.
     """
+    # if ignore_object is True, only perturb values that can be converted to float
+    if ignore_object:
+        numeric_indices = []
+        for index, value in np.ndenumerate(X):
+            try:
+                # Attempt to convert value to float
+                float(value)
+                # If successful, append the index to the list
+                numeric_indices.append(index)
+            except ValueError:
+                continue
+                # continue
+        X[numeric_indices] = numeric_perturbation(
+            X[numeric_indices].astype(np.number),
+            perturbation_matrix=perturbation_matrix[numeric_indices],
+            respect_bounds=respect_bounds,
+            frozen_indices=frozen_indices,
+            frozen_values=frozen_values,
+            ignore_object=False,
+        )
+        return X
     # assert that x contains only numeric values
     assert np.issubdtype(
         X.dtype, np.number
@@ -38,6 +61,7 @@ def numeric_perturbation(
         # determine the indices of the frozen values, then go via the frozen_indices parameter
         if frozen_indices is None:
             frozen_indices = []
+        frozen_values = np.array(frozen_values).astype(X.dtype).flatten()
         frozen_indices.extend(np.argwhere(np.isin(X, frozen_values)))
         return numeric_perturbation(
             X,
@@ -49,7 +73,9 @@ def numeric_perturbation(
     # do not pertub frozen indies
     if frozen_indices is not None:
         x_result = numeric_perturbation(
-            X, perturbation_matrix=perturbation_matrix, respect_bounds=respect_bounds
+            X.copy(),  # create a deep copy to avoid modifying the original array
+            perturbation_matrix=perturbation_matrix,
+            respect_bounds=respect_bounds,
         )
         x_result[frozen_indices] = X[frozen_indices]
         return x_result
@@ -82,21 +108,22 @@ def integer_perturbation(
     respect_bounds: bool = True,
     frozen_indices=None,
     frozen_values=None,
+    ignore_object=False,
     seed=None,
 ):
-    """Perturb with integer values from the range [-size, size], but never zero (except if at the boundaries).
+    """Perturb with integer values from the range [-size, size], but never zero (zero perturbation can still occur due to a boundary condition).
 
-    The perturbation is applied at the specified decimal position, to be set with the parameter scale.
+    The perturbation is scaled with the parameter scale. This allows to apply perturbations at specific decimal positions.
 
-    Returns: The perturbed array (an array of integers).
+    Returns: The perturbed array.
     """
 
     # TODO validate the position parameter
     # assert that x does not have any significant digits after the decimal point
-    #assert np.all(np.equal(np.mod(X, 1), 0)), f"Expected integer values, found {X}."
+    # assert np.all(np.equal(np.mod(X, 1), 0)), f"Expected integer values, found {X}."
     # TODO re-introduce if required? with additional parameter perhaps
     # convert x to integer
-    #X = np.array(X.astype(int)).copy()
+    # X = np.array(X.astype(int)).copy()
     # generate the perturbation matrix
     rng = np.random.default_rng(seed=seed)
     perturb = np.linspace(-size, size, 2 * size + 1)
@@ -113,6 +140,7 @@ def integer_perturbation(
         respect_bounds=respect_bounds,
         frozen_indices=frozen_indices,
         frozen_values=frozen_values,
+        ignore_object=ignore_object,
     )
 
 
@@ -152,7 +180,7 @@ def float_perturbation(
     )
 
 
-def value_perturbation(x: np.ndarray, size: int = 1, seed=None):
+def swap_perturbation(x: np.ndarray, size: int = 1, seed=None):
     """Replace each value either with the next smallest or next biggest. Requires numerical values.
 
     Returns: The perturbed array.
@@ -178,7 +206,15 @@ def value_perturbation(x: np.ndarray, size: int = 1, seed=None):
     return res
 
 
-def add_normal_noise_and_round_array(X: np.array, noise_std=0.02, digits=2, seed=None):
+def add_normal_noise_and_round_array(
+    X: np.array,
+    noise_std=0.02,
+    digits=2,
+    respect_bounds=True,
+    frozen_indices=None,
+    frozen_values=None,
+    seed=None,
+):
     """
     Adds normal (Gaussian) noise to all float values in a numpy array.
 
@@ -191,16 +227,20 @@ def add_normal_noise_and_round_array(X: np.array, noise_std=0.02, digits=2, seed
     """
     rng = np.random.default_rng(seed=seed)
     # Create a new array to avoid modifying the original one
-    noisy_X = X.copy()
-    noise = rng.normal(0, noise_std, size=noisy_X.shape)
-    noisy_X += noise
+    # apply noise
+    noisy_X = numeric_perturbation(
+        X,
+        rng.normal(0, noise_std, size=X.shape),
+        respect_bounds=respect_bounds,
+        frozen_indices=frozen_indices,
+        frozen_values=frozen_values,
+    )
     # round the array to the specified number of digits
-    noisy_X = np.round(noisy_X, digits)
-    return noisy_X
+    return np.round(noisy_X, digits)
 
 
 def to_categorical(x: np.ndarray, random=False, seed=None):
-    """Transform the input X to randomly chosen categorical values."""
+    """Transform the input X to categorical values."""
     # random seed
     rng = np.random.default_rng(seed=seed)
     # to categorical

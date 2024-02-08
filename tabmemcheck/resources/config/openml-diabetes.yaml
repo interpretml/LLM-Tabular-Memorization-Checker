@@ -1,0 +1,50 @@
+target: Outcome
+
+perturbations: 
+  - name: Pregnancies
+    type: integer
+    size: 1
+    frozen_values: [0, 1]
+  - name: [Glucose, BloodPressure, SkinThickness, Insulin, Age]
+    type: integer
+    size: 3
+    frozen_values: [0]
+  - name: BMI
+    type: integer
+    size: 10
+    scale: 0.1
+    frozen_values: [0]
+  - name: DiabetesPedigreeFunction
+    type: integer
+    size: 10
+    scale: 0.001
+    frozen_values: [0]
+
+transform: 
+  - name: [Glucose, BloodPressure, SkinThickness, Insulin]
+    type: add_normal_noise_and_round
+    noise_std: 0.01
+    digits: 2
+    frozen_values: [0]
+  - name: DiabetesPedigreeFunction
+    type: add_normal_noise_and_round
+    noise_std: 0.005
+    digits: 3
+    frozen_values: [0]
+
+recode:
+  Outcome:
+    0: Negaitive
+    1: Positive
+
+rename:
+  Pregnancies: Number of pregnancies
+  Glucose: Glucose level
+  BloodPressure: Blood pressure
+  SkinThickness: Skin thickness
+  Insulin: Insulin level
+  BMI: Body mass index
+  DiabetesPedigreeFunction: Diabetes pedigree function
+  Age: Age
+  Outcome: Test Result
+

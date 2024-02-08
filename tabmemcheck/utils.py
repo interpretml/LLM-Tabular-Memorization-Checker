@@ -471,5 +471,8 @@ def strip_strings_in_dataframe(df: pd.DataFrame):
     """Strip all strings in a dataframe"""
     for column in df.columns:
         if df[column].dtype == object:
-            df[column] = df[column].str.strip()
+            try:
+                df[column] = df[column].str.strip()
+            except AttributeError:
+                pass  # Some columns are objects but not strings (which means .str throws an exception). We can ignore these columns.
     return df
