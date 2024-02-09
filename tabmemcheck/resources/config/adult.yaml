@@ -1,4 +1,3 @@
-
 target: Income
 
 perturbations: 
@@ -41,6 +40,112 @@ rename:
   Income: Yearly Income
 
 recode:
+  WorkClass:
+    Private: Private Sector
+    Self-emp-not-inc: Self-employed and not incorporated
+    Self-emp-inc: Self-employed and incorporated
+    Federal-gov: Federal government employee
+    Local-gov: Local government
+    State-gov: State government
+    Without-pay: Working, but without pay
+    Never-worked: Has never been employed
+  Education:
+    Preschool: Preschool
+    1st-4th: 1st to 4th grade
+    5th-6th: 5th to 6th grade
+    7th-8th: 7th to 8th grade
+    9th: 9th grade
+    10th: 10th grade
+    11th: 11th grade
+    12th: 12th grade
+    HS-grad: High School Graduate
+    Some-college: Went to college, but did not graduate
+    Assoc-voc: Associate degree in vocational studies
+    Assoc-acdm: Associate degree in academic studies
+    Bachelors: Bachelor's degree
+    Masters: Master's degree
+    Prof-school: Professional degree beyond bachelor's
+    Doctorate: Doctorate
+  MaritalStatus:
+    Married-civ-spouse: Married, civilian spouse
+    Divorced: Divorced
+    Never-married: Never married
+    Separated: Legally married but living separately
+    Widowed: Widowed
+    Married-spouse-absent: Married, but spouse is absent
+    Married-AF-spouse: Married to an armed forces member
+  Occupation:
+    Tech-support: Technical support role
+    Craft-repair: Craft or repair role
+    Other-service: Service role
+    Sales: Sales
+    Exec-managerial: Executive, managerial, or otherwise supervisory role
+    Prof-specialty: Professional with specialized knowledge
+    Handlers-cleaners: Handlers and cleaners
+    Machine-op-inspct: Machine operator inspector
+    Adm-clerical: Administrative clerical
+    Farming-fishing: Farming and fishing
+    Transport-moving: Transport moving
+    Priv-house-serv: Private house service
+    Protective-serv: Protective service
+    Armed-Forces: Armed forces
+  Relationship:
+    Wife: Wife
+    Own-child: Child in the family
+    Husband: Husband
+    Not-in-family: Not in family
+    Other-relative: Another relative of the family
+    Unmarried: Unmarried
+  Race:
+    White: White
+    Asian-Pac-Islander: Asian Pacific Islander
+    Amer-Indian-Eskimo: American Indian Eskimo
+    Other: Other
+  Gender:
+    Male: Male
+    Femae: Female
+  NativeCountry:
+    United-States: United States
+    Cambodia: Cambodia
+    England: England
+    Puerto-Rico: Puerto Rico
+    Canada: Canada
+    Germany: Germany
+    Outlying-US(Guam-USVI-etc): Outlying US
+    India: India
+    Japan: Japan
+    Greece: Greece
+    South: South
+    China: China
+    Cuba: Cuba
+    Iran: Iran
+    Honduras: Honduras
+    Philippines: Philippines
+    Italy: Italy
+    Poland: Poland
+    Jamaica: Jamaica
+    Vietnam: Vietnam
+    Mexico: Mexico
+    Portugal: Portugal
+    Ireland: Ireland
+    France: France
+    Dominican-Republic: Dominican Republic
+    Laos: Laos
+    Ecuador: Ecuador
+    Taiwan: Taiwan
+    Haiti: Haiti
+    Columbia: Columbia
+    Hungary: Hungary
+    Guatemala: Guatemala
+    Nicaragua: Nicaragua
+    Scotland: Scotland
+    Thailand: Thailand
+    Yugoslavia: Yugoslavia
+    El-Salvador: El Salvador
+    Trinadad&Tobago: Trinidad and Tobago
+    Peru: Peru
+    Hong: Hong
+    Holand-Netherlands: Netherlands
   Income:
     <=50K: Less than 50K
     ">50K": More than 50K

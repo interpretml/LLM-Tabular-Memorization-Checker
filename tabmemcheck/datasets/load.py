@@ -18,16 +18,18 @@ import tabmemcheck.utils as utils
 
 from .transform import *
 
-ORIGINAL_TRANSFORM = "original"
-PERTURBED_TRANSFORM = "perturbed"
-TASK_TRANSFORM = "task"
-STATISTICAL_TRANSFORM = "statistical"
+DATASET_PLAIN = "plain"
+DATASET_ORIGINAL = "original"
+DATASET_PERTURBED = "perturbed"
+DATASET_TASK = "task"
+DATASET_STATISTICAL = "statistical"
 
 DATASET_TRANSFORM = [
-    ORIGINAL_TRANSFORM,
-    PERTURBED_TRANSFORM,
-    TASK_TRANSFORM,
-    STATISTICAL_TRANSFORM,
+    DATASET_PLAIN,
+    DATASET_ORIGINAL,
+    DATASET_PERTURBED,
+    DATASET_TASK,
+    DATASET_STATISTICAL,
 ]
 
 
@@ -43,6 +45,7 @@ def __validate_inputs(transform):
 # Perturbations and transformations as specified in a YAML configuration file
 ####################################################################################
 
+
 CONFIG_DTYPE = "dtype"
 CONFIG_TARGET = "target"
 CONFIG_PERTURBATIONS = "perturbations"
@@ -52,12 +55,18 @@ CONFIG_RENAME = "rename"
 CONFIG_RECODE = "recode"
 
 METHODS_REGISTER = {
+    # generic methods
     "integer": integer_perturbation,
     "swap": swap_perturbation,
     "add_normal_noise_and_round": add_normal_noise_and_round_array,
-    "astype": lambda x, dtype: x.astype(dtype),
+    "astype": lambda x, dtype, seed: x.astype(dtype),
+    "scale": lambda x, factor, seed: x * factor,
+    "fillna": lambda x, value, seed: pd.DataFrame(x).fillna(value).values.flatten(),
     # "float": float_perturbation,
     # "value": value_perturbation,
+    # special-purpose perturbations
+    "titanic_ticket_perturbation": titanic_ticket_perturbation,
+    "titanic_name_transform": titanic_name_transform,
 }
 
 # "to_numeric": pd.to_numeric,
@@ -147,14 +156,18 @@ def check_perturbed_rows(df_original, df_perturbed):
 def load_dataset(
     csv_file: str,
     dataset_name: str,
-    transform=ORIGINAL_TRANSFORM,
+    transform=DATASET_ORIGINAL,
     permute_columns=True,  # for perturbed transform
     seed=None,
 ):
-    """Generic dataset loading function. All the tranformations are specified in a yaml configuration file."""
+    """Generic dataset loading function. Dataset tranformations are specified in a yaml configuration file."""
     __validate_inputs(transform)
     rng = np.random.default_rng(seed=seed)
     config = __load_yaml_config(dataset_name)
+
+    # plain (i.e. no transformation)
+    if transform == DATASET_PLAIN:
+        return utils.load_csv_df(csv_file)
 
     # original
     df_original = utils.load_csv_df(csv_file, dtype=config.get(CONFIG_DTYPE, None))
@@ -168,7 +181,7 @@ def load_dataset(
         df_original, config[CONFIG_TARGET], len(df_original.columns) - 1
     )
 
-    if transform == ORIGINAL_TRANSFORM:
+    if transform == DATASET_ORIGINAL:
         return df_original
 
     # perturbed
@@ -181,7 +194,7 @@ def load_dataset(
             df_perturbed, config[CONFIG_TARGET], len(df_original.columns) - 1
         )
 
-    if transform == PERTURBED_TRANSFORM:
+    if transform == DATASET_PERTURBED:
         check_perturbed_rows(df_original, df_perturbed)
         return df_perturbed
 
@@ -190,7 +203,7 @@ def load_dataset(
         df_perturbed, config.get(CONFIG_TRANSFORM, {}), METHODS_REGISTER, seed=rng
     )
     if (
-        transform == TASK_TRANSFORM
+        transform == DATASET_TASK
     ):  # apply formatting that would cause problems for the statistical transform
         df_task = apply_transform(
             df_task,
@@ -201,7 +214,7 @@ def load_dataset(
     df_task = rename_and_recode(
         df_task, config.get(CONFIG_RENAME, {}), config.get(CONFIG_RECODE, {})
     )
-    if transform == TASK_TRANSFORM:
+    if transform == DATASET_TASK:
         return df_task
 
     # statistical

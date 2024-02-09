@@ -146,12 +146,12 @@ class OpenAILLM(LLM_Interface):
 def openai_setup(model=None):
     """Setup the openai api. Returns: LLM_Interface object."""
     client = OpenAI(
-        api_key=os.environ["OPENAI_API_KEY"]
-        if "OPENAI_API_KEY" in os.environ
-        else None,
-        organization=os.environ["OPENAI_API_ORG"]
-        if "OPENAI_API_ORG" in os.environ
-        else None,
+        api_key=(
+            os.environ["OPENAI_API_KEY"] if "OPENAI_API_KEY" in os.environ else None
+        ),
+        organization=(
+            os.environ["OPENAI_API_ORG"] if "OPENAI_API_ORG" in os.environ else None
+        ),
         # timeout=20,
     )
     # the llm interface object

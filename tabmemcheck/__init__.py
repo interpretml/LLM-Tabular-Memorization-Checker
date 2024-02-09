@@ -1,6 +1,9 @@
 # llm interface
 from .llm import LLM_Interface, openai_setup
 
+# logging
+from .llm import set_logging_task, read_chatlog
+
 # the different tests
 from .functions import (
     run_all_tests,

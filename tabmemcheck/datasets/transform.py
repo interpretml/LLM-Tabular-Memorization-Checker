@@ -259,7 +259,7 @@ def statistical_transform(
     decimals=2,
     seed=None,
 ):
-    """The statistical transform is a combination of the following steps:
+    """The statistical transform consists of the following steps:
     - scale to zero mean and unit variance
     - multiplily data by a constant factor (default: -3.33)
     - addition of normal noise with (default standard deviation: 0.05)
@@ -369,3 +369,43 @@ def move_column_to_position(df: pd.DataFrame, column: str, position: int):
     df.insert(position, column, col_data)
 
     return df
+
+
+####################################################################################
+# perturbation functions for specific datasets
+####################################################################################
+
+
+def titanic_ticket_perturbation(x: np.array, seed=None):
+    """Perturb the last digit of the titanic ticket number.
+    The callenge is that the ticket number in general is not numeric."""
+    # indices of integer values in the array
+    convertible_indices = []
+    for i, item in enumerate(x):
+        try:
+            # Attempt to convert to integer
+            _ = int(str(item[-4:]))
+            # If successful, append the index
+            convertible_indices.append(i)
+        except ValueError:
+            # If conversion fails, move to the next item
+            continue
+    first_digits = np.array([s[0:-4] for s in x[convertible_indices]]).flatten()
+    last_digits = np.array([s[-4:] for s in x[convertible_indices]]).flatten()
+    last_digits = integer_perturbation(
+        last_digits.astype(int).copy(), size=3, seed=seed
+    )
+    x[convertible_indices] = [
+        x + y for x, y in zip(first_digits.astype(str), last_digits.astype(str))
+    ]
+    return x.astype(str)
+
+
+def titanic_name_transform(x: np.array, seed=None):
+    # remove any parts in brackets ()
+    x = np.array([s.split("(")[0] for s in x])
+    # if there is a single comma, swap the parts
+    for i, item in enumerate(x):
+        if item.count(",") == 1:
+            x[i] = " ".join(item.split(", ")[::-1])
+    return x

@@ -15,41 +15,48 @@ perturbations:
     size: 1
     frozen_values: [0, 1]
   - name: Ticket
-    type: integer
-    size: 10
-    ignore_object: True
-  - name: Ticket
-    type: astype
-    dtype: int
-    lazy: True
-
-
+    type: titanic_ticket_perturbation
 
 transform: 
-  - name: [CapitalGain, CapitalLoss]
+  - name: Age
+    type: fillna
+    value: 0
+  - name: Age
+    type: astype
+    dtype: int
+  - name: Name
+    type: titanic_name_transform
+  - name: Fare
     type: add_normal_noise_and_round
-    noise_std: 10
+    noise_std: 0.01
     digits: 2
-    frozen_values: [0]
+  - name: [Embarked, Cabin]
+    type: fillna
+    value: 'Unknown'
 
 rename:
-  Age: Age
-  Workclass: Type of employment
-  fnlwgt: Final weight in census
-  Education: Highest achieved level of education
-  EducationNum: Education in numerical form
-  MaritalStatus: Relationship Status
-  Occupation: Type of occupation
-  Relationship: What this individual is relative to others?
-  Race: Self-reported race
-  Gender: Self-reported gender
-  CapitalGain: Income from investment sources
-  CapitalLoss: Losses from investment sources
-  HoursPerWeek: Hours worked per week
-  NativeCountry: Country of origin
-  Income: Yearly Income
+  PassengerId: Passenger ID
+  Survived: Survived
+  Pclass: Class
+  SibSp: Number of Siblings/Spouses aboard
+  Parch: Number of Parents/Children aboard
+  Ticket: Ticket Number
+  Fare: Fare
+  Cabin: Cabin Number
+  Embarked: Port of Embarkation
 
 recode:
-  Income:
-    <=50K: Less than 50K
-    ">50K": More than 50K
+  Survived:
+    0: "Not Survived"
+    1: "Survived"
+  Sex:
+    male: M
+    female: F
+  Embarked:
+    C: Cherbourg
+    Q: Queenstown
+    S: Southampton
+  Pclass:
+    1: First
+    2: Second
+    3: Third

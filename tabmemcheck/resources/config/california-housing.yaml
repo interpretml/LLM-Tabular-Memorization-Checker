@@ -20,32 +20,35 @@ perturbations:
     size: 3
     scale: 100
 
-
 transform: 
-  - name: [CapitalGain, CapitalLoss]
-    type: add_normal_noise_and_round
-    noise_std: 10
-    digits: 2
-    frozen_values: [0]
+  - name: median_income
+    type: scale
+    factor: 10000
+  - name: median_house_value
+    type: scale
+    factor: 0.01
+  - name: [housing_median_age,total_rooms,total_bedrooms,population,households,median_house_value,median_income,median_house_value]
+    type: astype
+    dtype: int
+
 
 rename:
-  Age: Age
-  Workclass: Type of employment
-  fnlwgt: Final weight in census
-  Education: Highest achieved level of education
-  EducationNum: Education in numerical form
-  MaritalStatus: Relationship Status
-  Occupation: Type of occupation
-  Relationship: What this individual is relative to others?
-  Race: Self-reported race
-  Gender: Self-reported gender
-  CapitalGain: Income from investment sources
-  CapitalLoss: Losses from investment sources
-  HoursPerWeek: Hours worked per week
-  NativeCountry: Country of origin
-  Income: Yearly Income
+  longitude: Longitude
+  latitude: Latitude
+  housing_median_age: Median age
+  total_rooms: Total Rooms
+  total_bedrooms: Total Bedrooms
+  population: Population
+  households: Households
+  median_income: Median income
+  median_house_value: Median House Value
+  ocean_proximity: How close to the ocean?
 
 recode:
-  Income:
-    <=50K: Less than 50K
-    ">50K": More than 50K
+  ocean_proximity:
+    '<1H OCEAN': Less than 1 hour to ocean
+    'INLAND': Inland, far from ocean
+    'ISLAND': Island
+    'NEAR BAY': Near San Francisco Bay
+    'NEAR OCEAN': Near the ocean
+    
