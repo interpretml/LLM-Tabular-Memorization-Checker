@@ -1,5 +1,5 @@
 # llm interface
-from .llm import LLM_Interface, openai_setup
+from .llm import LLM_Interface, openai_setup, send_chat_completion, send_completion
 
 # logging
 from .llm import set_logging_task, read_chatlog
