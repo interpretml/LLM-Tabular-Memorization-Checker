@@ -25,7 +25,7 @@ def string_strip(x):
     # if x is data frame
     if isinstance(x, pd.DataFrame):
         x = x.astype(str)
-        x = x.applymap(lambda x: x.strip())
+        x = x.map(lambda x: x.strip())
     elif isinstance(x, pd.Series):
         x = x.astype(str)
         x = x.apply(lambda x: x.strip())
@@ -61,15 +61,17 @@ def find_matches(
     match_floating_point=True,
     strip_quotation_marks=True,
 ):
-    """find the closest matches in levenshtein distance between x and all rows in df.
+    """Find the closest matches between x and all rows in df. By default, we use the levenshtein distance as the distance metric.
 
-    the important aspect of this function is that it handles a variety of formatting differences between the values in the original data
-    and model responses that should still be counted as equal.
+    This function can handle a variety of formatting differences between the values in the original data
+    and LLM responses that should still be counted as equal.
 
     match_floating_point: if True, handes floating point formatting differences, e.g. 0.28 vs. .280 or 172 vs 172.0 (default: True).
     strip_quotation_marks: if True, strips quotation marks from the values in df and x (to handle the case where a model responds with "23853", and the value in the data is 23853) (default: True).
 
-    x can be a string, a pandas dataframe or a pandas Series.
+    x: A string, a pandas dataframe or a pandas Series.
+
+    Returns: the minimum distance and the matching rows in df.
     """
     # x should be a dataframe with a single row, or be convertible to this format
     x = validate_partial_row(x, df.columns)
@@ -80,8 +82,8 @@ def find_matches(
     x = string_strip(x)
     # optionall, also strip quotation marks
     if strip_quotation_marks:
-        df = df.applymap(lambda x: x.strip('"'))
-        x = x.applymap(lambda x: x.strip('"'))
+        df = df.map(lambda x: x.strip('"'))
+        x = x.map(lambda x: x.strip('"'))
     # for all the features that are present in x, compute the levenshtein distance between the feature value and the respective feature values in df
     D = np.zeros(df.shape[0])
     for feature_name in df.columns:
@@ -101,9 +103,9 @@ def find_matches(
                         x_value_float - np.array(df_column_float).flatten()
                     )
                     D_feature_float[D_feature_float > 0] = np.inf
-                    D_feature_float[
-                        np.isnan(D_feature_float)
-                    ] = np.inf  # do not propagate NaNs
+                    D_feature_float[np.isnan(D_feature_float)] = (
+                        np.inf
+                    )  # do not propagate NaNs
                     D_feature = np.minimum(D_feature, D_feature_float)
                 except:
                     pass

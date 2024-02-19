@@ -24,18 +24,18 @@ transform:
 
 rename:
   Age: Age
-  Workclass: Type of employment
-  fnlwgt: Final weight in census
-  Education: Highest achieved level of education
-  EducationNum: Education in numerical form
-  MaritalStatus: Relationship Status
-  Occupation: Type of occupation
-  Relationship: What this individual is relative to others?
+  WorkClass: Employment
+  fnlwgt: Census Weight
+  Education: Highest Education
+  EducationNum: Education as number
+  MaritalStatus: Relationship
+  Occupation: Work
+  Relationship: Relationship
   Race: Self-reported race
   Gender: Self-reported gender
-  CapitalGain: Income from investment sources
-  CapitalLoss: Losses from investment sources
-  HoursPerWeek: Hours worked per week
+  CapitalGain: Investement Income
+  CapitalLoss: Investment Loss
+  HoursPerWeek: Hours worked
   NativeCountry: Country of origin
   Income: Yearly Income
 

@@ -7,18 +7,24 @@ perturbations:
     frozen_values: [0, 1]
   - name: [Glucose, BloodPressure, SkinThickness, Insulin, Age]
     type: integer
-    size: 3
+    size: 1
     frozen_values: [0]
   - name: BMI
     type: integer
-    size: 10
+    size: 5
     scale: 0.1
     frozen_values: [0]
+  - name: BMI
+    type: round
+    decimals: 1
   - name: DiabetesPedigreeFunction
     type: integer
-    size: 10
+    size: 5
     scale: 0.001
     frozen_values: [0]
+  - name: DiabetesPedigreeFunction
+    type: round
+    decimals: 3
 
 transform: 
   - name: [Glucose, BloodPressure, SkinThickness, Insulin]
@@ -28,7 +34,7 @@ transform:
     frozen_values: [0]
   - name: DiabetesPedigreeFunction
     type: add_normal_noise_and_round
-    noise_std: 0.005
+    noise_std: 0.0025
     digits: 3
     frozen_values: [0]
 

@@ -209,6 +209,35 @@ def row_completion(
 
 
 ####################################################################################
+# Basic completion with a list of strings.
+####################################################################################
+
+
+def chat_completion(
+    llm: LLM_Interface,
+    strings: list[str],
+    system_prompt: str = "You are a helpful assistant that complets the user's input.",
+    few_shot=5,
+    num_queries=10,
+    out_file=None,
+    rng=None,
+):
+    """Basic completion with a chat model and a list of strings."""
+    # randomly split the strings into prefixes and suffixes, then use prefix_suffix_chat_completion
+    if rng is None:
+        rng = np.random.default_rng()
+    prefixes = []
+    suffixes = []
+    for s in strings:
+        idx = rng.integers(low=int(len(s) / 3), high=int(2 * len(s) / 3))
+        prefixes.append(s[:idx])
+        suffixes.append(s[idx:])
+    return prefix_suffix_chat_completion(
+        llm, prefixes, suffixes, system_prompt, few_shot, num_queries, out_file, rng
+    )
+
+
+####################################################################################
 # Almost all of the different tests that we perform
 # can be cast in the prompt structue of
 # 'prefix-suffix chat completion'.

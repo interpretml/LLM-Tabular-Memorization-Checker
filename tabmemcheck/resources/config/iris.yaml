@@ -1,15 +1,18 @@
-
 target: species
 
 perturbations: 
   - name: [sepal_length, sepal_width, petal_length]
     type: integer
-    size: 3
+    size: 1
     scale: 0.1
   - name: petal_width
     type: integer
     size: 1
     scale: 0.1
+    frozen_values: [0, 0.1, 0.2]
+  - name: [sepal_length, sepal_width, petal_length, petal_width]
+    type: round
+    decimals: 1
     
 transform: 
   - name: [sepal_length, sepal_width, petal_length]
@@ -22,10 +25,10 @@ transform:
     digits: 2
 
 rename:
-  sepal_length: Measured Length of Sepal (cm)
-  sepal_width: Measured Width of Sepal (cm)
-  petal_length: Measured Length of Petal (cm)
-  petal_width: Measured Width of Petal (cm)
+  sepal_length: Length of Sepal (cm)
+  sepal_width: Width of Sepal (cm)
+  petal_length: Length of Petal (cm)
+  petal_width: Width of Petal (cm)
   species: Kind of Flower
 
 recode:

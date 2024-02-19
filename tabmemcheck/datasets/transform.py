@@ -18,7 +18,7 @@ def numeric_perturbation(
     respect_bounds: bool = True,
     frozen_values=None,
     frozen_indices=None,
-    ignore_object=False,
+    # ignore_object=False,
 ):
     """Perturb a np.ndarray X of numeric values using the perturbations in perturbation_matrix.
 
@@ -27,31 +27,31 @@ def numeric_perturbation(
     The pertubation respects the following boundary conditions:
         - Does not perturb nan values.
         - Does not perturb frozen values (if specified) and frozen indices (if specified).
-        - If respect bounds is true (default), does not perturb beyond the min/max values in the data.
+        - If respect_bounds is true (default), does not perturb beyond the min/max values in the data
 
     Returns: The perturbed array.
     """
     # if ignore_object is True, only perturb values that can be converted to float
-    if ignore_object:
-        numeric_indices = []
-        for index, value in np.ndenumerate(X):
-            try:
-                # Attempt to convert value to float
-                float(value)
-                # If successful, append the index to the list
-                numeric_indices.append(index)
-            except ValueError:
-                continue
-                # continue
-        X[numeric_indices] = numeric_perturbation(
-            X[numeric_indices].astype(np.number),
-            perturbation_matrix=perturbation_matrix[numeric_indices],
-            respect_bounds=respect_bounds,
-            frozen_indices=frozen_indices,
-            frozen_values=frozen_values,
-            ignore_object=False,
-        )
-        return X
+    # if ignore_object:
+    #    numeric_indices = []
+    #    for index, value in np.ndenumerate(X):
+    #        try:
+    #            # Attempt to convert value to float
+    #            float(value)
+    #            # If successful, append the index to the list
+    #            numeric_indices.append(index)
+    #        except ValueError:
+    #            continue
+    # continue
+    #    X[numeric_indices] = numeric_perturbation(
+    #        X[numeric_indices].astype(np.number),
+    #        perturbation_matrix=perturbation_matrix[numeric_indices],
+    #        respect_bounds=respect_bounds,
+    #        frozen_indices=frozen_indices,
+    #        frozen_values=frozen_values,
+    #        ignore_object=False,
+    #    )
+    #    return X
     # assert that x contains only numeric values
     assert np.issubdtype(
         X.dtype, np.number
@@ -108,7 +108,7 @@ def integer_perturbation(
     respect_bounds: bool = True,
     frozen_indices=None,
     frozen_values=None,
-    ignore_object=False,
+    # ignore_object=False,
     seed=None,
 ):
     """Perturb with integer values from the range [-size, size], but never zero (zero perturbation can still occur due to a boundary condition).
@@ -134,14 +134,35 @@ def integer_perturbation(
         scale = int(scale)
     perturbation_matrix = perturbation_matrix * scale
     # apply the perturbation
-    return numeric_perturbation(
-        X,
+    X_perturbed = numeric_perturbation(
+        X.copy(),
         perturbation_matrix,
         respect_bounds=respect_bounds,
         frozen_indices=frozen_indices,
         frozen_values=frozen_values,
-        ignore_object=ignore_object,
+        # ignore_object=ignore_object,
     )
+    # repeat for the subset of indices that should have been changed but have not been
+    # this can occur because of respect_bounds=True
+    # if respect_bounds == True:
+    #    unchanged_indices = set(np.argwhere(X_perturbed == X).flatten())
+    #    if frozen_values is not None:
+    #        unchanged_indices.discard(
+    #            set(np.argwhere(np.isin(X, frozen_values)).flatten())
+    #        )
+    #    if frozen_indices is not None:
+    #        unchanged_indices.discard(set(frozen_indices.flatten()))
+    #    if len(unchanged_indices) > 0:
+    #        unchanged_indices = np.array(list(unchanged_indices))
+    #        print(unchanged_indices)
+    #        X_perturbed[unchanged_indices] = integer_perturbation(
+    #            X_perturbed[unchanged_indices].copy(),
+    #            size=size,
+    #            scale=scale,
+    #            respect_bounds=False,
+    #            seed=seed,
+    #        )
+    return X_perturbed
 
 
 def float_perturbation(
@@ -376,29 +397,32 @@ def move_column_to_position(df: pd.DataFrame, column: str, position: int):
 ####################################################################################
 
 
-def titanic_ticket_perturbation(x: np.array, seed=None):
-    """Perturb the last digit of the titanic ticket number.
+def titanic_last_digits_perturbation(x: np.array, size: int, digits: int, seed=None):
+    """Perturb the last digits of the titanic ticket number.
     The callenge is that the ticket number in general is not numeric."""
+    x = x.astype(str)
     # indices of integer values in the array
     convertible_indices = []
     for i, item in enumerate(x):
         try:
             # Attempt to convert to integer
-            _ = int(str(item[-4:]))
+            _ = int(str(item[-digits:]))
             # If successful, append the index
             convertible_indices.append(i)
-        except ValueError:
+        except:
             # If conversion fails, move to the next item
             continue
-    first_digits = np.array([s[0:-4] for s in x[convertible_indices]]).flatten()
-    last_digits = np.array([s[-4:] for s in x[convertible_indices]]).flatten()
+    first_digits = np.array([s[0:-digits] for s in x[convertible_indices]]).flatten()
+    last_digits = np.array([s[-digits:] for s in x[convertible_indices]]).flatten()
     last_digits = integer_perturbation(
-        last_digits.astype(int).copy(), size=3, seed=seed
+        last_digits.astype(int).copy(), size=size, seed=seed
     )
     x[convertible_indices] = [
         x + y for x, y in zip(first_digits.astype(str), last_digits.astype(str))
     ]
-    return x.astype(str)
+    x = x.astype(str)
+    x[x == "nan"] = "NaN"
+    return x
 
 
 def titanic_name_transform(x: np.array, seed=None):
@@ -408,4 +432,12 @@ def titanic_name_transform(x: np.array, seed=None):
     for i, item in enumerate(x):
         if item.count(",") == 1:
             x[i] = " ".join(item.split(", ")[::-1])
+    return x
+
+
+def titanic_ticket_transform(x: np.array, seed=None):
+    # remove the trailing digits
+    x = np.array([s.split(" ")[1] if " " in s else s for s in x])
+    # add 'No. '
+    x = np.array(["No. " + s for s in x])
     return x

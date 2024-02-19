@@ -60,12 +60,18 @@ METHODS_REGISTER = {
     "swap": swap_perturbation,
     "add_normal_noise_and_round": add_normal_noise_and_round_array,
     "astype": lambda x, dtype, seed: x.astype(dtype),
+    "add": lambda x, value, seed: x + value,
     "scale": lambda x, factor, seed: x * factor,
     "fillna": lambda x, value, seed: pd.DataFrame(x).fillna(value).values.flatten(),
+    "recode": lambda x, values, seed: pd.DataFrame(x).replace(values).values.flatten(),
+    "round": lambda x, decimals, seed: pd.DataFrame(x)
+    .round(decimals=decimals)
+    .values.flatten(),
     # "float": float_perturbation,
     # "value": value_perturbation,
     # special-purpose perturbations
-    "titanic_ticket_perturbation": titanic_ticket_perturbation,
+    "titanic_last_digits_perturbation": titanic_last_digits_perturbation,
+    "titanic_ticket_transform": titanic_ticket_transform,
     "titanic_name_transform": titanic_name_transform,
 }
 
@@ -78,8 +84,16 @@ METHODS_REGISTER = {
 # "append": lambda x, value: x.astype(str) + value,
 
 
-def __load_yaml_config(dataset_name: str):  # TODO also load other config files
+def __load_yaml_config(dataset_name: str):
     """Load from the resources folder of the package"""
+    # first try to load the file as a normal file
+    try:
+        with open(f"{dataset_name}", "r") as f:
+            config = yaml.load(f, Loader=yaml.FullLoader)
+        return config
+    except:
+        pass
+    # then try to load it from the resources folder
     with resources.open_text(
         "tabmemcheck.resources.config", f"{dataset_name}.yaml"
     ) as f:
@@ -148,6 +162,36 @@ def check_perturbed_rows(df_original, df_perturbed):
         )
 
 
+def check_overlap(df_original, df_new):
+    """Report the similarity between the rows in df_new and df_original."""
+    from tabmemcheck.analysis import find_matches
+    from tabmemcheck.utils import strings_unequal
+
+    feature_distance = []
+    for i in range(df_new.shape[0]):
+        row = df_new.iloc[i]
+        min_dist, _ = find_matches(df_original, row, strings_unequal)
+        feature_distance.append(min_dist)
+    print(
+        f"Avg. Number of Matching Features: {len(df_new.columns)-np.mean(feature_distance):.2f}"
+    )
+
+
+def report_feature_variation(df_original, df_variation):
+    """Report the % variation in feature values due to perturbation."""
+    for feature in df_original.columns:
+        if feature in df_variation.columns:
+            original_values = df_original[feature].values
+            perturbed_values = df_variation[feature].values
+            try:
+                variation = 100 * np.nanmean(
+                    np.abs(perturbed_values - original_values) / np.abs(original_values)
+                )
+                print(f"Feature {feature}: {variation:.2f}% variation.")
+            except:
+                pass
+
+
 ####################################################################################
 # Generic dataset loading function, with YAML configuration file
 ####################################################################################
@@ -155,19 +199,21 @@ def check_perturbed_rows(df_original, df_perturbed):
 
 def load_dataset(
     csv_file: str,
-    dataset_name: str,
-    transform=DATASET_ORIGINAL,
-    permute_columns=True,  # for perturbed transform
+    yaml_config: str = None,
+    transform=DATASET_PLAIN,
+    permute_columns=False,  # for perturbed transform
     seed=None,
 ):
     """Generic dataset loading function. Dataset tranformations are specified in a yaml configuration file."""
     __validate_inputs(transform)
     rng = np.random.default_rng(seed=seed)
-    config = __load_yaml_config(dataset_name)
 
     # plain (i.e. no transformation)
     if transform == DATASET_PLAIN:
         return utils.load_csv_df(csv_file)
+
+    # load the configuration file
+    config = __load_yaml_config(yaml_config)
 
     # original
     df_original = utils.load_csv_df(csv_file, dtype=config.get(CONFIG_DTYPE, None))
@@ -195,7 +241,11 @@ def load_dataset(
         )
 
     if transform == DATASET_PERTURBED:
+        # dataframe except last column
         check_perturbed_rows(df_original, df_perturbed)
+        report_feature_variation(df_original.iloc[:, :-1], df_perturbed.iloc[:, :-1])
+        # select 100 random rows from df_perturbed
+        check_overlap(df_original.iloc[:, :-1], df_perturbed.iloc[:, :-1].sample(n=100))
         return df_perturbed
 
     # task
@@ -211,6 +261,10 @@ def load_dataset(
             METHODS_REGISTER,
             seed=rng,
         )
+    if (
+        transform == DATASET_TASK
+    ):  # report feature variation before re-naming the features
+        report_feature_variation(df_original.iloc[:, :-1], df_task.iloc[:, :-1])
     df_task = rename_and_recode(
         df_task, config.get(CONFIG_RENAME, {}), config.get(CONFIG_RECODE, {})
     )

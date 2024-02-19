@@ -1,26 +1,927 @@
 target: Survived
 
 perturbations: 
+  - name: PassengerId
+    type: add
+    value: 1513
   - name: Age
     type: integer
-    size: 1
+    size: 3
   - name: Fare
-    type: swap
-    size: 1
-  - name: PassengerId
     type: integer
-    size: 1
+    size: 500
+    scale: 0.001
   - name: [SibSp, Parch]
     type: integer
     size: 1
     frozen_values: [0, 1]
   - name: Ticket
-    type: titanic_ticket_perturbation
+    type: titanic_last_digits_perturbation
+    digits: 4
+    size: 100
+  - name: Cabin
+    type: titanic_last_digits_perturbation
+    digits: 1
+    size: 3
+  - name: Name
+    type: recode
+    values:
+      Abbing, Mr. Anthony: Hendricks, Mr. Andrew
+      Abbott, Mr. Rossmore Edward: Bennett, Mr. Clarence Arthur
+      Abbott, Mrs. Stanton (Rosa Hunt): Bennett, Mrs. Sinclair (Lily Field)
+      Abelson, Mr. Samuel: Henderson, Mr. Elijah
+      Abelson, Mrs. Samuel (Hannah Wizosky): Goldberg, Mrs. Isaac (Rachel Blum)
+      Adahl, Mr. Mauritz Nils Martin: Lindberg, Mr. Gustav Erik Johan
+      Adams, Mr. John: Bennett, Mr. William
+      Ahlin, Mrs. Johan (Johanna Persdotter Larsson): Alm, Mrs. Erik (Erika Andersdotter Svensson)
+      Aks, Mrs. Sam (Leah Rosen): Mrs. Sam (Rachel Stein)
+      Albimona, Mr. Nassef Cassem: Alzahar, Mr. Fadi Haddad
+      Alexander, Mr. William: Maximilian, Mr. Edward
+      Alhomaki, Mr. Ilmari Rudolf: Korhonen, Mr. Eero Mikael
+      Ali, Mr. Ahmed: Khalid, Mr. Jamal
+      Ali, Mr. William: Mr. Edward Smith
+      Allen, Miss. Elisabeth Walton: Carter, Miss. Charlotte Beckett
+      Allen, Mr. William Henry: Bennett, Mr. Charles Edward
+      Allison, Master. Hudson Trevor: Madeline, Lady. Penelope Grace
+      Allison, Miss. Helen Loraine: Madeline, Miss. Emily Charlotte
+      Allison, Mrs. Hudson J C (Bessie Waldo Daniels): Margaret, Mrs. Eleanor R. M. (Clara Edith Simmons)
+      Allum, Mr. Owen George: Bramley, Mr. Henry Charles
+      Andersen-Jensen, Miss. Carla Christine Nielsine: Larsen-Petersen, Miss. Anna Marie Kirstine
+      Anderson, Mr. Harry: Carter, Mr. William
+      Andersson, Master. Sigvard Harald Elias: Lindberg, Master. Nils Gustav Johan
+      Andersson, Miss. Ebba Iris Alfrida: Lindberg, Miss. Elsa Linnea Astrid
+      Andersson, Miss. Ellis Anna Maria: Lindberg, Miss. Elsa Ingrid Sofia
+      Andersson, Miss. Erna Alexandra: Lindberg, Miss. Elsa Linnea
+      Andersson, Miss. Ingeborg Constanzia: Svensson, Miss. Elsa Linnea
+      Andersson, Miss. Sigrid Elisabeth: Lindberg, Miss. Ingrid Maria
+      Andersson, Mr. Anders Johan: Svensson, Mr. Sven Karl
+      Andersson, Mr. August Edvard ("Wennerstrom"): Lindberg, Mr. Karl Johan ("Sundqvist")
+      Andersson, Mrs. Anders Johan (Alfrida Konstantia Brogren): Lindberg, Mrs. Lars Henrik (Elsa Linnea Stroem)
+      Andreasson, Mr. Paul Edvin: Lindberg, Mr. Lars Johan
+      Andrew, Mr. Edgardo Samuel: Mr. Lorenzo Mateo
+      Andrews, Miss. Kornelia Theodosia: Bennett, Miss. Amelia Penelope
+      Andrews, Mr. Thomas Jr: Harrington, Mr. Edward Jr
+      Angle, Mrs. William A (Florence "Mary" Agnes Hughes): Bennett, Mrs. Charles E (Elizabeth "Anne" Clara Thompson)
+      Appleton, Mrs. Edward Dale (Charlotte Lamson): Harrington, Mrs. Henry James (Eleanor Baxter)
+      Arnold-Franchi, Mr. Josef: Moeller-Hoffmann, Mr. Stefan
+      Arnold-Franchi, Mrs. Josef (Josefine Franchi): Bauer-Schmidt, Mrs. Heinrich (Helga Schmidt)
+      Artagaveytia, Mr. Ramon: Montenegro, Mr. Diego
+      Asim, Mr. Adola: Kaleb, Mr. Tesfaye
+      Asplund, Master. Clarence Gustaf Hugo: Lindberg, Master. Erik Axel Leif
+      Asplund, Master. Edvin Rojj Felix: Lindberg, Master. Emil Karl Hugo
+      Asplund, Miss. Lillian Gertrud: Svensson, Miss. Elsa Karin
+      Asplund, Mrs. Carl Oscar (Selma Augusta Emilia Johansson): Lindberg, Mrs. Erik Gustav (Elsa Maria Elisabet Andersson)
+      Astor, Mrs. John Jacob (Madeleine Talmadge Force): Windsor, Mrs. Charles Edward (Elizabeth Marianne Shaw)
+      Attalah, Miss. Malake: Almasri, Miss. Samira
+      Attalah, Mr. Sleiman: Mansour, Mr. Tarek
+      Aubart, Mme. Leontine Pauline: Dubois, Mme. Claudette Marie
+      Augustsson, Mr. Albert: Lindberg, Mr. Erik
+      Ayoub, Miss. Banoura: Youssef, Miss. Samira
+      Backstrom, Mr. Karl Alfred: Lindberg, Mr. Johan Erik
+      Backstrom, Mrs. Karl Alfred (Maria Mathilda Gustafsson): Lindberg, Mrs. Erik Johan (Anna Sofia Lundgren)
+      Baclini, Miss. Eugenie: Mansour, Miss. Isabelle
+      Baclini, Miss. Helene Barbara: Mansour, Miss. Nadia Mariam
+      Baclini, Miss. Marie Catherine: Lefebvre, Miss. Anne Sophie
+      Baclini, Mrs. Solomon (Latifa Qurban): Mansour, Mrs. Elias (Soraya Fadel)
+      Badt, Mr. Mohamed: Alim, Mr. Youssef
+      Bailey, Mr. Percy Andrew: Carter, Mr. Oliver Henry
+      Balkic, Mr. Cerin: Zoric, Mr. Davor
+      Ball, Mrs. (Ada E Hall): Pearce, Mrs. (Evelyn M. Green)
+      Banfield, Mr. Frederick James: Crawford, Mr. Edward Charles
+      Barah, Mr. Hanna Assi: Mr. Elias Toma
+      Barbara, Miss. Saiide: Samantha, Miss. Almasi
+      Barbara, Mrs. (Catherine David): Margaret, Mrs. (Elizabeth Miller)
+      Barber, Miss. Ellen "Nellie": Tailor, Miss. Clara "Clarie"
+      Barkworth, Mr. Algernon Henry Wilson: Fairmont, Mr. Percival Charles Edmund
+      Barton, Mr. David John: Hawthorne, Mr. Edward Charles
+      Bateman, Rev. Robert James: Hawthorne, Rev. William Henry
+      Baumann, Mr. John D: Schneider, Mr. Franz K.
+      Baxter, Mr. Quigg Edmond: Crawford, Mr. Percy Alastair
+      Baxter, Mrs. James (Helene DeLaudeniere Chaput): Carter, Mrs. William (Margaret DuMontier Dubois)
+      Bazzani, Miss. Albina: Rossi, Miss. Bianca
+      Beane, Mr. Edward: Greene, Mr. William
+      Beane, Mrs. Edward (Ethel Clarke): Thorne, Mrs. Henry (Margaret Browne)
+      Beavan, Mr. William Thomas: Harrington, Mr. Edward James
+      Becker, Master. Richard F: Schmidt, Master. Heinrich J.
+      Becker, Miss. Marion Louise: Schmidt, Miss. Clara Johanna
+      Beckwith, Mr. Richard Leonard: Harrington, Mr. Edward James
+      Beckwith, Mrs. Richard Leonard (Sallie Monypeny): Harrington, Mrs. Charles Edward (Maggie Pennington)
+      Beesley, Mr. Lawrence: Hargrove, Mr. Edmund
+      Behr, Mr. Karl Howell: Wolff, Mr. Friedrich August
+      Bengtsson, Mr. John Viktor: Lindberg, Mr. Erik Gustav
+      Berglund, Mr. Karl Ivar Sven: Lindberg, Mr. Erik Johan Nils
+      Berriman, Mr. William John: Harrington, Mr. Edward Charles
+      Betros, Mr. Tannous: Mr. Elias Farah
+      Bidois, Miss. Rosalie: Leroux, Miss. Amelie
+      Bing, Mr. Lee: Chen, Mr. Wei
+      Birkeland, Mr. Hans Martin Monsen: Nordgaard, Mr. Erik Andreas Larsen
+      Bishop, Mr. Dickinson H: Bishop, Mr. Archibald F.
+      Bishop, Mrs. Dickinson H (Helen Walton): Bishop, Mrs. Harrington J (Julia Winters)
+      Bissette, Miss. Amelia: Lefevre, Miss. Eloise
+      Bjornstrom-Steffansson, Mr. Mauritz Hakan: Lindberg-Pettersson, Mr. Sven Erik
+      Blackwell, Mr. Stephen Weart: Hawthorne, Mr. Edward Langston
+      Blank, Mr. Henry: Mr. Edward Smith
+      Bonnell, Miss. Elizabeth: Crawford, Miss. Margaret
+      Bostandyeff, Mr. Guentcho: Kazakov, Mr. Dimitri
+      Boulos, Miss. Nourelain: Mikhail, Miss. Yasmine
+      Boulos, Mr. Hanna: Mikhail, Mr. Youssef
+      Boulos, Mrs. Joseph (Sultana): Mikhail, Mrs. George (Layla)
+      Bourke, Miss. Mary: O'Sullivan, Miss. Fiona
+      Bourke, Mr. John: O'Reilly, Mr. Sean
+      Bourke, Mrs. John (Catherine): Flanagan, Mrs. Liam (Margaret)
+      Bowen, Mr. David John "Dai": Morgan, Mr. Evan Rhys "Evan"
+      Bowerman, Miss. Elsie Edith: Carter, Miss. Clara Evelyn
+      Bracken, Mr. James H: Thornwood, Mr. Edward T.
+      Bradley, Mr. George ("George Arthur Brayton"): Mr. Thomas Edward Hargrove
+      Braund, Mr. Lewis Richard: Harrington, Mr. Edward James
+      Braund, Mr. Owen Harris: Hawkins, Mr. Edward James
+      Brewe, Dr. Arthur Jackson: Dr. Charles Montgomery
+      Brocklebank, Mr. William Alfred: Haversham, Mr. Edward Charles
+      Brown, Miss. Amelia "Mildred": Green, Miss. Eleanor "Elsie"
+      Brown, Mr. Thomas William Solomon: Green, Mr. Edward James Alexander
+      Brown, Mrs. James Joseph (Margaret Tobin): Smith, Mrs. William Henry (Elizabeth Harper)
+      Brown, Mrs. Thomas William Solomon (Elizabeth Catherine Ford): Smith, Mrs. John Henry Alexander (Margaret Anne Taylor)
+      Bryhl, Mr. Kurt Arnold Gottfrid: Lindberg, Mr. Lars Johan Erik
+      Burke, Mr. Jeremiah: Hawthorne, Mr. Nathaniel
+      Burns, Miss. Elizabeth Margaret: Thorne, Miss. Catherine Anne
+      Buss, Miss. Kate: Hale, Miss. Emma
+      Butler, Mr. Reginald Fenton: Butler, Mr. Horace Worthington
+      Butt, Major. Archibald Willingham: Thorn, Major. Percival Montgomery
+      Byles, Rev. Thomas Roussel Davids: Smythe, Rev. William Henry Archibald
+      Bystrom, Mrs. (Karolina): Lindberg, Mrs. (Elin)
+      Cacic, Miss. Marija: Vukovic, Miss. Ana
+      Cacic, Mr. Luka: Dragovic, Mr. Ivan
+      Cairns, Mr. Alexander: MacIntyre, Mr. William
+      Calderhead, Mr. Edward Pennington: Bannerman, Mr. Charles Hamilton
+      Caldwell, Master. Alden Gates: Hawthorne, Master. Oliver Brooks
+      Caldwell, Mrs. Albert Francis (Sylvia Mae Harbaugh): Hawthorne, Mrs. Edward James (Lillian Grace Whitfield)
+      Calic, Mr. Jovo: Milic, Mr. Dragan
+      Calic, Mr. Petar: Vukic, Mr. Luka
+      Cameron, Miss. Clear Annie: Madison, Miss. Bright Lily
+      Campbell, Mr. William: Montgomery, Mr. Charles
+      Canavan, Miss. Mary: O'Reilly, Miss. Fiona
+      Cann, Mr. Ernest Charles: Bramley, Mr. Albert Edward
+      Caram, Mrs. Joseph (Maria Elias): Mansour, Mrs. Antoine (Layla Farid)
+      Carbines, Mr. William: Rifles, Mr. Edward
+      Cardeza, Mr. Thomas Drake Martinez: Montoya, Mr. Alejandro Luis Ramirez
+      Carlsson, Mr. August Sigfrid: Lindberg, Mr. Erik Gustav
+      Carlsson, Mr. Frans Olof: Lindberg, Mr. Erik Gustav
+      Carr, Miss. Helen "Ellen": Barnes, Miss. Margaret "Maggie"
+      Carrau, Mr. Francisco M: Montoya, Mr. Fernando J.
+      Carter, Master. William Thornton II: Harrison, Master. Edward Hamilton III
+      Carter, Miss. Lucile Polk: Harrison, Miss. Evelyn Monroe
+      Carter, Mr. William Ernest: Harrison, Mr. James Arthur
+      Carter, Mrs. Ernest Courtenay (Lilian Hughes): Parker, Mrs. Henry Beaumont (Eleanor Sutton)
+      Carter, Mrs. William Ernest (Lucile Polk): Harrison, Mrs. James Frederick (Eleanor Astor)
+      Carter, Rev. Ernest Courtenay: Baxter, Rev. Oliver Montague
+      Cavendish, Mr. Tyrell William: Harrington, Mr. Jasper Elliot
+      Celotti, Mr. Francesco: Bianchi, Mr. Lorenzo
+      Chaffee, Mr. Herbert Fuller: Baxter, Mr. Theodore Graham
+      Chambers, Mr. Norman Campbell: Hawthorne, Mr. Arthur Bennett
+      Chambers, Mrs. Norman Campbell (Bertha Griggs): Bennett, Mrs. Oliver Harrison (Eleanor Smythe)
+      Chapman, Mr. Charles Henry: Baxter, Mr. Edward James
+      Chapman, Mr. John Henry: Baxter, Mr. William George
+      Charters, Mr. David: Bramwell, Mr. Edward
+      Cherry, Miss. Gladys: Apple, Miss. Beatrice
+      Chibnall, Mrs. (Edith Martha Bowerman): Harrington, Mrs. (Eleanor Mary Cartwright)
+      Chip, Mr. Chang: Mr. Lee
+      Christmann, Mr. Emil: Schneider, Mr. Friedrich
+      Christy, Miss. Julie Rachel: Madeline, Miss. Emma Charlotte
+      Chronopoulos, Mr. Apostolos: Papadopoulos, Mr. Nikolas
+      Clarke, Mrs. Charles V (Ada Maria Winfield): Bennett, Mrs. Edward J (Eleanor Sophia Ashford)
+      Cleaver, Miss. Alice: Baxter, Miss. Eleanor
+      Clifford, Mr. George Quincy: Harrington, Mr. Edward Milton
+      Coelho, Mr. Domingos Fernandeo: Silva, Mr. Joaquim Augusto
+      Cohen, Mr. Gurshon "Gus": Levi, Mr. Yitzhak "Izzy"
+      Coleff, Mr. Peju: Bamiro, Mr. Tolu
+      Coleff, Mr. Satio: Barnes, Mr. Lucas
+      Coleridge, Mr. Reginald Charles: Worthington, Mr. Frederick James
+      Collander, Mr. Erik Gustaf: Lindberg, Mr. Johan Axel
+      Colley, Mr. Edward Pomeroy: Bramwell, Mr. Henry Fairfax
+      Collyer, Miss. Marjorie "Lottie": Baxter, Miss. Eleanor "Nellie"
+      Collyer, Mr. Harvey: Baxter, Mr. Frederick
+      Collyer, Mrs. Harvey (Charlotte Annie Tate): Bramwell, Mrs. Frederick (Eleanor Lucy Winters)
+      Compton, Miss. Sara Rebecca: Hastings, Miss. Emily Charlotte
+      Connaghton, Mr. Michael: Donnelly, Mr. Patrick
+      Connolly, Miss. Kate: O'Reilly, Miss. Erin
+      Connors, Mr. Patrick: O'Reilly, Mr. Sean
+      Cook, Mr. Jacob: Baker, Mr. Ethan
+      Cor, Mr. Liudevit: Certainly, Mr. Janko Horvat
+      Corn, Mr. Harry: Wheat, Mr. Oliver
+      Coutts, Master. Eden Leslie "Neville": Banks, Master. Oliver Henry "Liam"
+      Coutts, Master. William Loch "William": Fairfield, Master. Edward Glen "Edward"
+      Coxon, Mr. Daniel: Baxter, Mr. Edward
+      Crease, Mr. Ernest James: Bentley, Mr. Frederick William
+      Cribb, Mr. John Hatfield: Barnes, Mr. Edward Marlow
+      Crosby, Capt. Edward Gifford: Hawthorne, Capt. William Archibald
+      Crosby, Miss. Harriet R: Baxter, Miss. Eleanor J.
+      Culumovic, Mr. Jeso: Dragovic, Mr. Luka
+      Cumings, Mrs. John Bradley (Florence Briggs Thayer): Harrington, Mrs. Charles Edward (Elizabeth Harper Ford)
+      Cunningham, Mr. Alfred Fleming: Montgomery, Mr. Charles Beauregard
+      Dahl, Mr. Karl Edwart: Lund, Mr. Johan Fredrik
+      Dahlberg, Miss. Gerda Ulrika: Lindgren, Miss. Elsa Karin
+      Dakic, Mr. Branko: Petrovic, Mr. Milan
+      Daly, Mr. Eugene Patrick: O'Reilly, Mr. Liam Seamus
+      'Daly, Mr. Peter Denis ': O'Reilly, Mr. Sean Patrick
+      Danbom, Mr. Ernst Gilbert: Lindberg, Mr. Sven Henrik
+      Danbom, Mrs. Ernst Gilbert (Anna Sigrid Maria Brogren): Lindberg, Mrs. Lars Henrik (Elsa Ingrid Clara Svensson)
+      Daniel, Mr. Robert Williams: Mr. Alexander Thompson
+      Danoff, Mr. Yoto: Petrov, Mr. Ivan
+      Dantcheff, Mr. Ristiu: Radanov, Mr. Petar
+      Davidson, Mr. Thornton: Harrington, Mr. Archibald
+      Davies, Master. John Morgan Jr: Smith, Master. Edward Harrison III
+      Davies, Mr. Alfred J: Bennett, Mr. Charles H.
+      Davies, Mr. Charles Henry: Bennett, Mr. Edward James
+      Davis, Miss. Mary: Harris, Miss. Elizabeth
+      Davison, Mrs. Thomas Henry (Mary E Finck): Harrington, Mrs. Charles Edward (Elizabeth A. Marlow)
+      Dean, Master. Bertram Vere: Evan, Lord. Percival Ames
+      Dean, Mr. Bertram Frank: Mr. Archibald Hugh
+      Denkoff, Mr. Mitto: Petrov, Mr. Ivan
+      Dennis, Mr. Samuel: Mr. Alexander Bennett
+      Devaney, Miss. Margaret Delia: O'Sullivan, Miss. Fiona Maeve
+      Dick, Mr. Albert Adrian: Smith, Mr. Charles Christopher
+      Dick, Mrs. Albert Adrian (Vera Gillespie): Mrs. Albert Harrison (Clara Montgomery)
+      Dimic, Mr. Jovan: Milic, Mr. Dragan
+      Dodge, Master. Washington: Hudson, Master. Jefferson
+      Doharr, Mr. Tannous: Alaric, Mr. Elias
+      Doling, Miss. Elsie: Baxter, Miss. Clara
+      Doling, Mrs. John T (Ada Julia Bone): Harrington, Mrs. Charles H (Evelyn Clara Stone)
+      Dooley, Mr. Patrick: O'Reilly, Mr. Sean
+      Dorking, Mr. Edward Arthur: Worthington, Mr. Charles Henry
+      Douglas, Mr. Walter Donald: Harrington, Mr. Arthur Reginald
+      Dowdell, Miss. Elizabeth: Bennett, Miss. Charlotte
+      Downton, Mr. William James: Highclere, Mr. Edward Charles
+      Drazenoic, Mr. Jozef: Dragomirov, Mr. Ivan
+      Drew, Mrs. James Vivian (Lulu Thorne Christian): Mrs. James Elliot (Ella Rose Hawthorne)
+      Duane, Mr. Frank: Mr. Harold Bennett
+      Duff Gordon, Lady. (Lucille Christiana Sutherland) ("Mrs Morgan"): Clare Hamilton, Lady. (Eleanor Victoria Sinclair) ("Mrs. Bennett")
+      Duff Gordon, Sir. Cosmo Edmund ("Mr Morgan"): Blythe Sterling, Sir. Julian Alexander ("Mr. Baxter")
+      Duran y More, Miss. Asuncion: Cortez y Vega, Miss. Isabella
+      Edvardsson, Mr. Gustaf Hjalmar: Lindberg, Mr. Erik Vilhelm
+      Eitemiller, Mr. George Floyd: Harrington, Mr. Edward Charles
+      Eklund, Mr. Hans Linus: Svensson, Mr. Nils Johan
+      Ekstrom, Mr. Johan: Lindberg, Mr. Anders
+      Elias, Mr. Dibo: Alexander, Mr. Karim
+      Elias, Mr. Joseph Jr: Nathaniel, Mr. Benjamin Jr.
+      Elias, Mr. Tannous: Gabriel, Mr. Nassar
+      Elsbury, Mr. William James: Harrington, Mr. Edward Charles
+      Emanuel, Miss. Virginia Ethel: Sebastian, Miss. Caroline Grace
+      Emir, Mr. Farred Chehab: Mr. Malik Haddad
+      Endres, Miss. Caroline Louise: Schmidt, Miss. Anna Katharina
+      Eustis, Miss. Elizabeth Mussey: Aldridge, Miss. Charlotte Hargrove
+      Fahlstrom, Mr. Arne Jonas: Lindberg, Mr. Erik Gustav
+      Farrell, Mr. James: Harrington, Mr. William
+      Farthing, Mr. John: Pennyworth, Mr. Edward
+      Faunthorpe, Mrs. Lizzie (Elizabeth Anne Wilkinson): Bramblewood, Mrs. Clara (Charlotte Marie Atkinson)
+      Fischer, Mr. Eberhard Thelander: Schmidt, Mr. Wilhelm Friedrich
+      Fleming, Miss. Margaret: Bennett, Miss. Eleanor
+      Flynn, Mr. James: Bennett, Mr. William
+      Flynn, Mr. John: Hartley, Mr. William
+      Flynn, Mr. John Irwin ("Irving"): Bennett, Mr. Charles Milton ("Charlie")
+      Foo, Mr. Choong: Mr. Lee Jin-Soo
+      Ford, Miss. Doolina Margaret "Daisy": Carter, Miss. Evelina Marjorie "Elsie"
+      Ford, Miss. Robina Maggie "Ruby": Carter, Miss. Eliza Daisy "Lizzie"
+      Ford, Mr. William Neal: Carter, Mr. Edward James
+      Ford, Mrs. Edward (Margaret Ann Watson): Carter, Mrs. Henry (Elizabeth Jane Taylor)
+      Foreman, Mr. Benjamin Laventall: Carpenter, Mr. Edward Harrington
+      Fortune, Miss. Alice Elizabeth: Luck, Miss. Clara Margaret
+      Fortune, Miss. Mabel Helen: Luck, Miss. Clara Beatrice
+      Fortune, Mr. Charles Alexander: Wealthy, Mr. Edward James
+      Fortune, Mr. Mark: Wealthy, Mr. John
+      Fox, Mr. Stanley Hubert: Wolf, Mr. Oliver Theodore
+      Francatelli, Miss. Laura Mabel: Bianchetti, Miss. Sofia Clara
+      Frauenthal, Dr. Henry William: Dr. Ludwig Steinbeck
+      Frauenthal, Mrs. Henry William (Clara Heinsheimer): Frauenthal, Mrs. Henry William (Lieselotte Hoffmann)
+      Frolicher, Miss. Hedwig Margaritha: Schneider, Miss. Elise Johanna
+      Frolicher-Stehli, Mr. Maxmillian: Schneider-Hofmann, Mr. Friedrich
+      Frost, Mr. Anthony Wood "Archie": Snow, Mr. Benjamin Oak "Benji"
+      Fry, Mr. Richard: Bates, Mr. Edward
+      Funk, Miss. Annie Clemmer: Jazz, Miss. Ellie Tanner
+      Futrelle, Mr. Jacques Heath: Leroux, Mr. Henri Pascal
+      Futrelle, Mrs. Jacques Heath (Lily May Peel): Montclair, Mrs. Henri Lucien (Rose Elise Dubois)
+      Fynney, Mr. Joseph J: Bramwell, Mr. Edward E.
+      Gale, Mr. Shadrach: Windham, Mr. Bartholomew
+      Gallagher, Mr. Martin: O'Reilly, Mr. Sean
+      Garfirth, Mr. John: Bramwell, Mr. Edward
+      Garside, Miss. Ethel: Bramwell, Miss. Clara
+      Gaskell, Mr. Alfred: Bramwell, Mr. Edmund
+      Gavey, Mr. Lawrence: Hartley, Mr. Edward
+      Gee, Mr. Arthur H: Gee, Mr. Edward P.
+      Gheorgheff, Mr. Stanio: Dragomirov, Mr. Nikolai
+      Giglio, Mr. Victor: Fiori, Mr. Marco
+      Giles, Mr. Frederick Edward: Mr. Archibald Henry Montgomery
+      Gilinski, Mr. Eliezer: Kaminski, Mr. Jakub
+      Gill, Mr. John William: Bates, Mr. Edward Charles
+      Gillespie, Mr. William Henry: Montgomery, Mr. Charles Edward
+      Gilnagh, Miss. Katherine "Katie": Brenley, Miss. Elizabeth "Lizzie"
+      Givard, Mr. Hans Kristensen: Lindberg, Mr. Lars Andersen
+      Glynn, Miss. Mary Agatha: Blythe, Miss. Clara Beatrice
+      Goldenberg, Mr. Samuel L: Silverstein, Mr. Isaac M.
+      Goldenberg, Mrs. Samuel L (Edwiga Grabowska): Silverstein, Mrs. Jacob M (Helena Kowalska)
+      Goldschmidt, Mr. George B: Silverberg, Mr. Henry J.
+      Goldsmith, Master. Frank John William "Frankie": Copperfield, Master. Edward Charles Henry "Eddie"
+      Goldsmith, Mr. Frank John: Coppersmith, Mr. Edward Charles
+      Goldsmith, Mrs. Frank John (Emily Alice Brown): Coppersmith, Mrs. Edward James (Sophia Elizabeth Green)
+      Goncalves, Mr. Manuel Estanslas: "Silveira, Mr. Jo\xE3o Augusto"
+      Goodwin, Master. Harold Victor: Barnaby, Master. Edward Charles
+      Goodwin, Master. Sidney Leonard: Harrington, Master. Oliver Nathaniel
+      Goodwin, Master. William Frederick: Harrington, Master. Edward Charles
+      Goodwin, Miss. Lillian Amy: Harrington, Miss. Evelyn Rose
+      Goodwin, Mr. Charles Edward: Harrington, Mr. William Henry
+      Goodwin, Mrs. Frederick (Augusta Tyler): Harrington, Mrs. Charles (Eleanor Carter)
+      Graham, Miss. Margaret Edith: Bennett, Miss. Eleanor Jane
+      Graham, Mr. George Edward: Bennett, Mr. Henry William
+      Graham, Mrs. William Thompson (Edith Junkins): Mrs. Charles Hamilton (Margaret Sinclair).
+      Green, Mr. George Henry: Moss, Mr. Edward Charles
+      Greenberg, Mr. Samuel: Rosenfeld, Mr. Isaac
+      Greenfield, Mr. William Bertram: Hawthorne, Mr. Edward Archibald
+      Gronnestad, Mr. Daniel Danielsen: Haugland, Mr. Erik Eriksen
+      Guggenheim, Mr. Benjamin: Rosenberg, Mr. Alexander
+      Gustafsson, Mr. Alfred Ossian: Lindberg, Mr. Erik Vilhelm
+      Gustafsson, Mr. Anders Vilhelm: Lindberg, Mr. Johan Fredrik
+      Gustafsson, Mr. Johan Birger: Lindberg, Mr. Erik Magnus
+      Gustafsson, Mr. Karl Gideon: Lindberg, Mr. Erik Magnus
+      Haas, Miss. Aloisia: Bauer, Miss. Gisela
+      Hagland, Mr. Ingvald Olai Olsen: Bergstrom, Mr. Sven Erik Lund
+      Hagland, Mr. Konrad Mathias Reiersen: Bergstrom, Mr. Erik Gustav Lindberg
+      Hakkarainen, Mr. Pekka Pietari: Korhonen, Mr. Eero Emil
+      Hakkarainen, Mrs. Pekka Pietari (Elin Matilda Dolck): Korhonen, Mrs. Juho Jalmari (Aino Katriina Virtanen)
+      Hale, Mr. Reginald: Thorn, Mr. Percival
+      Hamalainen, Master. Viljo: Korhonen, Master. Eemeli
+      Hamalainen, Mrs. William (Anna): Korhonen, Mrs. Henrik (Liisa)
+      Hampe, Mr. Leon: Lindberg, Mr. Viktor
+      Hanna, Mr. Mansour: Layla, Mr. Tariq
+      Hansen, Mr. Claus Peter: Jensen, Mr. Lars Henrik
+      Hansen, Mr. Henrik Juul: Larsen, Mr. Anders Kjeld
+      Hansen, Mr. Henry Damsgaard: Jensen, Mr. Henrik Lundgaard
+      Harder, Mr. George Achilles: Mr. Edward Alexander
+      Harknett, Miss. Alice Phoebe: Fairchild, Miss. Evelyn Daisy
+      Harmer, Mr. Abraham (David Lishin): Baxter, Mr. Isaac (Elijah Goldstein)
+      Harper, Miss. Annie Jessie "Nina": Carter, Miss. Eliza Ruby "Lizzie"
+      Harper, Mr. Henry Sleeper: Carter, Mr. William Reston
+      Harper, Mrs. Henry Sleeper (Myna Haxtun): Parker, Mrs. Edward Reston (Lila Braxton)
+      Harper, Rev. John: Baxter, Rev. Michael
+      Harrington, Mr. Charles H: Worthington, Mr. Edward J.
+      Harris, Mr. George: Bennett, Mr. Edward
+      Harris, Mr. Henry Birkhardt: Bennett, Mr. Edward Langston
+      Harris, Mr. Walter: Bennett, Mr. Arthur
+      Harris, Mrs. Henry Birkhardt (Irene Wallach): Bennett, Mrs. Edward Langston (Eleanor Whitmore)
+      Harrison, Mr. William: Montgomery, Mr. Edward
+      Hart, Miss. Eva Miriam: Bennett, Miss. Clara Sophie
+      Hart, Mr. Benjamin: Stone, Mr. Alexander
+      Hart, Mr. Henry: Stone, Mr. Edward
+      Hart, Mrs. Benjamin (Esther Ada Bloomfield): Carter, Mrs. Theodore (Eleanor Sophia Greenwood)
+      Hassab, Mr. Hammad: Al-Masri, Mr. Kareem
+      Hassan, Mr. Houssein G N: Mr. Karim Fadel M
+      Hawksford, Mr. Walter James: Eagleton, Mr. Henry Charles
+      Hays, Miss. Margaret Bechstein: Barnes, Miss. Eleanor Steinway
+      Hays, Mrs. Charles Melville (Clara Jennings Gregg): Barnes, Mrs. Edward Harrison (Eleanor Hamilton Grey)
+      Healy, Miss. Hanora "Nora": O'Reilly, Miss. Siobhan "Siobh"
+      Hedman, Mr. Oskar Arvid: Lindberg, Mr. Emil Gustav
+      Hegarty, Miss. Hanora "Nora": O'Sullivan, Miss. Siobhan "Siobh"
+      Heikkinen, Miss. Laina: Korhonen, Miss. Sari
+      Heininen, Miss. Wendla Maria: Korhonen, Miss. Aino Elina
+      Hendekovic, Mr. Ignjac: "Mr. Dragan Petrovi"
+      Henry, Miss. Delia: Edward, Miss. Clara
+      Herman, Miss. Alice: Wolfgang, Miss. Clara
+      Herman, Mrs. Samuel (Jane Laver): Mrs. Samuel (Eleanor Rigby)
+      'Hewlett, Mrs. (Mary D Kingcome) ': Bramwell, Mrs. (Elizabeth H. Fairchild)
+      Hickman, Mr. Leonard Mark: Barnes, Mr. Edward James
+      Hickman, Mr. Lewis: Barnes, Mr. Oliver
+      Hickman, Mr. Stanley George: Baxter, Mr. Oliver Henry
+      Hippach, Miss. Jean Gertrude: Waldstein, Miss. Clara Beatrice
+      Hippach, Mrs. Louis Albert (Ida Sophia Fischer): Waldner, Mrs. Johann Heinrich (Elsa Margarethe Schmidt)
+      Hirvonen, Miss. Hildur E: Korhonen, Miss. Helmi A.
+      Hocking, Mr. Richard George: Thornley, Mr. Edward James
+      Hocking, Mrs. Elizabeth (Eliza Needs): Bramwell, Mrs. Margaret (Maggie Wells)
+      Hodges, Mr. Henry Price: Barnes, Mr. Edward Grant
+      Hogeboom, Mrs. John C (Anna Andrews): VanDyke, Mrs. Henry T (Evelyn Emerson)
+      Hold, Mr. Stephen: Mr. Alexander
+      Holm, Mr. John Fredrik Alexander: Lindberg, Mr. Erik Gustav Wilhelm
+      Holverson, Mr. Alexander Oskar: Lindberg, Mr. Erik Gustav
+      Holverson, Mrs. Alexander Oskar (Mary Aline Towner): Lindberg, Mrs. Henrik Elias (Anna Karin Lindholm)
+      Homer, Mr. Harry ("Mr E Haven"): Mr. Albert ("Mr. A. Sanctuary")
+      Honkanen, Miss. Eliina: "M\xE4kinen, Miss. Aino"
+      Hood, Mr. Ambrose Jr: Thorn, Mr. Benedict Jr
+      Horgan, Mr. John: McCarthy, Mr. Liam
+      Hosono, Mr. Masabumi: Suzuki, Mr. Takahiro
+      Hoyt, Mr. Frederick Maxfield: Carter, Mr. Theodore Harrison
+      Hoyt, Mr. William Fisher: Mr. Charles Bennett
+      Hoyt, Mrs. Frederick Maxfield (Jane Anne Forby): Mrs. Theodore Windham (Elizabeth Mary Harrow)
+      Humblen, Mr. Adolf Mathias Nicolai Olsen: Mr. Erik Gustav Henrik Lundberg
+      Hunt, Mr. George Henry: Chase, Mr. Edward William
+      Ibrahim Shawah, Mr. Yousseff: Ahmed Mansour, Mr. Tarek
+      Icard, Miss. Amelie: Leroux, Miss. Eloise
+      Ilett, Miss. Bertha: Blythe, Miss. Agatha
+      Ilmakangas, Miss. Pieta Sofia: Lumijoki, Miss. Aino Katriina
+      Isham, Miss. Ann Elizabeth: Worthington, Miss. Clara Margaret
+      Ivanoff, Mr. Kanio: Petrov, Mr. Dimitri
+      Jacobsohn, Mr. Sidney Samuel: Goldberg, Mr. Isaac Benjamin
+      Jacobsohn, Mrs. Sidney Samuel (Amy Frances Christy): Hoffman, Mrs. Oliver Henry (Eva Grace Beckett)
+      Jalsevac, Mr. Ivan: Dragovic, Mr. Luka
+      Jansson, Mr. Carl Olof: Lindberg, Mr. Erik Gustav
+      Jardin, Mr. Jose Neto: Flores, Mr. Carlos Filho
+      Jarvis, Mr. John Denzil: Baxter, Mr. Henry Archibald
+      Jenkin, Mr. Stephen Curnow: Boskenna, Mr. Thomas Penrose
+      Jensen, Mr. Hans Peder: Larsen, Mr. Erik Torben
+      Jensen, Mr. Niels Peder: Larsen, Mr. Erik Torben
+      Jensen, Mr. Svend Lauritz: Andersen, Mr. Erik Magnus
+      Jermyn, Miss. Annie: Crawford, Miss. Eliza
+      Jerwan, Mrs. Amin S (Marie Marthe Thuillard): Mrs. Amin S. Al-Rashid (Laila Soraya Fadel)
+      Johannesen-Bratthammer, Mr. Bernt: Andersen-Fjell, Mr. Magnus
+      Johanson, Mr. Jakob Alfred: Lindberg, Mr. Erik Gustav
+      Johansson, Mr. Erik: Lindberg, Mr. Lars
+      Johansson, Mr. Gustaf Joel: Lindberg, Mr. Erik Anton
+      Johansson, Mr. Karl Johan: Lindberg, Mr. Erik Gustav
+      Johnson, Master. Harold Theodor: Smith, Master. Edward Charles
+      Johnson, Miss. Eleanor Ileen: Thompson, Miss. Charlotte Ivy
+      Johnson, Mr. Alfred: Smith, Mr. Edward
+      Johnson, Mr. Malkolm Joackim: Anderson, Mr. Henrik Gustav
+      Johnson, Mr. William Cahoone Jr: Smith, Mr. Edward Harrington III
+      Johnson, Mrs. Oscar W (Elisabeth Vilhelmina Berg): Smith, Mrs. Henry T (Charlotte Wilhelmina Lund)
+      Johnston, Miss. Catherine Helen "Carrie": Harrington, Miss. Elizabeth Anne "Lizzie"
+      Johnston, Mr. Andrew G: Harrington, Mr. Charles E.
+      Jonkoff, Mr. Lalio: Petrov, Mr. Dimitri
+      Jonsson, Mr. Carl: Svensson, Mr. Erik
+      Jussila, Miss. Katriina: Korhonen, Miss. Liisa
+      Jussila, Miss. Mari Aina: Korhonen, Miss. Liisa Emilia
+      Jussila, Mr. Eiriik: Korhonen, Mr. Mikael
+      Kallio, Mr. Nikolai Erland: Laine, Mr. Mikael Juhani
+      Kalvik, Mr. Johannes Halvorsen: Lindberg, Mr. Erik Andersen
+      Kantor, Mr. Sinai: Berkowitz, Mr. Eitan
+      Kantor, Mrs. Sinai (Miriam Sternin): Rosenberg, Mrs. Leah (Rachel Goldstein)
+      Karaic, Mr. Milan: "Dragovi, Mr. Luka"
+      Karlsson, Mr. Nils August: Lindberg, Mr. Erik Johan
+      Karun, Miss. Manca: Arjun, Miss. Meera
+      Kassem, Mr. Fared: Almasri, Mr. Tarek
+      Keane, Miss. Nora A: O'Reilly, Miss. Fiona E.
+      Keane, Mr. Andrew "Andy": Bennett, Mr. Christopher "Chris"
+      Keefe, Mr. Arthur: Bennett, Mr. Edward
+      Kelly, Miss. Anna Katherine "Annie Kate": Madison, Miss. Emily Elizabeth "Emmy Beth"
+      Kelly, Miss. Mary: Anderson, Miss. Elizabeth
+      Kelly, Mr. James: Baxter, Mr. William
+      Kelly, Mrs. Florence "Fannie": Mrs. Margaret "Maggie"
+      Kent, Mr. Edward Austin: Bennett, Mr. Charles Henry
+      Kenyon, Mrs. Frederick R (Marion): Harrington, Mrs. Theodore J (Eleanor)
+      Kiernan, Mr. Philip: Donnelly, Mr. Liam
+      Kilgannon, Mr. Thomas J: McAllister, Mr. Patrick F.
+      Kimball, Mr. Edwin Nelson Jr: Harrington, Mr. Theodore James Jr.
+      Kink, Mr. Vincenz: Vogel, Mr. Friedrich
+      Kink-Heilmann, Miss. Luise Gretchen: Schwarz-Bauer, Miss. Clara Frieda
+      Kirkland, Rev. Charles Leonard: Bramwell, Rev. Edward Theodore
+      Klaber, Mr. Herman: Schmidt, Mr. Friedrich
+      Klasen, Mr. Klas Albin: Lindberg, Mr. Lars Erik
+      Knight, Mr. Robert J: Knight, Mr. Edward T.
+      Kraeff, Mr. Theodor: Schultz, Mr. Friedrich
+      Kvillner, Mr. Johan Henrik Johannesson: Sundberg, Mr. Erik Gustav Gustafsson
+      Lahoud, Mr. Sarkis: Mansour, Mr. Karim
+      Lahtinen, Mrs. William (Anna Sylfven): Korhonen, Mrs. Henrik (Eeva Virtanen)
+      Laitinen, Miss. Kristina Sofia: Korhonen, Miss. Anna Liisa
+      Laleff, Mr. Kristo: Petrov, Mr. Ivan
+      Lam, Mr. Ali: Chen, Mr. Wei
+      Lam, Mr. Len: Chan, Mr. Lei
+      Landergren, Miss. Aurora Adelia: Sundberg, Miss. Linnea Elvira
+      Lang, Mr. Fang: Zhang, Mr. Wei
+      Laroche, Miss. Simonne Marie Anne Andree: Dubois, Miss. Claudette Elise Margot Camille
+      Laroche, Mr. Joseph Philippe Lemercier: Dubois, Mr. Henri Alexandre Beaumont
+      Laroche, Mrs. Joseph (Juliette Marie Louise Lafargue): Dubois, Mrs. Henri (Claudette Anne Sophie Moreau)
+      Larsson, Mr. August Viktor: Svensson, Mr. Erik Gustav
+      Larsson, Mr. Bengt Edvin: Svensson, Mr. Nils Johan
+      LeRoy, Miss. Bertha: Mr. Jasper, Miss. Eloise
+      Leader, Dr. Alice (Farnham): Leader, Dr. Elizabeth (Harrow)
+      Leeni, Mr. Fahim ("Philip Zenni"): Mr. Tarek ("Elias Karam").
+      Lefebre, Master. Henry Forbes: Dubois, Master. Pierre Montclair
+      Lefebre, Miss. Ida: Dubois, Miss. Eloise
+      Lefebre, Miss. Jeannie: Dubois, Miss. Claudette
+      Lefebre, Miss. Mathilde: Dubois, Miss. Eloise
+      Lehmann, Miss. Bertha: Schmidt, Miss. Clara
+      Leinonen, Mr. Antti Gustaf: Korhonen, Mr. Mikko Juhani
+      Leitch, Miss. Jessie Wills: Baxter, Miss. Eliza Grey
+      Lemberopolous, Mr. Peter L: Papadopoulos, Mr. Nikos G.
+      Lemore, Mrs. (Amelia Milley): Hastings, Mrs. (Eleanor Rigby)
+      Lennon, Mr. Denis: Harrison, Mr. Arthur
+      Leonard, Mr. Lionel: Barnaby, Mr. Benedict
+      Lester, Mr. James: Baxter, Mr. William
+      Lesurer, Mr. Gustave J: Montclair, Mr. Henri L.
+      Levy, Mr. Rene Jacques: Dubois, Mr. Henri Louis
+      Lewy, Mr. Ervin G: Mr. Tobias K.
+      Leyson, Mr. Robert William Norman: Harrington, Mr. Charles Edward Francis
+      Lievens, Mr. Rene Aime: Dubois, Mr. Henri Luc
+      Lindahl, Miss. Agda Thorilda Viktoria: Svensson, Miss. Elsa Linnea Ingrid
+      Lindblom, Miss. Augusta Charlotta: Sundberg, Miss. Emilia Josefina
+      Lindell, Mr. Edvard Bengtsson: Mr. Gustav Eriksson
+      Lindqvist, Mr. Eino William: "Sundstr\xF6m, Mr. Lars Johan"
+      Lines, Miss. Mary Conover: Miss. Elizabeth Marlowe
+      Ling, Mr. Lee: Chen, Mr. Wang
+      Lobb, Mr. William Arthur: Hale, Mr. Edward Charles
+      Lobb, Mrs. William Arthur (Cordelia K Stanlick): Hale, Mrs. Edward Charles (Eleanor J. Marwood)
+      Long, Mr. Milton Clyde: Woods, Mr. Arthur James
+      Longley, Miss. Gretchen Fiske: Harrington, Miss. Eleanor Smythe
+      Louch, Mrs. Charles Alexander (Alice Adelaide Slow): Bennet, Mrs. Henry William (Eleanor Elizabeth Swift)
+      Lovell, Mr. John Hall ("Henry"): Baxter, Mr. Charles Green ("Charlie")
+      Lulic, Mr. Nikola: Vukovic, Mr. Marko
+      Lundahl, Mr. Johan Svensson: Sundberg, Mr. Erik Gustafsson
+      Lurette, Miss. Elise: Mademoiselle Claudette Dubois
+      Mack, Mrs. (Mary): Carter, Mrs. (Elizabeth)
+      Madigan, Miss. Margaret "Maggie": O'Reilly, Miss. Moira "Molly"
+      Madill, Miss. Georgette Alexandra: Bennett, Miss. Henrietta Louise
+      Madsen, Mr. Fridtjof Arne: Jensen, Mr. Soren Emil
+      Maenpaa, Mr. Matti Alexanteri: Koskinen, Mr. Mikko Juhani
+      Maioni, Miss. Roberta: Bianchi, Miss. Lucia
+      Maisner, Mr. Simon: Bauer, Mr. Felix
+      Mallet, Master. Andre: Percival, Master. Henri
+      Mallet, Mr. Albert: Hammer, Mr. Edward
+      Mamee, Mr. Hanna: Mr. Elias
+      Mangan, Miss. Mary: Cleary, Miss. Fiona
+      Mannion, Miss. Margareth: Donnelly, Miss. Fiona
+      Marechal, Mr. Pierre: Dubois, Mr. Henri
+      Markoff, Mr. Marin: Petrov, Mr. Dimitar
+      Markun, Mr. Johann: Schmidt, Mr. Friedrich
+      Marvin, Mr. Daniel Warner: Mr. Alexander Hamilton
+      Masselmani, Mrs. Fatima: Al-Hassan, Mrs. Amira
+      Matthews, Mr. William John: Harrington, Mr. Edward Charles
+      Mayne, Mlle. Berthe Antonine ("Mrs de Villiers"): Leroux, Mlle. Clodie Celestine ("Mme Dubois")
+      McCarthy, Mr. Timothy J: O'Reilly, Mr. Patrick F.
+      McCormack, Mr. Thomas Joseph: O'Reilly, Mr. Patrick Sean
+      McCoy, Miss. Agnes: Sullivan, Miss. Bridget
+      McCoy, Mr. Bernard: O'Reilly, Mr. Seamus
+      McDermott, Miss. Brigdet Delia: O'Sullivan, Miss. Fiona Maeve
+      McEvoy, Mr. Michael: O'Reilly, Mr. Patrick
+      McGough, Mr. James Robert: O'Reilly, Mr. Liam Patrick
+      McGovern, Miss. Mary: O'Connor, Miss. Fiona
+      McGowan, Miss. Anna "Annie": O'Reilly, Miss. Fiona "Fifi"
+      McKane, Mr. Peter David: McGregor, Mr. Ian Alexander
+      McMahon, Mr. Martin: O'Reilly, Mr. Sean
+      McNamee, Mr. Neal: O'Reilly, Mr. Sean
+      Meanwell, Miss. (Marion Ogden): Fairheart, Miss. (Eleanor Ashford)
+      Meek, Mrs. Thomas (Annie Louise Rowley): Gentle, Mrs. Edward (Clara Elizabeth Marlow)
+      Mellinger, Miss. Madeleine Violet: Bennett, Miss. Charlotte Rose
+      Mellinger, Mrs. (Elizabeth Anne Maidment): Harrington, Mrs. (Victoria Grace Pennington)
+      Mellors, Mr. William John: Barnes, Mr. Edward Charles
+      Meo, Mr. Alfonzo: Mr. Giovanni Bianchi
+      Mernagh, Mr. Robert: O'Sullivan, Mr. Liam
+      Meyer, Mr. August: Schmidt, Mr. Friedrich
+      Meyer, Mr. Edgar Joseph: Bauer, Mr. Friedrich Wilhelm
+      Meyer, Mrs. Edgar Joseph (Leila Saks): Steinberg, Mrs. Isaac David (Hannah Rosenthal)
+      Millet, Mr. Francis Davis: Barley, Mr. Edward Harrison
+      Milling, Mr. Jacob Christian: Baker, Mr. Ethan Alexander
+      Minahan, Dr. William Edward: Dr. Johnathan Charles O'Reilly
+      Minahan, Miss. Daisy E: O'Reilly, Miss. Fiona C.
+      Mineff, Mr. Ivan: Petrov, Mr. Alexei
+      Mionoff, Mr. Stoytcho: Draganov, Mr. Dimitar
+      Mitchell, Mr. Henry Michael: Carter, Mr. Edward James
+      Mitkoff, Mr. Mito: Draganov, Mr. Dimitar
+      Mockler, Miss. Helen Mary "Ellie": Baxter, Miss. Fiona Jane "Fifi"
+      Moen, Mr. Sigurd Hansen: Hagen, Mr. Erik Larsen
+      Molson, Mr. Harry Markland: Baxter, Mr. Edward Greenwood
+      Montvila, Rev. Juozas: Kazlauskas, Rev. Petras
+      Moor, Master. Meier: Moss, Master. Moeller
+      Moor, Mrs. (Beila): Thorn, Mrs. (Evelina)
+      Moore, Mr. Leonard Charles: Smith, Mr. Edward James
+      Moran, Miss. Bertha: Dunbar, Miss. Agnes
+      Moran, Mr. Daniel J: Brennan, Mr. Liam P
+      Moran, Mr. James: Bennett, Mr. William
+      Moraweck, Dr. Ernest: Dr. Friedrich Steinberg
+      Morley, Mr. Henry Samuel ("Mr Henry Marshall"): Barnes, Mr. Edward James ("Mr. Edward Thompson")
+      Morley, Mr. William: Bramwell, Mr. Edward
+      Morrow, Mr. Thomas Rowan: Hawthorne, Mr. Edward Birch
+      Moss, Mr. Albert Johan: Thorn, Mr. Edward Henry
+      Moubarek, Master. Gerios: Makram, Master. Fadi
+      Moubarek, Master. Halim Gonios ("William George"): Youssef, Master. Tarek Fadel ("Edward Charles")
+      Moussa, Mrs. (Mantoura Boulos): Youssef, Mrs. (Soraya Fares)
+      Moutal, Mr. Rahamin Haim: Shapira, Mr. Yonatan Levi
+      Mudd, Mr. Thomas Charles: Clayton, Mr. Edward James
+      Mullens, Miss. Katherine "Katie": Bennett, Miss. Elizabeth "Lizzie"
+      Murdlin, Mr. Joseph: Bramwell, Mr. Edward
+      Murphy, Miss. Katherine "Kate": O'Reilly, Miss. Fiona "Faye"
+      Murphy, Miss. Margaret Jane: O'Reilly, Miss. Fiona Mae
+      Myhrman, Mr. Pehr Fabian Oliver Malkolm: Lindberg, Mr. Nils Henrik Gustav Emil
+      Naidenoff, Mr. Penko: Draganov, Mr. Dimitar
+      Najib, Miss. Adele Kiamie "Jane": Fares, Miss. Laila Naderi "Lina"
+      Nakid, Miss. Maria ("Mary"): Kazan, Miss. Elena ("Lena")
+      Nakid, Mr. Sahid: Mr. Jamal Farid
+      Nankoff, Mr. Minko: Petrov, Mr. Ivan
+      Nasser, Mr. Nicholas: Al-Sayed, Mr. Alexander
+      Nasser, Mrs. Nicholas (Adele Achem): Almasri, Mrs. Karim (Layla Farid)
+      Natsch, Mr. Charles H: Wolcott, Mr. Edward J.
+      Navratil, Master. Edmond Roger: Kovac, Master. Lukas Josef
+      Navratil, Master. Michel M: Kovac, Master. Lukas J.
+      Navratil, Mr. Michel ("Louis M Hoffman"): Kovac, Mr. Josef ("Jan K Novak")
+      Nenkoff, Mr. Christo: Petrov, Mr. Ivan
+      Newell, Miss. Madeleine: Baxter, Miss. Charlotte
+      Newell, Miss. Marjorie: Baxter, Miss. Eleanor
+      Newell, Mr. Arthur Webster: Harrington, Mr. Charles Montgomery
+      Newsom, Miss. Helen Monypeny: Harrington, Miss. Clara Pennington
+      Nicholls, Mr. Joseph Charles: Harrington, Mr. Edward James
+      Nicholson, Mr. Arthur Ernest: Harrington, Mr. Charles William
+      Nicola-Yarred, Master. Elias: Alexander-Tobias, Master. Julian
+      Nicola-Yarred, Miss. Jamila: Sophia-Zara, Miss. Laila
+      Nilsson, Miss. Helmina Josefina: Svensson, Miss. Elvira Linnea
+      Nirva, Mr. Iisakki Antino Aijo: Mr. Eemeli Veikko Kalevi
+      Niskanen, Mr. Juha: Korhonen, Mr. Mikko
+      Norman, Mr. Robert Douglas: Harrison, Mr. William Arthur
+      Nosworthy, Mr. Richard Cater: Fairfield, Mr. Edward Barton
+      Novel, Mr. Mansouer: Novel, Mr. Al-Sabah
+      Nye, Mrs. (Elizabeth Ramell): Blythe, Mrs. (Margaret Haversham)
+      Nysten, Miss. Anna Sofia: Lindberg, Miss. Elsa Linnea
+      Nysveen, Mr. Johan Hansen: Haugland, Mr. Erik Larsen
+      O'Brien, Mr. Thomas: Sullivan, Mr. Patrick
+      O'Brien, Mr. Timothy: Sullivan, Mr. Patrick
+      O'Brien, Mrs. Thomas (Johanna "Hannah" Godfrey): O'Reilly, Mrs. Patrick (Fiona "Fia" Sullivan)
+      O'Connell, Mr. Patrick D: O'Reilly, Mr. Sean P.
+      O'Connor, Mr. Maurice: Fitzgerald, Mr. Liam
+      O'Driscoll, Miss. Bridget: O'Reilly, Miss. Siobhan
+      O'Dwyer, Miss. Ellen "Nellie": O'Reilly, Miss. Fiona "Fifi"
+      O'Leary, Miss. Hanora "Norah": O'Sullivan, Miss. Fiona "Fia"
+      O'Sullivan, Miss. Bridget Mary: O'Reilly, Miss. Fiona Kathleen
+      Odahl, Mr. Nils Martin: Lindberg, Mr. Erik Johan
+      Ohman, Miss. Velin: Ohman, Miss. Sariel
+      Olsen, Mr. Henry Margido: Jensen, Mr. Lars Frederik
+      Olsen, Mr. Karl Siegwart Andreas: Jensen, Mr. Erik Magnus Johan
+      Olsen, Mr. Ole Martin: Jensen, Mr. Erik Andreas
+      Olsson, Miss. Elina: Svensson, Miss. Linnea
+      Olsson, Mr. Nils Johan Goransson: Lindberg, Mr. Erik Axel Svensson
+      Olsvigen, Mr. Thor Anderson: Haldorsen, Mr. Erik Johansen
+      Oreskovic, Miss. Marija: Pavlovic, Miss. Ana
+      Oreskovic, Mr. Luka: Pavlovic, Mr. Ivan
+      Osen, Mr. Olaf Elon: Hansen, Mr. Sven Magnus
+      Osman, Mrs. Mara: Kaya, Mrs. Leyla
+      Ostby, Mr. Engelhart Cornelius: Hagen, Mr. Soren Magnus
+      Otter, Mr. Richard: Beaver, Mr. Edward
+      Padro y Manent, Mr. Julian: Garcia y Vega, Mr. Alejandro
+      Pain, Dr. Alfred: Dr. Victor Grief
+      Palsson, Master. Gosta Leonard: Svensson, Master. Erik Gustav
+      Palsson, Miss. Stina Viola: Svensson, Miss. Elsa Linnea
+      Palsson, Miss. Torborg Danira: Svensson, Miss. Linnea Elvira
+      Palsson, Mrs. Nils (Alma Cornelia Berglund): Svensson, Mrs. Lars (Elsa Linnea Johansson)
+      Panula, Master. Eino Viljami: Korhonen, Master. Mikko Aleksi
+      Panula, Master. Juha Niilo: Korhonen, Master. Mikko Eemeli
+      Panula, Master. Urho Abraham: Korhonen, Master. Eino Benjamin
+      Panula, Mr. Ernesti Arvid: Korhonen, Mr. Mikael Juhani
+      Panula, Mr. Jaako Arnold: Korhonen, Mr. Mikko Elias
+      Panula, Mrs. Juha (Maria Emilia Ojala): Korhonen, Mrs. Mikko (Anna Liisa Virtanen)
+      Parkes, Mr. Francis "Frank": Barnes, Mr. Edward "Eddie"
+      Parr, Mr. William Henry Marsh: Barton, Mr. Edward James Field
+      Parrish, Mrs. (Lutie Davis): Bennett, Mrs. (Clara Wilson)
+      Partner, Mr. Austen: Partner, Mr. Bront
+      Pasic, Mr. Jakob: Vukovic, Mr. Luka
+      Patchett, Mr. George: Harrington, Mr. Edward
+      Paulner, Mr. Uscher: Wolff, Mr. Henrik
+      Pavlovic, Mr. Stefo: Nikolic, Mr. Luka
+      Pears, Mr. Thomas Clinton: Apples, Mr. Edward Harrison
+      Pears, Mrs. Thomas (Edith Wearne): Apples, Mrs. Henry (Clara Stone)
+      Peduzzi, Mr. Joseph: Bianchi, Mr. Marco
+      Pekoniemi, Mr. Edvard: Hirvonen, Mr. Mikael
+      Penasco y Castellana, Mr. Victor de Satode: Montoya y Alvarado, Mr. Fernando de Aragon
+      Penasco y Castellana, Mrs. Victor de Satode (Maria Josefa Perez de Soto y Vallejo): Montejo y Alvarado, Mrs. Fernando de Aragon (Isabella Clara Ramirez de Mendoza y Carrillo)
+      Pengelly, Mr. Frederick William: Tremayne, Mr. Edward Charles
+      Perkin, Mr. John Henry: Baxter, Mr. William George
+      Pernot, Mr. Rene: Leroux, Mr. Henri
+      Perreault, Miss. Anne: Dubois, Miss. Marie
+      Persson, Mr. Ernst Ulrik: Lindberg, Mr. Nils Johan
+      Peter, Miss. Anna: Paul, Miss. Sofia
+      Peter, Mrs. Catherine (Catherine Rizk): Paul, Mrs. Elizabeth (Elizabeth Farah)
+      Peters, Miss. Katie: Thompson, Miss. Emily
+      Petranec, Miss. Matilda: Kovacek, Miss. Elizabeta
+      Petroff, Mr. Nedelio: Ivanov, Mr. Dimitar
+      Petroff, Mr. Pastcho ("Pentcho"): Ivanov, Mr. Dimitar ("Dimo")
+      Petterson, Mr. Johan Emil: Lindberg, Mr. Karl Gustav
+      Pettersson, Miss. Ellen Natalia: Lindberg, Miss. Anna Karolina
+      Peuchen, Major. Arthur Godfrey: Hawthorne, Major. Edward Langley
+      Phillips, Miss. Kate Florence ("Mrs Kate Louise Phillips Marshall"): Bennett, Miss. Emily Clara ("Mrs. Emily Victoria Bennett Collins")
+      Pickard, Mr. Berk (Berk Trembisky): Harrington, Mr. Julian (Julian Greenfield)
+      Pinsky, Mrs. (Rosa): Kaplan, Mrs. (Leah)
+      Plotcharsky, Mr. Vasil: Kovalev, Mr. Dmitri
+      Ponesell, Mr. Martin: Cromwell, Mr. Edward
+      Porter, Mr. Walter Chamberlain: Carter, Mr. Henry Fairbanks
+      Potter, Mrs. Thomas Jr (Lily Alexenia Wilson): Bennett, Mrs. Edward Jr (Rose Arabella Taylor)
+      Quick, Miss. Phyllis May: Miss. Daphne Rose
+      Quick, Mrs. Frederick Charles (Jane Richards): Mrs. Alexander James (Emily Thompson)
+      Radeff, Mr. Alexander: Petrov, Mr. Dimitri
+      Razi, Mr. Raihed: Mr. Ali Zaman
+      Reed, Mr. James George: Thorn, Mr. William Henry
+      Reeves, Mr. David: Hawkins, Mr. Edward
+      Rekic, Mr. Tido: Vukic, Mr. Luka
+      Renouf, Mr. Peter Henry: Lefebvre, Mr. Louis Charles
+      Renouf, Mrs. Peter Henry (Lillian Jefferys): Lefebvre, Mrs. Claude Martin (Sophie Dubois)
+      Reuchlin, Jonkheer. John George: Van Houten, Jonkheer. Pieter Willem
+      Reynaldo, Ms. Encarnacion: Rodrigo, Ms. Esperanza
+      Rice, Master. Arthur: Wheatley, Master. Edward
+      Rice, Master. Eric: Wheatley, Master. Oliver
+      Rice, Master. Eugene: Wheatley, Master. Oliver
+      Rice, Master. George Hugh: Wheatley, Master. Edward James
+      Rice, Mrs. William (Margaret Norton): Wheat, Mrs. Edward (Elizabeth Harrow)
+      Richard, Mr. Emile: Charles, Mr. Henri
+      Richards, Master. George Sibley: Harrington, Master. Edward Marlow
+      Richards, Master. William Rowe: Hawkins, Master. Edward Stone
+      Richards, Mrs. Sidney (Emily Hocking): Thompson, Mrs. Oliver (Clara Pennington)
+      Ridsdale, Miss. Lucy: Hargreaves, Miss. Emily
+      Ringhini, Mr. Sante: Bianchi, Mr. Marco
+      Rintamaki, Mr. Matti: Korhonen, Mr. Mikko
+      Risien, Mr. Samuel Beard: Merrick, Mr. Oliver Thorne
+      Robbins, Mr. Victor: Hawkins, Mr. Edward
+      Robert, Mrs. Edward Scott (Elisabeth Walton McMillan): Charles, Mrs. William Carter (Margaret Evelyn Sinclair)
+      Robins, Mrs. Alexander A (Grace Charity Laury): Hawthorne, Mrs. Nathaniel J (Evelyn Faith Harper)
+      Roebling, Mr. Washington Augustus II: Montgomery, Mr. Franklin Bartholomew II
+      Rogers, Mr. William John: Bennett, Mr. Edward Charles
+      Romaine, Mr. Charles Hallace ("Mr C Rolmane"): Dubois, Mr. Louis Moreau ("Mr. L Dubois")
+      Rommetvedt, Mr. Knud Paust: Haugen, Mr. Erik Solberg
+      Rood, Mr. Hugh Roscoe: Green, Mr. Edward Reginald
+      Rosblom, Mr. Viktor Richard: Lindberg, Mr. Gustav Erik
+      Rosblom, Mrs. Viktor (Helena Wilhelmina): Lindberg, Mrs. Erik (Johanna Elisabet)
+      Ross, Mr. John Hugo: Baxter, Mr. William Arthur
+      Rothes, the Countess. of (Lucy Noel Martha Dyer-Edwards): Eldridge, the Countess of (Eleanor Ivy Clara Hamilton-Smith)
+      Rothschild, Mrs. Martin (Elizabeth L. Barrett): Windsor, Mrs. Edward (Victoria H. Smythe)
+      Rouse, Mr. Richard Henry: Thornhill, Mr. Edward James
+      Rugg, Miss. Emily: Thorn, Miss. Clara
+      Rush, Mr. Alfred George John: Hastings, Mr. Edward William Henry
+      Ryan, Mr. Patrick: Connor, Mr. Liam
+      Ryerson, Miss. Emily Borie: Harrington, Miss. Clara Elise
+      Ryerson, Miss. Susan Parker "Suzette": Harrington, Miss. Emily Carter "Emmie"
+      Saad, Mr. Amin: Fahad, Mr. Kareem
+      Saad, Mr. Khalil: Fadi, Mr. Mahmoud
+      Saalfeld, Mr. Adolphe: Wolff, Mr. Friedrich
+      Sadlier, Mr. Matthew: Bramwell, Mr. Edward
+      Sage, Master. Thomas Henry: Thistle, Master. Edward George
+      Sage, Miss. Constance Gladys: Miss. Penelope Florence
+      Sage, Miss. Dorothy Edith "Dolly": Miss. Marigold Clara "Molly"
+      Sage, Miss. Stella Anna: Miss. Ivy Clara
+      Sage, Mr. Douglas Bullen: Mr. Alexander Hamilton
+      Sage, Mr. Frederick: Mr. Archibald Thorne
+      Sage, Mr. George John Jr: Mr. Alexander William Jr.
+      Sagesser, Mlle. Emma: Dubois, Mlle. Sophie
+      Salkjelsvik, Miss. Anna Kristine: Haugen, Miss. Emma Linnea
+      Salonen, Mr. Johan Werner: Virtanen, Mr. Mikko Aleksi
+      Samaan, Mr. Youssef: Mikhail, Mr. Karim
+      Sandstrom, Miss. Marguerite Rut: Lindberg, Miss. Elisabeth Ingrid
+      Sandstrom, Mrs. Hjalmar (Agnes Charlotta Bengtsson): Lindberg, Mrs. Erik (Elsa Kristina Svensson)
+      Saundercock, Mr. William Henry: Bramblewood, Mr. Edward Charles
+      Sawyer, Mr. Frederick Charles: Bennett, Mr. Edward James
+      Scanlan, Mr. James: Fairfield, Mr. William
+      Sdycoff, Mr. Todor: Vladinov, Mr. Ivan
+      Sedgwick, Mr. Charles Frederick Waddington: Bramwell, Mr. Edward Alexander Pennington
+      Serepeca, Miss. Augusta: Lavrenova, Miss. Anastasia
+      Seward, Mr. Frederic Kimber: Harrington, Mr. Edward Charles
+      Sharp, Mr. Percival James R: Blade, Mr. Archibald Henry S
+      Sheerlinck, Mr. Jan Baptist: Van Houten, Mr. Pieter Willem
+      Shellard, Mr. Frederick William: Bramwell, Mr. Edward Charles
+      Shelley, Mrs. William (Imanita Parrish Hall): Margaret, Mrs. Edward (Eleanor Whitfield Green)
+      Shorney, Mr. Charles Joseph: Bramwell, Mr. Edward William
+      Shutes, Miss. Elizabeth W: Bennet, Miss. Caroline P.
+      Silven, Miss. Lyyli Karoliina: Lumina, Miss. Aino Katriina
+      Silverthorne, Mr. Spencer Victor: Blackwood, Mr. Simon Vincent
+      Silvey, Mr. William Baird: Hawthorne, Mr. Edward Langston
+      Silvey, Mrs. William Baird (Alice Munger): Hartley, Mrs. Charles Dalton (Evelyn Archer)
+      Simmons, Mr. John: Harrison, Mr. Edward
+      Simonius-Blumer, Col. Oberst Alfons: Maximilian-Krause, Col. Oberst Friedrich
+      Sinkkonen, Miss. Anna: Hakala, Miss. Liisa
+      Sirayanian, Mr. Orsen: Vartanian, Mr. Levon
+      Sirota, Mr. Maurice: Kovacs, Mr. Istvan
+      Sivic, Mr. Husein: Mr. Emir Hadzic
+      Sivola, Mr. Antti Wilhelm: Korhonen, Mr. Jukka Mikael
+      Sjoblom, Miss. Anna Sofia: Lindberg, Miss. Elsa Linnea
+      Sjostedt, Mr. Ernst Adolf: Lindberg, Mr. Karl Johan
+      Skoog, Master. Harald: Lund, Master. Erik
+      Skoog, Master. Karl Thorsten: Lindberg, Master. Erik Gustav
+      Skoog, Miss. Mabel: Lindberg, Miss. Elsa
+      Skoog, Miss. Margit Elizabeth: Lindberg, Miss. Anna Karolina
+      Skoog, Mr. Wilhelm: Lindberg, Mr. Gustav
+      Skoog, Mrs. William (Anna Bernhardina Karlsson): Lindberg, Mrs. Johan (Elsa Margareta Svensson)
+      Slabenoff, Mr. Petco: Draganov, Mr. Ivan
+      Slayter, Miss. Hilda Mary: Baxter, Miss. Edith Clara
+      Slemen, Mr. Richard James: Barton, Mr. Edward Charles
+      Slocovski, Mr. Selman Francis: Kovacevic, Mr. Ivan Dimitri
+      Sloper, Mr. William Thompson: Baxter, Mr. Edward Harrison
+      Smart, Mr. John Montgomery: Wise, Mr. Edward Kensington
+      Smiljanic, Mr. Mile: Dragovic, Mr. Luka
+      Smith, Miss. Marion Elsie: Brown, Miss. Clara Beatrice
+      Smith, Mr. James Clinch: Brown, Mr. Edward Stone
+      Smith, Mr. Richard William: Brown, Mr. Edward James
+      Smith, Mr. Thomas: Brown, Mr. William
+      Sobey, Mr. Samuel James Hayden: Baxter, Mr. Oliver William Finn
+      Soholt, Mr. Peter Andreas Lauritz Andersen: Lindberg, Mr. Erik Johan Gustav Svensson
+      Somerton, Mr. Francis William: Harrington, Mr. Edward Charles
+      Spedden, Mrs. Frederic Oakley (Margaretta Corning Stone): Harrington, Mrs. Charles Edward (Elizabeth Greenwood Lane)
+      Spencer, Mrs. William Augustus (Marie Eugenie): Harrington, Mrs. Charles Theodore (Isabelle Louise)
+      Stahelin-Maeglin, Dr. Max: Bachmeier-Koenig, Dr. Felix
+      Staneff, Mr. Ivan: Petrov, Mr. Alexei
+      Stankovic, Mr. Ivan: Petrovic, Mr. Marko
+      Stanley, Miss. Amy Zillah Elsie: Montgomery, Miss. Clara Beatrice Ivy
+      Stanley, Mr. Edward Roland: Hawthorne, Mr. Charles Theodore
+      Stead, Mr. William Thomas: Bramwell, Mr. Edward James
+      Stephenson, Mrs. Walter Bertram (Martha Eustis): Harrington, Mrs. Charles Edward (Elizabeth Langley)
+      Stewart, Mr. Albert A: Montgomery, Mr. Charles C.
+      Stone, Mrs. George Nelson (Martha Evelyn): Rock, Mrs. James Alexander (Elizabeth Grace)
+      Stoytcheff, Mr. Ilia: Petrov, Mr. Dimitar
+      Strandberg, Miss. Ida Sofia: Lindgren, Miss. Elsa Linnea
+      Stranden, Mr. Juho:  Drake, Mr. Hugo
+      Strom, Miss. Telma Matilda: Storm, Miss. Elsa Linnea
+      Strom, Mrs. Wilhelm (Elna Matilda Persson): Lind, Mrs. Gustav (Karin Sofia Johansson)
+      Sunderland, Mr. Victor Francis: Brightwood, Mr. Edward Charles
+      Sundman, Mr. Johan Julian: Lindberg, Mr. Erik Gustav
+      Sutehall, Mr. Henry Jr: Bramwell, Mr. Edward III
+      Sutton, Mr. Frederick: Bramwell, Mr. Archibald
+      Svensson, Mr. Johan: Lindberg, Mr. Erik
+      Svensson, Mr. Olof: Lindberg, Mr. Erik
+      Swift, Mrs. Frederick Joel (Margaret Welles Barron): Hastings, Mrs. Edward James (Elizabeth Harrow Farnsworth)
+      Taussig, Miss. Ruth: Bauer, Miss. Hannah
+      Taussig, Mr. Emil: Moeller, Mr. Friedrich
+      Taussig, Mrs. Emil (Tillie Mandelbaum): Bauer, Mrs. Friedrich (Lena Goldstein)
+      Taylor, Mr. Elmer Zebley: Mr. Jasper Whitfield
+      Taylor, Mrs. Elmer Zebley (Juliet Cummins Wright): Mrs. Harrison Baxter (Eleanor Hastings Ford)
+      Thayer, Mr. John Borland: Caldwell, Mr. Henry Archibald
+      Thayer, Mr. John Borland Jr: Caldwell, Mr. William Mercer Jr.
+      Thayer, Mrs. John Borland (Marian Longstreth Morris): Caldwell, Mrs. Henry Fairchild (Eleanor Harrowgate Parker)
+      Theobald, Mr. Thomas Leonard: Wolfram, Mr. Edward Archibald
+      Thomas, Master. Assad Alexander: William, Master. Benedict Arthur
+      Thorne, Mrs. Gertrude Maybelle: Bramble, Mrs. Henrietta Eloise
+      Thorneycroft, Mr. Percival: Blackwood, Mr. Reginald
+      Thorneycroft, Mrs. Percival (Florence Kate White): Blackwood, Mrs. Reginald (Eleanor Jane Smith)
+      Tikkanen, Mr. Juho: Makkinen, Mr. Eero
+      Tobin, Mr. Roger: Hawthorne, Mr. Edward
+      Todoroff, Mr. Lalio: Draganov, Mr. Petar
+      Tomlin, Mr. Ernest Portage: Harrington, Mr. Arthur Bridgeway
+      Toomey, Miss. Ellen: O'Reilly, Miss. Fiona
+      Torber, Mr. Ernst William: Hansen, Mr. Lars Henrik
+      Tornquist, Mr. William Henry: Lindberg, Mr. Erik Johan
+      Toufik, Mr. Nakli: Mr. Jamal Fakhoury
+      Touma, Mrs. Darwis (Hanne Youssef Razi): Mrs. Laila Fadel (Samar Jamal Aziz)
+      Troupiansky, Mr. Moses Aaron: Kovalevsky, Mr. Lev David
+      Trout, Mrs. William H (Jessie L): Salmon, Mrs. Edward J (Maggie K)
+      Troutt, Miss. Edwina Celia "Winnie": Bramble, Miss. Penelope Clara "Penny"
+      Turcin, Mr. Stjepan: "Dragovi, Mr. Marko"
+      Turja, Miss. Anna Sofia: Lindberg, Miss. Elsa Maria
+      Turkula, Mrs. (Hedwig): Korhonen, Mrs. (Aino)
+      Turpin, Mr. William John Robert: Hawthorne, Mr. Edward Charles Henry
+      Turpin, Mrs. William John Robert (Dorothy Ann Wonnacott): Hargrave, Mrs. Charles Edward James (Margaret Ellen Penrose)
+      Uruchurtu, Don. Manuel E: Valenzuela, Don. Alejandro F
+      Van Impe, Miss. Catharina: Van der Meer, Miss. Elisabeth
+      Van Impe, Mr. Jean Baptiste: Duval, Mr. Henri Alexandre
+      Van Impe, Mrs. Jean Baptiste (Rosalie Paula Govaert): Van der Linden, Mrs. Henri Lucas (Marie Louise De Smet)
+      Van der hoef, Mr. Wyckoff: Van der Berg, Mr. Hendrik
+      Vande Velde, Mr. Johannes Joseph: Van der Berg, Mr. Pieter Hendrik
+      Vande Walle, Mr. Nestor Cyriel: De Clercq, Mr. Emiel Gustaaf
+      Vanden Steen, Mr. Leo Peter: Van der Berg, Mr. Hugo Pieter
+      Vander Cruyssen, Mr. Victor: Van der Linden, Mr. Vincent
+      Vander Planke, Miss. Augusta Maria: Van der Zee, Miss. Clara Johanna
+      Vander Planke, Mr. Leo Edmondus: Van der Linden, Mr. Hugo Cornelius
+      Vander Planke, Mrs. Julius (Emelia Maria Vandemoortele): Van der Linden, Mrs. Hendrik (Elena Margaretha Van den Broeck)
+      Vestrom, Miss. Hulda Amanda Adolfina: Lindgren, Miss. Elsa Linnea Karolina
+      Vovk, Mr. Janko: Kova, Mr. Marko
+      Waelens, Mr. Achille: De Clercq, Mr. Gustave
+      Walker, Mr. William Anderson: Carter, Mr. Edward Harrison
+      Ward, Miss. Anna: Bennett, Miss. Emily
+      Warren, Mrs. Frank Manley (Anna Sophia Atkinson): Mrs. Charles Henley (Eleanor Charlotte Braddock)
+      Watson, Mr. Ennis Hastings: Bennett, Mr. Oliver Pembroke
+      Watt, Mrs. James (Elizabeth "Bessie" Inglis Milne): Thomson, Mrs. Alexander (Margaret "Maggie" Campbell Scott)
+      Webber, Miss. Susan: Baxter, Miss. Emily
+      Webber, Mr. James: Harrison, Mr. Edward
+      Weir, Col. John: Bramley, Col. Edward
+      Weisz, Mrs. Leopold (Mathilde Francoise Pede): Schwarz, Mrs. Otto (Helene Marguerite Dubois)
+      Wells, Miss. Joan: Brooks, Miss. Clara
+      West, Miss. Constance Mirium: East, Miss. Felicity Clara
+      West, Mr. Edwy Arthur: East, Mr. Alden Charles
+      West, Mrs. Edwy Arthur (Ada Mary Worth): East, Mrs. Henry Charles (Eva Jane Value)
+      Wheadon, Mr. Edward H: Bramwell, Mr. Charles F.
+      White, Mr. Percival Wayland: Smith, Mr. Edward Harrington
+      White, Mr. Richard Frasar: Green, Mr. Edward Langley
+      Wick, Miss. Mary Natalie: Thorn, Miss. Elizabeth Clara
+      Wick, Mrs. George Dennick (Mary Hitchcock): Bramble, Mrs. Henry Pennington (Elizabeth Marwood)
+      Widegren, Mr. Carl/Charles Peter: Lindberg, Mr. Erik/Johan Gustav
+      Widener, Mr. Harry Elkins: Harrington, Mr. Edward Milton
+      Wiklund, Mr. Jakob Alfred: Lindberg, Mr. Erik Gustav
+      Wilhelms, Mr. Charles: Schmidt, Mr. Friedrich
+      Willey, Mr. Edward: Baxter, Mr. Charles
+      Williams, Mr. Charles Duane: Harrington, Mr. Edward James
+      Williams, Mr. Charles Eugene: Harrington, Mr. Edward Arthur
+      Williams, Mr. Howard Hugh "Harry": Smith, Mr. Edward Elliot "Eddie"
+      Williams, Mr. Leslie: Harrison, Mr. Oliver
+      Williams-Lambert, Mr. Fletcher Fellows: Harrington-Smith, Mr. Harrison Heath
+      Windelov, Mr. Einar: Lundberg, Mr. Sven
+      Wiseman, Mr. Phillippe: Goodman, Mr. Theodore
+      Woolner, Mr. Hugh: Bramwell, Mr. Edward
+      Wright, Mr. George: Smith, Mr. Edward
+      Yasbeck, Mr. Antoni: Alvarez, Mr. Eduardo
+      Yasbeck, Mrs. Antoni (Selini Alexander): Kostas, Mrs. Dimitri (Eleni Papadopoulos)
+      Young, Miss. Marie Grice: Young, Miss. Clara Belle
+      Youseff, Mr. Gerious: Yacoub, Mr. Mansour
+      Yousif, Mr. Wazli: Fadi, Mr. Hamdan
+      Yousseff, Mr. Gerious: Karim, Mr. Fadel
+      Yrois, Miss. Henriette ("Mrs Harbeck"): Lisette, Miss. Genevie ("Madame Dubois")
+      Zabour, Miss. Hileni: Mansour, Miss. Amira
+      Zabour, Miss. Thamine: Mansour, Miss. Farida
+      Zimmerman, Mr. Leo: Schneider, Mr. Otto
+      de Messemaeker, Mrs. Guillaume Joseph (Emma): de Vries, Mrs. Henri Lucas (Sophie)
+      de Mulder, Mr. Theodore: van Houten, Mr. Frederik
+      de Pelsmaeker, Mr. Alfons: van Houten, Mr. Pieter
+      del Carlo, Mr. Sebastiano: di Rossi, Mr. Matteo
+      van Billiard, Mr. Austin Blyler: van Houten, Mr. Jasper Beekman
+      van Melkebeke, Mr. Philemon: van Houten, Mr. Cornelius      
 
 transform: 
   - name: Age
     type: fillna
-    value: 0
+    value: 30
   - name: Age
     type: astype
     dtype: int
@@ -30,9 +931,11 @@ transform:
     type: add_normal_noise_and_round
     noise_std: 0.01
     digits: 2
-  - name: [Embarked, Cabin]
+  - name: Embarked
     type: fillna
     value: 'Unknown'
+  - name: Ticket
+    type: titanic_ticket_transform
 
 rename:
   PassengerId: Passenger ID
@@ -50,8 +953,8 @@ recode:
     0: "Not Survived"
     1: "Survived"
   Sex:
-    male: M
-    female: F
+    male: Man
+    female: Woman
   Embarked:
     C: Cherbourg
     Q: Queenstown
@@ -60,3 +963,6 @@ recode:
     1: First
     2: Second
     3: Third
+  Cabin:
+    NaN: Unknown
+  

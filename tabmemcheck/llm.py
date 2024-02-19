@@ -159,6 +159,71 @@ def openai_setup(model=None):
 
 
 #################################################################################################
+# Gemini (requires pip install google-generativeai)
+#################################################################################################
+
+
+@dataclass
+class GoogleGeminiLLM(LLM_Interface):
+    def __init__(self, model: str):
+        import google.generativeai as genai
+
+        self.model = genai.GenerativeModel(model)
+        self.chat_mode = True
+
+    def chat_completion(self, messages, temperature, max_tokens):
+        import google.generativeai as genai
+
+        # convert messages from OpenAI format to Gemini format
+        gemini_messages = []
+        for message in messages:
+            if message["role"] == "system":
+                continue
+            elif message["role"] == "user":
+                gemini_messages.append({"role": "user", "parts": [message["content"]]})
+            elif message["role"] == "assistant":
+                gemini_messages.append({"role": "model", "parts": [message["content"]]})
+            else:
+                raise ValueError("Unknown message role: {}".format(message["role"]))
+
+        # print(messages)
+        # print(gemini_messages)
+        # send messages to the model
+        response = self.model.generate_content(
+            gemini_messages,
+            generation_config=genai.types.GenerationConfig(
+                candidate_count=1, max_output_tokens=max_tokens, temperature=temperature
+            ),
+        )
+
+        # return response text
+        # print(response.prompt_feedback)
+        # print(response.parts)
+        try:
+            response = response.text
+        except:
+            print(f"Gemini: Invalid response with parts {response.parts}.")
+            response = ""
+        return response
+
+    def __repr__(self) -> str:
+        return f"{self.model}"
+
+
+def gemini_setup(model: str = None, api_key: str = None):
+    import google.generativeai as genai
+
+    genai.configure(
+        api_key=(
+            os.environ["GEMINI_API_KEY"] if "GEMINI_API_KEY" in os.environ else api_key
+        )
+    )
+    if model is not None:
+        return GoogleGeminiLLM(model)
+    return None
+
+
+#################################################################################################
 # huggingface transformers
 #################################################################################################
 
@@ -245,8 +310,8 @@ def log(messages, response, logfile):
     # logging of the raw response object (e.g. the full openai response)
     if logfile is None:
         if config.current_logging_task is not None:
-            logfile = f"{config.current_logging_task}/{config.current_logging_task}-{logging_task_index}.pkl"
-            logging_task_index += 1
+            logfile = f"{config.current_logging_task}/{config.current_logging_task}-{config.logging_task_index}.pkl"
+            config.logging_task_index += 1
     if logfile is not None:
         with open(f"chatlogs/{logfile}", "wb+") as f:
             pickle.dump((messages, response), f)
