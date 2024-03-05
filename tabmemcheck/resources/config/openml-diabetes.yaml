@@ -35,7 +35,7 @@ transform:
   - name: DiabetesPedigreeFunction
     type: add_normal_noise_and_round
     noise_std: 0.0025
-    digits: 3
+    digits: 2
     frozen_values: [0]
 
 recode:
