@@ -1,41 +1,58 @@
 target: Transported
 
 perturbations: 
+  - name: PassengerId
+    type: spaceship_titanic_passenger_id
+  - name: Cabin
+    type: spaceship_titanic_cabin
   - name: Age
     type: integer
-    size: 3
+    size: 1
+    frozen_values: [0, 1]
   - name: [RoomService, FoodCourt, ShoppingMall, Spa, VRDeck]
     type: integer
-    size: 10
-    frozen_values: [0]
-
-
-
+    size: 5
+    frozen_values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    
 transform: 
-  - name: [CapitalGain, CapitalLoss]
+  - name: Age
+    type: fillna
+    value: 30
+  - name: Age
+    type: astype
+    dtype: int
+  - name: [Destination,Cabin]
+    type: fillna
+    value: 'Unknown'
+  - name: [RoomService, FoodCourt, ShoppingMall, Spa, VRDeck]
     type: add_normal_noise_and_round
-    noise_std: 10
+    noise_std: 0.5
     digits: 2
-    frozen_values: [0]
+    frozen_values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  - name: Transported
+    type: astype
+    dtype: object
 
 rename:
+  PassengerId: PassengerID
+  HomePlanet: Home Planet
+  CryoSleep: Cryo Sleep
+  Cabin: Room
+  Destination: Destination
+  RoomService: RoomService
+  FoodCourt: FoodCourt
+  ShoppingMall: ShoppingMall
+  Spa: Spa
+  VRDeck: VRDeck
   Age: Age
-  Workclass: Type of employment
-  fnlwgt: Final weight in census
-  Education: Highest achieved level of education
-  EducationNum: Education in numerical form
-  MaritalStatus: Relationship Status
-  Occupation: Type of occupation
-  Relationship: What this individual is relative to others?
-  Race: Self-reported race
-  Gender: Self-reported gender
-  CapitalGain: Income from investment sources
-  CapitalLoss: Losses from investment sources
-  HoursPerWeek: Hours worked per week
-  NativeCountry: Country of origin
-  Income: Yearly Income
+  VIP: Very Important Person?
+  Name: Name
+  Transported: Transported
 
 recode:
-  Income:
-    <=50K: Less than 50K
-    ">50K": More than 50K
+  VIP:
+    0: "No"
+    1: "Yes"
+  Transported:
+    0: "No"
+    1: "Yes"

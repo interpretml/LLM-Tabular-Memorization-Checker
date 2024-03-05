@@ -3,10 +3,11 @@ target: Survived
 perturbations: 
   - name: PassengerId
     type: add
-    value: 1513
+    value: 1813
   - name: Age
     type: integer
-    size: 3
+    size: 1
+    frozen_values: [0,1]
   - name: Fare
     type: integer
     size: 500

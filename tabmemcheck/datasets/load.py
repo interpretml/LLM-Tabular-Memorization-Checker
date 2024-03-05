@@ -73,6 +73,8 @@ METHODS_REGISTER = {
     "titanic_last_digits_perturbation": titanic_last_digits_perturbation,
     "titanic_ticket_transform": titanic_ticket_transform,
     "titanic_name_transform": titanic_name_transform,
+    "spaceship_titanic_passenger_id": spaceship_titanic_passenger_id,
+    "spaceship_titanic_cabin": spaceship_titanic_cabin,
 }
 
 # "to_numeric": pd.to_numeric,
@@ -156,7 +158,7 @@ def check_perturbed_rows(df_original, df_perturbed):
     if df_common.empty:
         print("None of the perturbed rows appear in the original dataset.")
     else:
-        per_cent = 100.0 * df_common.shape[0] / df_perturbed.shape[0]
+        per_cent = 100.0 * df_common.shape[0] / df_original.shape[0]
         print(
             f"{df_common.shape[0]} perturbed row(s) appear in the original dataset (that is {per_cent:.2f}% of all perturbed rows)."
         )
@@ -173,7 +175,7 @@ def check_overlap(df_original, df_new):
         min_dist, _ = find_matches(df_original, row, strings_unequal)
         feature_distance.append(min_dist)
     print(
-        f"Avg. Number of Matching Features: {len(df_new.columns)-np.mean(feature_distance):.2f}"
+        f"Avg. Number of Matching Features: {len(df_new.columns)-np.mean(feature_distance):.2f} / {len(df_new.columns)}"
     )
 
 
@@ -202,6 +204,7 @@ def load_dataset(
     yaml_config: str = None,
     transform=DATASET_PLAIN,
     permute_columns=False,  # for perturbed transform
+    print_stats=False,
     seed=None,
 ):
     """Generic dataset loading function. Dataset tranformations are specified in a yaml configuration file."""
@@ -241,11 +244,16 @@ def load_dataset(
         )
 
     if transform == DATASET_PERTURBED:
-        # dataframe except last column
-        check_perturbed_rows(df_original, df_perturbed)
-        report_feature_variation(df_original.iloc[:, :-1], df_perturbed.iloc[:, :-1])
-        # select 100 random rows from df_perturbed
-        check_overlap(df_original.iloc[:, :-1], df_perturbed.iloc[:, :-1].sample(n=100))
+        if print_stats:
+            # dataframe except last column
+            check_perturbed_rows(df_original, df_perturbed)
+            report_feature_variation(
+                df_original.iloc[:, :-1], df_perturbed.iloc[:, :-1]
+            )
+            # select 100 random rows from df_perturbed
+            check_overlap(
+                df_original.iloc[:, :-1], df_perturbed.iloc[:, :-1].sample(n=100)
+            )
         return df_perturbed
 
     # task
@@ -262,7 +270,7 @@ def load_dataset(
             seed=rng,
         )
     if (
-        transform == DATASET_TASK
+        transform == DATASET_TASK and print_stats
     ):  # report feature variation before re-naming the features
         report_feature_variation(df_original.iloc[:, :-1], df_task.iloc[:, :-1])
     df_task = rename_and_recode(
@@ -278,9 +286,13 @@ def load_dataset(
 
     # convert categorical features to integers
     for feature in categorical_features:
-        df_task[feature] = to_categorical(
-            df_task[feature].values, random=True, seed=rng
-        )
+        # use pandas to convert to categorical
+        df_task[feature] = df_task[feature].astype("category").cat.codes
+        # then randomize the codes
+        unique_values = np.unique(df_task[feature].values)
+        unique_values = rng.permutation(unique_values)
+        mapping = {value: i for i, value in enumerate(unique_values)}
+        df_task[feature] = np.vectorize(mapping.get)(df_task[feature].values)
 
     # to all columns that are not categorical, apply the statistical transform
     for feature in df_task.columns:

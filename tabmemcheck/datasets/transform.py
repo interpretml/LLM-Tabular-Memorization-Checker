@@ -441,3 +441,28 @@ def titanic_ticket_transform(x: np.array, seed=None):
     # add 'No. '
     x = np.array(["No. " + s for s in x])
     return x
+
+
+def spaceship_titanic_passenger_id(x: np.array, seed=None):
+    # the id is of the format 0001_01.
+    # we take the first part and add 9793 to it
+    prefix = np.array([s.split("_")[0] for s in x])
+    suffix = np.array([s.split("_")[1] for s in x])
+    prefix = (prefix.astype(int) + 9793).astype(str)
+    x = [x + "_" + y for x, y in zip(prefix, suffix)]
+    return x
+
+
+def spaceship_titanic_cabin(x: np.array, seed=None):
+    # the cabin is of the format B/0/P
+    # we take the middle number and add 12
+    # we iteration over the array to filter out nan falues in the array
+    for idx in range(x.shape[0]):
+        item = x[idx]
+        # is item float nan?
+        if item != item:
+            continue
+        prefix, middle, suffix = item.split("/")
+        middle = int(middle) + 12
+        x[idx] = f"{prefix}/{middle}/{suffix}"
+    return x

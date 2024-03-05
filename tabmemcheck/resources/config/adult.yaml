@@ -1,19 +1,19 @@
 target: Income
 
 perturbations: 
-  - name: [Age, EducationNum]
+  - name: Age
     type: integer
-    size: 3
+    size: 1
   - name: fnlwgt
     type: integer
-    size: 100
+    size: 1000
   - name: [CapitalGain, CapitalLoss]
     type: integer
-    size: 100
+    size: 50
     frozen_values: [0]
   - name: HoursPerWeek
     type: swap
-    size: 3
+    size: 1
 
 transform: 
   - name: [CapitalGain, CapitalLoss]
@@ -28,7 +28,7 @@ rename:
   fnlwgt: Census Weight
   Education: Highest Education
   EducationNum: Education as number
-  MaritalStatus: Relationship
+  MaritalStatus: Married?
   Occupation: Work
   Relationship: Relationship
   Race: Self-reported race

@@ -1,0 +1,63 @@
+target: target
+
+perturbations: 
+  - name: [alcohol,alcalinity_of_ash]
+    type: integer
+    size: 10
+    scale: 0.01
+  - name: [alcalinity_of_ash]
+    type: round
+    decimals: 1
+  - name: [malic_acid,ash,total_phenols,flavanoids,nonflavanoid_phenols,proanthocyanins,color_intensity,hue,od280_od315_of_diluted_wines]
+    type: integer
+    size: 1
+    scale: 0.01
+  - name: [alcohol,malic_acid,ash,total_phenols,flavanoids,nonflavanoid_phenols,proanthocyanins,color_intensity,hue,od280_od315_of_diluted_wines]
+    type: round
+    decimals: 2
+  - name: magnesium
+    type: integer
+    size: 1
+  - name: proline
+    type: integer
+    size: 10
+
+transform: 
+  - name: [alcohol,alcalinity_of_ash,magnesium]
+    type: add_normal_noise_and_round
+    noise_std: 0.1
+    digits: 2
+  - name: [malic_acid,ash,total_phenols,flavanoids,nonflavanoid_phenols,proanthocyanins,color_intensity,hue,od280_od315_of_diluted_wines]
+    type: add_normal_noise_and_round
+    noise_std: 0.01
+    digits: 2
+  - name: magnesium
+    type: add_normal_noise_and_round
+    noise_std: 1
+    digits: 2
+  - name: proline
+    type: add_normal_noise_and_round
+    noise_std: 10
+    digits: 2
+
+rename:
+  alcohol: Alcohol
+  malic_acid: Malic Acid
+  ash: Ash
+  alcalinity_of_ash: Alcalinity of Ash
+  magnesium: Magnesium
+  total_phenols: Total Phenols
+  flavanoids: Flavanoids
+  nonflavanoid_phenols: Nonflavanoid Phenols
+  proanthocyanins: Proanthocyanins
+  color_intensity: Color Intensity
+  hue: Hue
+  od280_od315_of_diluted_wines: OD280/OD315 of Diluted Wines
+  proline: Proline
+  target: Type of Wine
+
+recode:
+  target:
+    1: Type 2
+    2: Type 3
+    3: Type 1
