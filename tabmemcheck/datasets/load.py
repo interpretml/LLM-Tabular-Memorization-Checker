@@ -67,6 +67,7 @@ METHODS_REGISTER = {
     "round": lambda x, decimals, seed: pd.DataFrame(x)
     .round(decimals=decimals)
     .values.flatten(),
+    "float_to_nan_int": float_to_nan_int,
     # "float": float_perturbation,
     # "value": value_perturbation,
     # special-purpose perturbations
@@ -75,6 +76,7 @@ METHODS_REGISTER = {
     "titanic_name_transform": titanic_name_transform,
     "spaceship_titanic_passenger_id": spaceship_titanic_passenger_id,
     "spaceship_titanic_cabin": spaceship_titanic_cabin,
+    "spaceship_titanic_ticket": spaceship_titanic_ticket,
 }
 
 # "to_numeric": pd.to_numeric,

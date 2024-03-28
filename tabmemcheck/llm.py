@@ -118,18 +118,19 @@ class OpenAILLM(LLM_Interface):
             response = ""
         return response
 
-    # @retry(
-    #    retry=retry_if_not_exception_type(openai.BadRequestError),
-    #    wait=wait_random_exponential(min=1, max=60),
-    #    stop=stop_after_attempt(7),
-    #    reraise=True,
-    # )
+    @retry(
+        retry=retry_if_not_exception_type(openai.BadRequestError),
+        wait=wait_random_exponential(min=1, max=60),
+        stop=stop_after_attempt(7),
+        reraise=True,
+    )
     def chat_completion(self, messages, temperature, max_tokens):
         response = self.client.chat.completions.create(
             model=self.model,
             messages=messages,
             temperature=temperature,
             max_tokens=max_tokens,
+            timeout=90,
         )
         # we return the completion string or "" if there is an invalid response/query
         try:

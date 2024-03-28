@@ -260,19 +260,6 @@ def add_normal_noise_and_round_array(
     return np.round(noisy_X, digits)
 
 
-def to_categorical(x: np.ndarray, random=False, seed=None):
-    """Transform the input X to categorical values."""
-    # random seed
-    rng = np.random.default_rng(seed=seed)
-    # to categorical
-    unique_values = np.unique(x)
-    if random:  # assign randomly permutated values
-        unique_values = rng.permutation(unique_values)
-    mapping = {value: i for i, value in enumerate(unique_values)}
-    x = np.vectorize(mapping.get)(x)
-    return x
-
-
 def statistical_transform(
     X: np.ndarray,
     factor=-3.33,
@@ -308,6 +295,26 @@ def statistical_transform(
     # permute the columns
     # X_statistical = X_statistical[:, rng.permutation(X_statistical.shape[1])]
     return X_statistical
+
+
+####################################################################################
+# formatting
+####################################################################################
+
+
+def float_to_nan_int(x: np.array, seed=None):
+    """Convert a float array into an array of integers as strings, with nan values replaced by 'NaN'."""
+    # a new array of strings
+    result = x.copy().astype(str)
+    # go iteratively over the entire array
+    for idx in range(x.shape[0]):
+        item = x[idx]
+        # is item float nan?
+        if item != item:
+            result[idx] = "NaN"
+        else:
+            result[idx] = item.astype(int)
+    return result
 
 
 ####################################################################################
@@ -465,4 +472,10 @@ def spaceship_titanic_cabin(x: np.array, seed=None):
         prefix, middle, suffix = item.split("/")
         middle = int(middle) + 12
         x[idx] = f"{prefix}/{middle}/{suffix}"
+    return x
+
+
+def spaceship_titanic_ticket(x: np.array, seed=None):
+    # we replace / with -
+    x = np.array([s.replace("/", "-") for s in x])
     return x
