@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentation &mdash; tabmemcheck 0.1.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=fd825880"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to the tabmemcheck documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            tabmemcheck
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-tabmemcheck">Main Package Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.DotDict"><code class="docutils literal notranslate"><span class="pre">DotDict</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.load_default_system_prompts"><code class="docutils literal notranslate"><span class="pre">load_default_system_prompts()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tabmemcheck.datasets">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tabmemcheck.analysis">Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.analysis.build_first_token"><code class="docutils literal notranslate"><span class="pre">build_first_token()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.analysis.conditional_completion_analysis"><code class="docutils literal notranslate"><span class="pre">conditional_completion_analysis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.analysis.csv_match_callback"><code class="docutils literal notranslate"><span class="pre">csv_match_callback()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.analysis.find_matches"><code class="docutils literal notranslate"><span class="pre">find_matches()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.analysis.find_most_unique_feature"><code class="docutils literal notranslate"><span class="pre">find_most_unique_feature()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.analysis.is_in_df"><code class="docutils literal notranslate"><span class="pre">is_in_df()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.analysis.levenshtein_distance_t_test"><code class="docutils literal notranslate"><span class="pre">levenshtein_distance_t_test()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.analysis.string_strip"><code class="docutils literal notranslate"><span class="pre">string_strip()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.analysis.validate_partial_row"><code class="docutils literal notranslate"><span class="pre">validate_partial_row()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#utilities">Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.utils"><code class="docutils literal notranslate"><span class="pre">utils</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tabmemcheck</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tabmemcheck.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="documentation">
+<h1>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h1>
+<section id="module-tabmemcheck">
+<span id="main-package-documentation"></span><h2>Main Package Documentation<a class="headerlink" href="#module-tabmemcheck" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tabmemcheck.DotDict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">DotDict</span></span><a class="headerlink" href="#tabmemcheck.DotDict" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.load_default_system_prompts">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">load_default_system_prompts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.load_default_system_prompts" title="Link to this definition"></a></dt>
+<dd><p>Load the default system prompts from the resources folder.</p>
+</dd></dl>
+
+</section>
+<section id="module-tabmemcheck.datasets">
+<span id="datasets"></span><h2>Datasets<a class="headerlink" href="#module-tabmemcheck.datasets" title="Link to this heading"></a></h2>
+</section>
+<section id="module-tabmemcheck.analysis">
+<span id="analysis"></span><h2>Analysis<a class="headerlink" href="#module-tabmemcheck.analysis" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.analysis.build_first_token">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.analysis.</span></span><span class="sig-name descname"><span class="pre">build_first_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.analysis.build_first_token" title="Link to this definition"></a></dt>
+<dd><p>We construct the first token using the first n digits of every row. The usefulness of this approach comes from the fact that in some datasets, the first token might always be the same.</p>
+<p>NOTE: this does not work if the first token is the id of the row, because the id is not always the same. IS THIS ACTUALLY TRUE?</p>
+<p>NOTE: we should always do a prediction test with a gbtree / logistic regression to see if the first token is actually random</p>
+<p>Returns: the number of digits that make up the first token.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.analysis.conditional_completion_analysis">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.analysis.</span></span><span class="sig-name descname"><span class="pre">conditional_completion_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">completions_df</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.analysis.conditional_completion_analysis" title="Link to this definition"></a></dt>
+<dd><p>Analysis for the conditional completion test</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.analysis.csv_match_callback">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.analysis.</span></span><span class="sig-name descname"><span class="pre">csv_match_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.analysis.csv_match_callback" title="Link to this definition"></a></dt>
+<dd><p>given a response from the LLM, check if it occurs in the dataset.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.analysis.find_matches">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.analysis.</span></span><span class="sig-name descname"><span class="pre">find_matches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string_dist_fn=&lt;function</span> <span class="pre">levenshtein_distances&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_floating_point=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strip_quotation_marks=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.analysis.find_matches" title="Link to this definition"></a></dt>
+<dd><p>Find the closest matches between x and all rows in df. By default, we use the levenshtein distance as the distance metric.</p>
+<p>This function can handle a variety of formatting differences between the values in the original data
+and LLM responses that should still be counted as equal.</p>
+<p>match_floating_point: if True, handes floating point formatting differences, e.g. 0.28 vs. .280 or 172 vs 172.0 (default: True).
+strip_quotation_marks: if True, strips quotation marks from the values in df and x (to handle the case where a model responds with “23853”, and the value in the data is 23853) (default: True).</p>
+<p>x: A string, a pandas dataframe or a pandas Series.</p>
+<p>Returns: the minimum distance and the matching rows in df.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.analysis.find_most_unique_feature">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.analysis.</span></span><span class="sig-name descname"><span class="pre">find_most_unique_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.analysis.find_most_unique_feature" title="Link to this definition"></a></dt>
+<dd><p>Find the feature that have the most unique values. This is useful for the feature completion test.
+Returns: feature name, fraction of unique values</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.analysis.is_in_df">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.analysis.</span></span><span class="sig-name descname"><span class="pre">is_in_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.analysis.is_in_df" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.analysis.levenshtein_distance_t_test">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.analysis.</span></span><span class="sig-name descname"><span class="pre">levenshtein_distance_t_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'two-sided'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.analysis.levenshtein_distance_t_test" title="Link to this definition"></a></dt>
+<dd><p>Test whether <a href="#id1"><span class="problematic" id="id2">|x-y|</span></a> &lt; <a href="#id3"><span class="problematic" id="id4">|x-z|</span></a> in Levenshtein distance using a t-test.</p>
+<p>x must be a list of stings.
+y and z can be either a list of strings or a list of lists of strings.</p>
+<p>alternative: argument to scipy.stats.ttest_ind (default: two-sided)</p>
+<p>Returns: scipy.stats._result_classes.TtestResult</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.analysis.string_strip">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.analysis.</span></span><span class="sig-name descname"><span class="pre">string_strip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.analysis.string_strip" title="Link to this definition"></a></dt>
+<dd><p>“We always convert all objects (data frames and responses) to strings and strip them of trailing whitespaces.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.analysis.validate_partial_row">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.analysis.</span></span><span class="sig-name descname"><span class="pre">validate_partial_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.analysis.validate_partial_row" title="Link to this definition"></a></dt>
+<dd><p>check if the input is a row with a SUBSET of the features in feature_names</p>
+</dd></dl>
+
+</section>
+<section id="utilities">
+<h2>Utilities<a class="headerlink" href="#utilities" title="Link to this heading"></a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tabmemcheck.utils">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">utils</span></span><a class="headerlink" href="#tabmemcheck.utils" title="Link to this definition"></a></dt>
+<dd><p>alias of &lt;module ‘tabmemcheck.utils’ from ‘/opt/hostedtoolcache/Python/3.11.8/x64/lib/python3.11/site-packages/tabmemcheck/utils.py’&gt;</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to the tabmemcheck documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, InterpretML.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
