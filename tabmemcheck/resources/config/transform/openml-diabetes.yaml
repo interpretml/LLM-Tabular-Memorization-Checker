@@ -40,7 +40,7 @@ transform:
 
 recode:
   Outcome:
-    0: Negaitive
+    0: Negative
     1: Positive
 
 rename:

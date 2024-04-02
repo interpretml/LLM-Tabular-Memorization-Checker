@@ -32,7 +32,7 @@ from tabmemcheck.chat_completion import (
 DEFAULT_FEW_SHOT_CSV_FILES = [
     "iris.csv",
     "adult-train.csv",
-    "titanic-train.csv",
+    "openml-diabetes.csv",
     "uci-wine.csv",
     "california-housing.csv",
 ]

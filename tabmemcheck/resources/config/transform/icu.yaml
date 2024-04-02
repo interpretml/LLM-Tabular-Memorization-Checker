@@ -1,0 +1,36 @@
+target: 'Unit'
+
+perturbations: 
+  - name: [Glucose, "Time of Onset from DKA", "Anion Gap", "Duration of Admission Acute Kidney Injury", "Delta Gap", "Bicarbonate nadir", "APACHE II", Bicarbonate, Age]
+    type: integer
+    size: 1
+    frozen_values: [-10, -2, -1, 0, 1, 2, 3]
+  - name: Unit
+    type: astype
+    dtype: str
+
+
+transform: 
+  - name: [Glucose, "Plasma-Lyte", "Time of Onset from DKA", "Anion Gap", "Duration of Admission Acute Kidney Injury", "Delta Gap", "Bicarbonate nadir", Bicarbonate]
+    type: astype
+    dtype: float
+  - name: [Glucose, 'Bicarbonate nadir', 'Anion Gap', 'Delta Gap', 'Bicarbonate']
+    type: add_normal_noise_and_round
+    noise_std: 0.01
+    digits: 2
+    frozen_values: 
+recode:
+  'Unit':
+    '0': 'ICU'
+    '1': 'Intermediate Care'
+
+rename:
+  Glucose: "Glucose Level"
+  "Plasma-Lyte": "Plasma Lyte"
+  "Time of Onset from DKA": "Time of Onset from DKA"
+  "Anion Gap": "Anion Gap (AG)"
+  "Duration of Admission Acute Kidney Injury": "Duration of Admission Acute Kidney Injury"
+  "Delta Gap": "Delta Gap"
+  "Bicarbonate nadir": "Bicarbonate Nadir"
+  "APACHE II": "APACHE II Score"
+  'Unit': Medical Unit

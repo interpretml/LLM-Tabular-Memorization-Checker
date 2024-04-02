@@ -1,9 +1,10 @@
 ####################################################################################
-# Load datasets in 4 different transformed versions:
-# - original
-# - perturbed
-# - task
-# - statistical
+# Load datasets in different transformed versions.
+# - plain: just load the dataset without any transformation
+# - original: target in the last column
+# - perturbed: apply perturbations as specified in a YAML configuration file
+# - task: apply task-specific transformations as specified in a YAML configuration file
+# - statistical: apply the statistical transformations
 # The transformations are specified in a YAML configuration file (e.g. iris.yaml).
 ####################################################################################
 
@@ -55,7 +56,7 @@ CONFIG_RENAME = "rename"
 CONFIG_RECODE = "recode"
 
 METHODS_REGISTER = {
-    # generic methods
+    # Generic
     "integer": integer_perturbation,
     "swap": swap_perturbation,
     "add_normal_noise_and_round": add_normal_noise_and_round_array,
@@ -68,38 +69,29 @@ METHODS_REGISTER = {
     .round(decimals=decimals)
     .values.flatten(),
     "float_to_nan_int": float_to_nan_int,
-    # "float": float_perturbation,
-    # "value": value_perturbation,
-    # special-purpose perturbations
+    # Kaggle Titanic
     "titanic_last_digits_perturbation": titanic_last_digits_perturbation,
     "titanic_ticket_transform": titanic_ticket_transform,
     "titanic_name_transform": titanic_name_transform,
+    # Kaggle Spaceship Titanic
     "spaceship_titanic_passenger_id": spaceship_titanic_passenger_id,
     "spaceship_titanic_cabin": spaceship_titanic_cabin,
     "spaceship_titanic_ticket": spaceship_titanic_ticket,
 }
 
-# "to_numeric": pd.to_numeric,
-# "to_int": lambda x: x.apply(
-#        lambda x: np.NaN if pd.isna(x) or np.isinf(x) else int(x)
-# ),
-# "round": lambda x, decimals: x.round(decimals=decimals),
-#
-# "append": lambda x, value: x.astype(str) + value,
 
-
-def __load_yaml_config(dataset_name: str):
+def __load_yaml_config(config_file: str):
     """Load from the resources folder of the package"""
-    # first try to load the file as a normal file
+    # first try to load the file according to the provided path
     try:
-        with open(f"{dataset_name}", "r") as f:
+        with open(config_file, "r") as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
         return config
     except:
         pass
-    # then try to load it from the resources folder
+    # then try to load it from the resources folder of the package
     with resources.open_text(
-        "tabmemcheck.resources.config", f"{dataset_name}.yaml"
+        "tabmemcheck.resources.config.transform", config_file
     ) as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
     return config
@@ -314,25 +306,30 @@ def load_dataset(
 
 
 ####################################################################################
-# Loading functions for specific datasets
+# Ready-made loading functions for some popular datasets
 ####################################################################################
 
 
 def load_iris(csv_file: str = "iris.csv", *args, **kwargs):
     """The Iris dataset. https://archive.ics.uci.edu/ml/datasets/iris"""
-    return load_dataset(csv_file, "iris", *args, **kwargs)
+    return load_dataset(csv_file, "iris.yaml", *args, **kwargs)
+
+
+def load_wine(csv_file: str = "iris.csv", *args, **kwargs):
+    """The UCI Wine dataset. https://archive.ics.uci.edu/dataset/109/wine"""
+    return load_dataset(csv_file, "wine.yaml", *args, **kwargs)
 
 
 def load_adult(csv_file: str = "adult-train.csv", *args, **kwargs):
     """The Adult Income dataset. http://www.cs.toronto.edu/~delve/data/adult/adultDetail.html"""
-    return load_dataset(csv_file, "adult", *args, **kwargs)
+    return load_dataset(csv_file, "adult.yaml", *args, **kwargs)
 
 
-def load_housing(csv_file: str, *args, **kwargs):
+def load_housing(csv_file: str = "california-housing.csv", *args, **kwargs):
     """California Housing dataset."""
-    return load_dataset(csv_file, "housing", *args, **kwargs)
+    return load_dataset(csv_file, "housing.yaml", *args, **kwargs)
 
 
 def load_openml_diabetes(csv_file: str = "openml-diabetes.csv", *args, **kwargs):
     """The OpenML Diabetes dataset. https://www.openml.org/d/37"""
-    return load_dataset("openml-diabetes.csv", "openml-diabetes", *args, **kwargs)
+    return load_dataset("openml-diabetes.csv", "openml-diabetes.yaml", *args, **kwargs)

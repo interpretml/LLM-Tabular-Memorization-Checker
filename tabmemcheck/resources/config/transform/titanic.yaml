@@ -1,17 +1,32 @@
 target: Survived
 
+dtype:
+  Age: str
+  Fare: str
+
 perturbations: 
   - name: PassengerId
     type: add
     value: 1813
   - name: Age
+    type: astype
+    dtype: float
+  - name: Age
     type: integer
     size: 1
     frozen_values: [0,1]
+  - name: Age
+    type: float_to_nan_int
+  - name: Fare
+    type: astype
+    dtype: float
   - name: Fare
     type: integer
     size: 500
     scale: 0.001
+  - name: Fare
+    type: round
+    decimals: 2
   - name: [SibSp, Parch]
     type: integer
     size: 1
@@ -920,6 +935,9 @@ perturbations:
       van Melkebeke, Mr. Philemon: van Houten, Mr. Cornelius      
 
 transform: 
+  - name: Age
+    type: astype
+    dtype: float
   - name: Age
     type: fillna
     value: 30

@@ -18,7 +18,6 @@ def numeric_perturbation(
     respect_bounds: bool = True,
     frozen_values=None,
     frozen_indices=None,
-    # ignore_object=False,
 ):
     """Perturb a np.ndarray X of numeric values using the perturbations in perturbation_matrix.
 
@@ -31,27 +30,6 @@ def numeric_perturbation(
 
     Returns: The perturbed array.
     """
-    # if ignore_object is True, only perturb values that can be converted to float
-    # if ignore_object:
-    #    numeric_indices = []
-    #    for index, value in np.ndenumerate(X):
-    #        try:
-    #            # Attempt to convert value to float
-    #            float(value)
-    #            # If successful, append the index to the list
-    #            numeric_indices.append(index)
-    #        except ValueError:
-    #            continue
-    # continue
-    #    X[numeric_indices] = numeric_perturbation(
-    #        X[numeric_indices].astype(np.number),
-    #        perturbation_matrix=perturbation_matrix[numeric_indices],
-    #        respect_bounds=respect_bounds,
-    #        frozen_indices=frozen_indices,
-    #        frozen_values=frozen_values,
-    #        ignore_object=False,
-    #    )
-    #    return X
     # assert that x contains only numeric values
     assert np.issubdtype(
         X.dtype, np.number
@@ -108,7 +86,6 @@ def integer_perturbation(
     respect_bounds: bool = True,
     frozen_indices=None,
     frozen_values=None,
-    # ignore_object=False,
     seed=None,
 ):
     """Perturb with integer values from the range [-size, size], but never zero (zero perturbation can still occur due to a boundary condition).
@@ -117,13 +94,6 @@ def integer_perturbation(
 
     Returns: The perturbed array.
     """
-
-    # TODO validate the position parameter
-    # assert that x does not have any significant digits after the decimal point
-    # assert np.all(np.equal(np.mod(X, 1), 0)), f"Expected integer values, found {X}."
-    # TODO re-introduce if required? with additional parameter perhaps
-    # convert x to integer
-    # X = np.array(X.astype(int)).copy()
     # generate the perturbation matrix
     rng = np.random.default_rng(seed=seed)
     perturb = np.linspace(-size, size, 2 * size + 1)
@@ -140,28 +110,7 @@ def integer_perturbation(
         respect_bounds=respect_bounds,
         frozen_indices=frozen_indices,
         frozen_values=frozen_values,
-        # ignore_object=ignore_object,
     )
-    # repeat for the subset of indices that should have been changed but have not been
-    # this can occur because of respect_bounds=True
-    # if respect_bounds == True:
-    #    unchanged_indices = set(np.argwhere(X_perturbed == X).flatten())
-    #    if frozen_values is not None:
-    #        unchanged_indices.discard(
-    #            set(np.argwhere(np.isin(X, frozen_values)).flatten())
-    #        )
-    #    if frozen_indices is not None:
-    #        unchanged_indices.discard(set(frozen_indices.flatten()))
-    #    if len(unchanged_indices) > 0:
-    #        unchanged_indices = np.array(list(unchanged_indices))
-    #        print(unchanged_indices)
-    #        X_perturbed[unchanged_indices] = integer_perturbation(
-    #            X_perturbed[unchanged_indices].copy(),
-    #            size=size,
-    #            scale=scale,
-    #            respect_bounds=False,
-    #            seed=seed,
-    #        )
     return X_perturbed
 
 

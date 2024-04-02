@@ -1,0 +1,48 @@
+target: 'RiskPerformance'
+
+perturbations: 
+  - name: ['ExternalRiskEstimate', 'MSinceOldestTradeOpen',
+       'MSinceMostRecentTradeOpen', 'AverageMInFile', 'NumSatisfactoryTrades',
+       'NumTrades60Ever2DerogPubRec', 'NumTrades90Ever2DerogPubRec',
+       'PercentTradesNeverDelq', 'MSinceMostRecentDelq',
+       'MaxDelq2PublicRecLast12M', 'MaxDelqEver', 'NumTotalTrades',
+       'NumTradesOpeninLast12M', 'PercentInstallTrades',
+       'MSinceMostRecentInqexcl7days', 'NumInqLast6M', 'NumInqLast6Mexcl7days',
+       'NetFractionRevolvingBurden', 'NetFractionInstallBurden',
+       'NumRevolvingTradesWBalance', 'NumInstallTradesWBalance',
+       'NumBank2NatlTradesWHighUtilization', 'PercentTradesWBalance']
+    type: integer
+    size: 1
+    frozen_values: [9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9]
+
+rename:
+  'ExternalRiskEstimate': External Risk Estimate
+  'MSinceOldestTradeOpen': Months Since Oldest Trade Open
+  'MSinceMostRecentTradeOpen': Months Since Most Recent Trade Open
+  'AverageMInFile': Average Months in File
+  'NumSatisfactoryTrades': Number of Satisfactory Trades
+  'NumTrades60Ever2DerogPubRec': Number of Trades ever received 60 days past due date
+  'NumTrades90Ever2DerogPubRec': Number of Trades ever received 90 days past due date
+  'PercentTradesNeverDelq': Percent of Trades Never Delinquent
+  'MSinceMostRecentDelq': Months Since Most Recent Delinquency
+  'MaxDelq2PublicRecLast12M': Maximum Delinquency in Last 12 Months
+  'MaxDelqEver': Maximum Delinquency Ever
+  'NumTotalTrades': Number of Total Trades
+  'NumTradesOpeninLast12M': Number of Trades Open in Last 12 Months
+  'PercentInstallTrades': Percent of Installment Trades
+  'MSinceMostRecentInqexcl7days': Months Since Most Recent Inquiry (excluding last 7 days)
+  'NumInqLast6M': Number of Inquiries in Last 6 Months
+  'NumInqLast6Mexcl7days': Number of Inquiries in Last 6 Months (excluding last 7 days)
+  'NetFractionRevolvingBurden': Net Fraction Revolving Burden
+  'NetFractionInstallBurden': Net Fraction Installment Burden
+  'NumRevolvingTradesWBalance': Number of Revolving Trades with Balance
+  'NumInstallTradesWBalance': Number of Installment Trades with Balance
+  'NumBank2NatlTradesWHighUtilization': Number of Bank/National Trades with High Utilization
+  'PercentTradesWBalance': Percent of Trades with Balance
+  'RiskPerformance': Credit
+
+recode:
+  RiskPerformance:
+    "Bad": "Default"
+    "Good": "Repaid"
+

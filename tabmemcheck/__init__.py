@@ -32,7 +32,9 @@ def load_default_system_prompts():
     import importlib.resources as resources
     import yaml
 
-    with resources.open_text("tabmemcheck.resources", "system-prompts.yaml") as f:
+    with resources.open_text(
+        "tabmemcheck.resources.config", "system-prompts.yaml"
+    ) as f:
         prompts = yaml.load(f, Loader=yaml.FullLoader)
     return prompts
 

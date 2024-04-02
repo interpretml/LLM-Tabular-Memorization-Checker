@@ -13,7 +13,7 @@ with open("tabmemcheck/version.py") as fp:
 
 setuptools.setup(
     name="tabmemcheck",
-    version=version['__version__'],
+    version=version["__version__"],
     author="Sebastian Bordt, Harsha Nori, Rich Caruana",
     author_email="sbordt@posteo.de",
     description="Testing Language Models for Memorization of Tabular Data",
@@ -28,13 +28,10 @@ setuptools.setup(
     package_dir={"": "."},
     packages=find_packages(),
     package_data={
-        '': ['*.yaml', '*.csv'],
+        "": ["*.yaml", "*.csv"],
     },
     include_package_data=True,
     python_requires=">=3.9",
-    entry_points={
-        "console_scripts": ["tabmemcheck=tabmemcheck.cli_interface:main"],
-    },
     install_requires=[
         "numpy",
         "matplotlib",

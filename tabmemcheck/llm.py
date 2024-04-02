@@ -12,7 +12,7 @@ import pickle
 import time
 
 import openai
-from openai import OpenAI
+from openai import OpenAI, AzureOpenAI
 
 import tiktoken
 
@@ -144,17 +144,36 @@ class OpenAILLM(LLM_Interface):
         return f"{self.model}"
 
 
-def openai_setup(model=None):
-    """Setup the openai api. Returns: LLM_Interface object."""
-    client = OpenAI(
-        api_key=(
-            os.environ["OPENAI_API_KEY"] if "OPENAI_API_KEY" in os.environ else None
-        ),
-        organization=(
-            os.environ["OPENAI_API_ORG"] if "OPENAI_API_ORG" in os.environ else None
-        ),
-        # timeout=20,
-    )
+def openai_setup(model=None, azure=False):
+    """Setup an openai model. Returns: LLM_Interface object."""
+    if azure:  # azure deployment
+        client = AzureOpenAI(
+            azure_endpoint=(
+                os.environ["AZURE_OPENAI_ENDPOINT"]
+                if "AZURE_OPENAI_ENDPOINT" in os.environ
+                else None
+            ),
+            api_key=(
+                os.environ["AZURE_OPENAI_KEY"]
+                if "AZURE_OPENAI_KEY" in os.environ
+                else None
+            ),
+            api_version=(
+                os.environ["AZURE_OPENAI_VERSION"]
+                if "AZURE_OPENAI_VERSION" in os.environ
+                else None
+            ),
+        )
+    else:  # openai api
+        client = OpenAI(
+            api_key=(
+                os.environ["OPENAI_API_KEY"] if "OPENAI_API_KEY" in os.environ else None
+            ),
+            organization=(
+                os.environ["OPENAI_API_ORG"] if "OPENAI_API_ORG" in os.environ else None
+            ),
+        )
+
     # the llm interface object
     return OpenAILLM(client, model)
 

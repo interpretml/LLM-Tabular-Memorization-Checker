@@ -2,6 +2,7 @@
 *.pickle
 *.pkl
 
+docs_build/
 chatlogs/
 notebooks/figures/*
 notebooks/private

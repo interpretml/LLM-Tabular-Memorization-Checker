@@ -28,7 +28,7 @@ rename:
   fnlwgt: Census Weight
   Education: Highest Education
   EducationNum: Education as number
-  MaritalStatus: Married?
+  MaritalStatus: Married
   Occupation: Work
   Relationship: Relationship
   Race: Self-reported race
