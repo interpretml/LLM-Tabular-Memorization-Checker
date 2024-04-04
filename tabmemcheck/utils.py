@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 import jellyfish
+import difflib
 import tempfile
 
 import csv
@@ -476,3 +477,152 @@ def strip_strings_in_dataframe(df: pd.DataFrame):
             except AttributeError:
                 pass  # Some columns are objects but not strings (which means .str throws an exception). We can ignore these columns.
     return df
+
+
+#################################################################
+# Printing and html output
+#################################################################
+
+
+# color codes to print with color in the console (from https://gist.github.com/vratiu/9780109)
+class bcolors:
+    HEADER = "\033[95m"
+    OKBLUE = "\033[94m"
+    OKCYAN = "\033[96m"
+    OKGREEN = "\033[92m"
+    WARNING = "\033[93m"
+    FAIL = "\033[91m"
+    ENDC = "\033[0m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
+
+    # Regular Colors
+    Black = "\033[0;30m"  # Black
+    Red = "\033[0;31m"  # Red
+    Green = "\033[0;32m"  # Green
+    Yellow = "\033[0;33m"  # Yellow
+    Blue = "\033[0;34m"  # Blue
+    Purple = "\033[0;35m"  # Purple
+    Cyan = "\033[0;36m"  # Cyan
+    White = "\033[0;37m"  # White
+
+    # Background
+    On_Black = "\033[40m"  # Black
+    On_Red = "\033[41m"  # Red
+    On_Green = "\033[42m"  # Green
+    On_Yellow = "\033[43m"  # Yellow
+    On_Blue = "\033[44m"  # Blue
+    On_Purple = "\033[45m"  # Purple
+    On_Cyan = "\033[46m"  # Cyan
+    On_White = "\033[47m"  # White
+
+
+def levenshtein_cmd(a: str, b: str):
+    """Visualization of the Lehvenshtein distance between a and b, using color codes to be printed in the console."""
+    print_string = ""
+    for opcode in levenshtein(a, b)[1]:
+        op = opcode["type"]
+        a_pos = opcode["i"]
+        b_pos = opcode["j"]
+        if op == "match":
+            print_string += bcolors.Green + b[b_pos] + bcolors.ENDC
+        elif op == "insertion":
+            print_string += bcolors.Red + b[b_pos] + bcolors.ENDC
+        elif op == "deletion":
+            print_string += bcolors.Purple + a[a_pos] + bcolors.ENDC
+        elif op == "substitution":
+            print_string += bcolors.Red + b[b_pos] + bcolors.ENDC
+    return print_string
+
+
+def levenshtein_html(a: str, b: str):
+    """HTML visualization of the lehvenshtein distance between a and b."""
+    html_string = ""
+    for opcode in levenshtein(a, b)[1]:
+        op = opcode["type"]
+        a_pos = opcode["i"]
+        b_pos = opcode["j"]
+        if op == "match":
+            html_string += f'<span style="background-color:#aaffaa">{b[b_pos]}</span>'
+        elif op == "insertion":
+            html_string += f'<span style="background-color:#ffaaaa">{b[b_pos]}</span>'
+        elif op == "substitution":
+            html_string += f'<span style="background-color:#ffaaaa">{b[b_pos]}</span>'
+        elif op == "deletion":
+            html_string += f'<span style="background-color:#CBC3E3">{a[a_pos]}</span>'
+        if op != "deletion" and b[b_pos] == "\n":
+            html_string += "<br>"
+    return html_string
+
+
+#################################################################
+# Levenshtein distance with edits
+# from  https://gist.github.com/curzona/9435822
+#################################################################
+
+
+def levenshtein(s1, s2, key=hash):
+    """Levenshtein distance with edits."""
+
+    # Based on http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#Python
+    # Generate the cost matrix for the two strings
+    def costmatrix(s1, s2, key=hash):
+        rows = []
+
+        previous_row = range(len(s2) + 1)
+        rows.append(list(previous_row))
+
+        for i, c1 in enumerate(s1):
+            current_row = [i + 1]
+            for j, c2 in enumerate(s2):
+                insertions = previous_row[j + 1] + 1
+                deletions = current_row[j] + 1
+                substitutions = previous_row[j] + (key(c1) != key(c2))
+                current_row.append(min(insertions, deletions, substitutions))
+            previous_row = current_row
+
+            rows.append(previous_row)
+
+        return rows
+
+    # Trace back through the cost matrix to generate the list of edits
+    def backtrace(s1, s2, rows, key=hash):
+        i, j = len(s1), len(s2)
+
+        edits = []
+
+        while not (i == 0 and j == 0):
+            prev_cost = rows[i][j]
+
+            neighbors = []
+
+            if i != 0 and j != 0:
+                neighbors.append(rows[i - 1][j - 1])
+            if i != 0:
+                neighbors.append(rows[i - 1][j])
+            if j != 0:
+                neighbors.append(rows[i][j - 1])
+
+            min_cost = min(neighbors)
+
+            if min_cost == prev_cost:
+                i, j = i - 1, j - 1
+                edits.append({"type": "match", "i": i, "j": j})
+            elif i != 0 and j != 0 and min_cost == rows[i - 1][j - 1]:
+                i, j = i - 1, j - 1
+                edits.append({"type": "substitution", "i": i, "j": j})
+            elif i != 0 and min_cost == rows[i - 1][j]:
+                i, j = i - 1, j
+                edits.append({"type": "deletion", "i": i, "j": j})
+            elif j != 0 and min_cost == rows[i][j - 1]:
+                i, j = i, j - 1
+                edits.append({"type": "insertion", "i": i, "j": j})
+
+        edits.reverse()
+
+        return edits
+
+    rows = costmatrix(s1, s2, key)
+    edits = backtrace(s1, s2, rows, key)
+
+    return rows[-1][-1], edits

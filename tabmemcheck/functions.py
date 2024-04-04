@@ -282,6 +282,7 @@ def header_test(
     completion_length: int = 500,
     few_shot_csv_files: list[str] = DEFAULT_FEW_SHOT_CSV_FILES,
     system_prompt: str = "default",
+    verbose: bool = True,
 ):
     """Header test, using other csv files as few-shot examples.
 
@@ -309,7 +310,7 @@ def header_test(
 
     # perform the test multiple times, cutting the dataset at random positions in rows split_rows
     num_completions = -1
-    header, completion = None, None
+    header_prompt, llm_completion = None, None
     for i_row in split_rows:
         offset = np.sum([len(row) for row in csv_rows[: i_row - 1]])
         offset += np.random.randint(
@@ -342,70 +343,34 @@ def header_test(
         # is this the best completion so far?
         if idx > num_completions:
             num_completions = idx
-            header = prefixes[0]
-            completion = response
+            header_prompt = prefixes[0]
+            llm_completion = response
+            header_completion = data[offset : offset + len(llm_completion)]
 
-    # for the printing, we first color all green up to the first disagreement
-    completion_print = bcolors.Green + completion[:num_completions]
+    if verbose:  # print test result to console
+        print(
+            bcolors.BOLD
+            + "Header Test: "
+            + bcolors.ENDC
+            + bcolors.Black
+            + header_prompt
+            + utils.levenshtein_cmd(header_completion, llm_completion)
+            + bcolors.ENDC
+            + bcolors.BOLD
+            + "\nHeader Test Legend:  "
+            + bcolors.ENDC
+            + "Prompt "
+            + bcolors.Green
+            + "Correct "
+            + bcolors.Red
+            + "Incorrect "
+            + bcolors.ENDC
+            + bcolors.Purple
+            + "Missing"
+            + bcolors.ENDC
+        )
 
-    # then color red up to the beginning of the next row, if any
-    remaining_completion = completion[num_completions:]
-    idx = remaining_completion.find("\n")
-    if idx == -1:
-        completion_print += bcolors.Red + remaining_completion
-    else:
-        completion_print += bcolors.Red + remaining_completion[:idx] + "\n"
-        remaining_completion = remaining_completion[idx + 1 :]
-
-        # for all additional rows, green up to the first disagreement, all red after that
-        completion_rows = remaining_completion.split("\n")
-
-        # the corresponding next row in the csv file
-        data_idx = data[len(header) + num_completions :].find("\n")
-        data_rows = data[len(header) + num_completions + data_idx + 1 :].split("\n")
-
-        for completion_row, data_row in zip(completion_rows, data_rows):
-            if completion_row == data_row:
-                completion_print += bcolors.Green + completion_row + "\n"
-                continue
-            # not equal, find the first disagreement
-            idx = -1000
-            for idx, (c, r) in enumerate(zip(data_row, completion_row)):
-                if c != r:
-                    break
-            if idx == len(completion_row) - 1 and completion_row[idx] == data_row[idx]:
-                idx += 1
-            # print first part green, second part red
-            completion_print += (
-                bcolors.Green
-                + completion_row[:idx]
-                + bcolors.Red
-                + completion_row[idx:]
-                + "\n"
-            )
-
-    # remove final new line
-    completion_print = completion_print.rstrip("\n")
-
-    # print the result
-    print(
-        bcolors.BOLD
-        + "Header Test: "
-        + bcolors.ENDC
-        + bcolors.Black
-        + header
-        + completion_print
-        + bcolors.ENDC
-        + bcolors.BOLD
-        + "\nHeader Test Legend:  "
-        + bcolors.ENDC
-        + "Prompt "
-        + bcolors.Green
-        + "Correct "
-        + bcolors.Red
-        + "Incorrect"
-        + bcolors.ENDC
-    )
+    return header_prompt, header_completion, llm_completion
 
     # TODO return true if it completes the given row, as well as the next row.
     # TODO count the number of correctly completed rows and print this number
