@@ -518,7 +518,7 @@ class bcolors:
 
 
 def levenshtein_cmd(a: str, b: str):
-    """Visualization of the Lehvenshtein distance between a and b, using color codes to be printed in the console."""
+    """Visualization of the Levenshtein distance between a and b, using color codes to be printed in the console."""
     print_string = ""
     for opcode in levenshtein(a, b)[1]:
         op = opcode["type"]
@@ -536,7 +536,7 @@ def levenshtein_cmd(a: str, b: str):
 
 
 def levenshtein_html(a: str, b: str):
-    """HTML visualization of the lehvenshtein distance between a and b."""
+    """HTML visualization of the Levenshtein distance between a and b."""
     html_string = ""
     for opcode in levenshtein(a, b)[1]:
         op = opcode["type"]

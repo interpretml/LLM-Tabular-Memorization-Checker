@@ -104,8 +104,15 @@ def run_all_tests(
     csv_file: str,
     llm: Union[LLM_Interface, str],
     few_shot_csv_files=DEFAULT_FEW_SHOT_CSV_FILES,
-    feature_name=None,
+    unique_feature: str = None,
 ):
+    """Run different tests for memorization and prior experience with the content of the csv file.
+
+    :param csv_file: The path to the csv file.
+    :param llm: The language model to be tested.
+    :param few_shot_csv_files: A list of other csv files to be used as few-shot examples.
+    :param unique_feature: The name of the feature to be used for the feature completion test.
+    """
     llm = __llm_setup(llm)
     few_shot_csv_files = __validate_few_shot_files(csv_file, few_shot_csv_files)
     __print_info(csv_file, llm, few_shot_csv_files)
@@ -138,7 +145,7 @@ def run_all_tests(
     tabmem.config.temperature = temp
 
     row_completion_test(csv_file, llm, num_queries=25)
-    feature_completion_test(csv_file, llm, num_queries=25, feature_name=feature_name)
+    feature_completion_test(csv_file, llm, num_queries=25, feature_name=unique_feature)
     first_token_test(csv_file, llm, num_queries=25)
 
 
@@ -154,17 +161,15 @@ def feature_names_test(
     few_shot_csv_files=DEFAULT_FEW_SHOT_CSV_FILES,
     system_prompt: str = "default",
 ):
-    """Test if the model knows the names of the features.
+    """Test if the model knows the names of the features in a csv file.
 
-    The prompt format is:
-        System: <system_prompt>
-        User: Dataset: <dataset_name>
-              Feature 1, Feature 2, ..., Feature n
-        Response: Feature n+1, Feature n+2, ..., Feature m
-
-    This can be modified in the following ways:
-    - Include few-shot examples from other csv files.
+    :param csv_file: The path to the csv file.
+    :param llm: The language model to be tested.
+    :param num_prefix_features: The number of features given to the model as part of the prompt (defaults to 1/4 of the features).
+    :param few_shot_csv_files: A list of other csv files to be used as few-shot examples.
+    :param system_prompt: The system prompt to be used.
     """
+
     llm = __llm_setup(llm)
     few_shot_csv_files = __validate_few_shot_files(csv_file, few_shot_csv_files)
 
@@ -260,10 +265,6 @@ def feature_names_test(
         + response
     )
 
-    # TODO do some sort of evaluation
-    # for example, return true if it completes all but X of the feature names, correcting for upper/lower case
-    # at least do formatted printing of the results
-
 
 ####################################################################################
 # Feature Values
@@ -284,12 +285,16 @@ def header_test(
     system_prompt: str = "default",
     verbose: bool = True,
 ):
-    """Header test, using other csv files as few-shot examples.
+    """Header test for memorization.
 
-    Splits the csv file at random positions in rows 2, 4, 6, and 8. Performs 1 query for each split. Reports the best completion.
+    We split the csv file at random positions in rows split_rows and performs 1 query for each split. Then we compare the best completion with the actual header.
 
-    NOTE: This test might fail if the header and rows of the csv file are very long, and the model has a small context window.
-    NOTE: in the end, this is the case for all of our tests :)
+    :param csv_file: The path to the csv file.
+    :param llm: The language model to be tested.
+    :param split_rows: The rows at which the csv file is split for the test.
+    :param completion_length: The length of the completions in the few-shot examples (reduce for LLMs with small context windows).
+    :param few_shot_csv_files: A list of other csv files to be used as few-shot examples.
+    :param system_prompt: The system prompt to be used.
     """
     llm = __llm_setup(llm)
     few_shot_csv_files = __validate_few_shot_files(csv_file, few_shot_csv_files)
@@ -372,9 +377,6 @@ def header_test(
 
     return header_prompt, header_completion, llm_completion
 
-    # TODO return true if it completes the given row, as well as the next row.
-    # TODO count the number of correctly completed rows and print this number
-
 
 ####################################################################################
 # Row Completion
@@ -385,12 +387,21 @@ def row_completion_test(
     csv_file: str,
     llm: Union[LLM_Interface, str],
     num_prefix_rows=10,
-    num_queries=50,
+    num_queries=25,
     few_shot=7,
     out_file=None,
     system_prompt: str = "default",
 ):
-    """Row completion test: Complete the next row of the csv file, given the previous rows."""
+    """Row completion test for memorization. The test resports the number of correctly completed rows.
+
+    :param csv_file: The path to the csv file.
+    :param llm: The language model to be tested.
+    :param num_prefix_rows: The number of rows given to the model as part of the prompt.
+    :param num_queries: The number of rows that we test the model on.
+    :param few_shot: The number of few-shot examples to be used.
+    :param out_file: Optionally save all queries and responses to a csv file.
+    :param system_prompt: The system prompt to be used.
+    """
     llm = __llm_setup(llm)
 
     if system_prompt == "default":  # default system prompt?
@@ -437,7 +448,7 @@ def row_completion_test(
         if test_suffix.strip() in response.strip():
             num_exact_matches += 1
 
-    # the statistical test using the levenshtein distance TODO taken out of current version although it works
+    # the statistical test using the levenshtein distance. taken out of current version although it seems to work in practice.
     # test_prefix_rows = [prefix.split("\n") for prefix in test_prefixes]
     # test_result = analysis.levenshtein_distance_t_test(
     #    responses, test_suffixes, test_prefix_rows
@@ -467,21 +478,20 @@ def feature_completion_test(
     csv_file: str,
     llm: Union[LLM_Interface, str],
     feature_name: str = None,
-    num_queries=100,
+    num_queries=25,
     few_shot=5,
     out_file=None,
     system_prompt: str = "default",
 ):
-    """Feature completion test where we attempt to predict a single rare feature & count the number of exact matches.
+    """Feature completion test for memorization. The test resports the number of correctly completed features.
 
-    The basic prompt format is the following:
-        System: <system_prompt>
-        User: Feature 1 = value 1, Feature 2 = value 2, ..., Feature n = value n
-        Response: Feature {feature_name} = value
-
-    This can be modified in the following ways:
-        - Include few-shot examples from other csv files.
-        - Don't use the feature names, but only the values.
+    :param csv_file: The path to the csv file.
+    :param llm: The language model to be tested.
+    :param feature_name: The name of the feature to be used for the test.
+    :param num_queries: The number of feature values that we test the model on.
+    :param few_shot: The number of few-shot examples to be used.
+    :param out_file: Optionally save all queries and responses to a csv file.
+    :param system_prompt: The system prompt to be used.
     """
     llm = __llm_setup(llm)
 
@@ -558,12 +568,23 @@ def first_token_test(
     csv_file: str,
     llm: Union[LLM_Interface, str],
     num_prefix_rows=10,
-    num_queries=100,
+    num_queries=25,
     few_shot=7,
     out_file=None,
     system_prompt: str = "default",
 ):
-    """First token test: Complete the first token of the next row of the csv file, given the previous rows."""
+    """First token test for memorization. We ask the model to complete the first token of the next row of the csv file, given the previous rows. The test resports the number of correctly completed tokens.
+
+    Note that the ''first token'' is not actually the first token produced by the llm, but consists of the first n digits of the row. The number of digits is determined by the function build_first_token.
+
+    :param csv_file: The path to the csv file.
+    :param llm: The language model to be tested.
+    :param num_prefix_rows: The number of rows given to the model as part of the prompt.
+    :param num_queries: The number of rows that we test the model on.
+    :param few_shot: The number of few-shot examples to be used.
+    :param out_file: Optionally save all queries and responses to a csv file.
+    :param system_prompt: The system prompt to be used.
+    """
     llm = __llm_setup(llm)
 
     if (
@@ -654,7 +675,7 @@ def first_token_test(
 
 
 ####################################################################################
-# Zero-Knowledge Sampling
+# Sampling
 ####################################################################################
 
 
@@ -680,7 +701,15 @@ def sample(
     out_file=None,
     system_prompt: str = "default",
 ):
-    """zero-shot sampling from the csv file, using few-shot examples from other csv files."""
+    """Ask the model to provide random samples from the csv file.
+
+    :param csv_file: The path to the csv file.
+    :param llm: The language model to be tested.
+    :param num_queries: The desired number of samples.
+    :param few_shot_csv_files: A list of other csv files to be used as few-shot examples.
+    :param out_file: Optionally save all queries and responses to a csv file.
+    :param system_prompt: The system prompt to be used.
+    """
     llm = __llm_setup(llm)
     few_shot_csv_files = __validate_few_shot_files(csv_file, few_shot_csv_files)
 
@@ -703,7 +732,7 @@ def sample(
     )
 
     if len(cond_feature_names) > 0:
-        pass
+        raise NotImplementedError("Conditional sampling not yet supported.")
         # TODO handle the condtional case!
 
     # parse the model responses in a dataframe

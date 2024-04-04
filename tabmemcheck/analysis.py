@@ -205,7 +205,7 @@ def conditional_completion_analysis(csv_file, completions_df):
 
 
 def levenshtein_distance_t_test(x, y, z, alternative="two-sided", return_dist=False):
-    """Test whether |x-y| < |x-z| in Levenshtein distance using a t-test.
+    """Test whether x is closer to y than z in Levenshtein distance using a t-test.
 
     x must be a list of stings.
     y and z can be either a list of strings or a list of lists of strings.

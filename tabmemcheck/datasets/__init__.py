@@ -5,8 +5,8 @@ from . import load as load
 from .load import (
     load_dataset,
     load_iris,
-    # load_titanic,
-    load_openml_diabetes,
+    load_wine,
     load_adult,
     load_housing,
+    load_openml_diabetes,
 )

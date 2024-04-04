@@ -196,12 +196,24 @@ def report_feature_variation(df_original, df_variation):
 def load_dataset(
     csv_file: str,
     yaml_config: str = None,
-    transform=DATASET_PLAIN,
+    transform: str = DATASET_PLAIN,
     permute_columns=False,  # for perturbed transform
     print_stats=False,
     seed=None,
 ):
-    """Generic dataset loading function. Dataset tranformations are specified in a yaml configuration file."""
+    """Load a dataset from a CSV file and apply transformations as specified in a YAML configuration file.
+
+    Args:
+        csv_file (str): The path to the CSV file.
+        yaml_config (str, optional): The path to the YAML configuration file. Defaults to None.
+        transform (str, optional): The type of transformation to apply ('original', 'perturbed', 'task', 'statistical').
+        permute_columns (bool, optional): Whether to permute the columns in the perturbed version. Defaults to False.
+        print_stats (bool, optional): Whether to print statistics about the transformation. Defaults to False.
+        seed (optional): The seed for the numpy random number generator. Defaults to None.
+
+    Returns:
+        pandas.DataFrame: The transformed dataset.
+    """
     __validate_inputs(transform)
     rng = np.random.default_rng(seed=seed)
 
@@ -311,25 +323,25 @@ def load_dataset(
 
 
 def load_iris(csv_file: str = "iris.csv", *args, **kwargs):
-    """The Iris dataset. https://archive.ics.uci.edu/ml/datasets/iris"""
+    """Load the Iris dataset (https://archive.ics.uci.edu/ml/datasets/iris)."""
     return load_dataset(csv_file, "iris.yaml", *args, **kwargs)
 
 
 def load_wine(csv_file: str = "iris.csv", *args, **kwargs):
-    """The UCI Wine dataset. https://archive.ics.uci.edu/dataset/109/wine"""
+    """Load the UCI Wine dataset (https://archive.ics.uci.edu/dataset/109/wine)."""
     return load_dataset(csv_file, "wine.yaml", *args, **kwargs)
 
 
 def load_adult(csv_file: str = "adult-train.csv", *args, **kwargs):
-    """The Adult Income dataset. http://www.cs.toronto.edu/~delve/data/adult/adultDetail.html"""
+    """Load the Adult Income dataset (http://www.cs.toronto.edu/~delve/data/adult/adultDetail.html)."""
     return load_dataset(csv_file, "adult.yaml", *args, **kwargs)
 
 
 def load_housing(csv_file: str = "california-housing.csv", *args, **kwargs):
-    """California Housing dataset."""
+    """Load the California Housing dataset (https://inria.github.io/scikit-learn-mooc/python_scripts/datasets_california_housing.html)."""
     return load_dataset(csv_file, "housing.yaml", *args, **kwargs)
 
 
 def load_openml_diabetes(csv_file: str = "openml-diabetes.csv", *args, **kwargs):
-    """The OpenML Diabetes dataset. https://www.openml.org/d/37"""
-    return load_dataset("openml-diabetes.csv", "openml-diabetes.yaml", *args, **kwargs)
+    """Load the OpenML Diabetes dataset (https://www.openml.org/d/37)."""
+    return load_dataset(csv_file, "openml-diabetes.yaml", *args, **kwargs)

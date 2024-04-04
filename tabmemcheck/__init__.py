@@ -27,7 +27,7 @@ import tabmemcheck.datasets as datasets
 from .version import __version__
 
 
-def load_default_system_prompts():
+def __load_default_system_prompts():
     """Load the default system prompts from the resources folder."""
     import importlib.resources as resources
     import yaml
@@ -40,7 +40,7 @@ def load_default_system_prompts():
 
 
 # global config object for the module
-class DotDict(dict):
+class __DotDict(dict):
     def __getattr__(self, attr):
         return self.get(attr)
 
@@ -52,10 +52,10 @@ class DotDict(dict):
             del self[key]
 
 
-config = DotDict({})
+config = __DotDict({})
 
 # default system prompts from yaml file
-config.system_prompts = load_default_system_prompts()
+config.system_prompts = __load_default_system_prompts()
 
 # default llm options
 config.temperature = 0

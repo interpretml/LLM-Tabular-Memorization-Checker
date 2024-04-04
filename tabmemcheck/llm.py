@@ -33,7 +33,7 @@ from tabmemcheck.utils import bcolors
 
 @dataclass
 class LLM_Interface:
-    """The interface to the language model."""
+    """Generic interface to a language model."""
 
     # if true, the tests use the chat_completion function, otherwise the completion function
     chat_mode = False
