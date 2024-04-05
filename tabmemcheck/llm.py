@@ -38,11 +38,28 @@ class LLM_Interface:
     # if true, the tests use the chat_completion function, otherwise the completion function
     chat_mode = False
 
-    def completion(self, prompt, temperature, max_tokens):
-        """Returns: The response (string)"""
+    def completion(self, prompt: str, temperature: float, max_tokens: int):
+        """Send a query to a language model.
 
-    def chat_completion(self, messages, temperature, max_tokens):
-        """Returns: The response (string)"""
+        :param prompt: The prompt (string) to send to the model.
+        :param temperature: The sampling temperature.
+        :param max_tokens: The maximum number of tokens to generate.
+
+        Returns:
+            str: The model response.
+        """
+        raise NotImplementedError
+
+    def chat_completion(self, messages, temperature: float, max_tokens: int):
+        """Send a query to a chat model.
+
+        :param messages: The messages to send to the model. We use the OpenAI format.
+        :param temperature: The sampling temperature.
+        :param max_tokens: The maximum number of tokens to generate.
+
+        Returns:
+            str: The model response.
+        """
         raise NotImplementedError
 
 
@@ -145,8 +162,23 @@ class OpenAILLM(LLM_Interface):
         return f"{self.model}"
 
 
-def openai_setup(model=None, azure=False):
-    """Setup an openai model. Returns: LLM_Interface object."""
+def openai_setup(model: str, azure: bool = False):
+    """Setup the OpenAI API and obtain an LLM_Interface object.
+
+    :param model: The name of the model (e.g. "gpt-3.5-turbo-0613").
+    :param azure: If true, use a model deployed on azure.
+
+    This function uses the following environment variables:
+
+    - OPENAI_API_KEY
+    - OPENAI_API_ORG
+    - AZURE_OPENAI_ENDPOINT
+    - AZURE_OPENAI_KEY
+    - AZURE_OPENAI_VERSION
+
+    Returns:
+        LLM_Interface: An LLM to work with!
+    """
     if azure:  # azure deployment
         client = AzureOpenAI(
             azure_endpoint=(
@@ -175,7 +207,7 @@ def openai_setup(model=None, azure=False):
             ),
         )
 
-    # the llm interface object
+    # the llm
     return OpenAILLM(client, model)
 
 
@@ -374,6 +406,7 @@ def read_chatlog(taskname, root="chatlogs", min_files=-1):
 
 
 def send_completion(llm: LLM_Interface, prompt, max_tokens=None, logfile=None):
+    """Ask the LLM to perform a completion, but with additional bells and whistles (logging, printing)."""
     config = tabmem.config
     if max_tokens is None:
         max_tokens = config.max_tokens
@@ -392,9 +425,7 @@ def send_completion(llm: LLM_Interface, prompt, max_tokens=None, logfile=None):
 
 
 def send_chat_completion(llm: LLM_Interface, messages, max_tokens=None, logfile=None):
-    """Send chat completion with retrying and logging.
-
-    Returns: The response (string))"""
+    """Ask the LLM to perform a chat_completion, but with additional bells and whistles (logging, printing)."""
     config = tabmem.config
     if max_tokens is None:
         max_tokens = config.max_tokens
@@ -442,7 +473,7 @@ def num_tokens_from_string(string: str, model_name: str = None) -> int:
 def pretty_print_completion(prompt, response):
     """Print a plain language model completion in a nice format"""
     print(
-        bcolors.Green + prompt + bcolors.ENDC + bcolors.Purple + response + bcolors.ENDC
+        bcolors.Blue + prompt + bcolors.ENDC + bcolors.Purple + response + bcolors.ENDC
     )
 
 
@@ -454,7 +485,7 @@ def pretty_print_messages(messages):
             + message["role"].capitalize()
             + ": "
             + bcolors.ENDC
-            + bcolors.Green
+            + bcolors.Blue
             + message["content"].strip()
             + bcolors.ENDC
         )

@@ -1,0 +1,5 @@
+/* Custom styles for sphinx_rtd_theme */
+.wy-nav-content {
+    width: 50%;
+    max-width: 1200px; /* Adjust this value to your preference */
+}

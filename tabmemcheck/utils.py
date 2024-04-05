@@ -60,12 +60,12 @@ def _csv_file(csv_file):
 
 
 def get_dataset_name(csv_file):
-    """Returns the name of the dataset"""
+    """Returns the name of the dataset."""
     return os.path.splitext(os.path.basename(csv_file))[0]
 
 
 def get_delimiter(csv_file):
-    """Returns the delimiter of a csv file"""
+    """Returns the delimiter of a csv file."""
     with _csv_file(csv_file) as csv_file:
         sniffer = csv.Sniffer()
         with open(csv_file) as fp:
@@ -74,7 +74,7 @@ def get_delimiter(csv_file):
 
 
 def get_feature_names(csv_file):
-    """Returns the names of the features in a csv file (a list of strings)"""
+    """Returns the names of the features in a csv file (a list of strings)."""
     with _csv_file(csv_file) as csv_file:
         df = load_csv_df(csv_file)
         return df.columns.tolist()
@@ -125,7 +125,8 @@ def load_csv_string(csv_file, header=True):
 def load_csv_array(csv_file, add_feature_names=False):
     """Load a csv file as a 2d numpy array where each entry is a string.
 
-    If add_featrue_names is true, then all entries will have the format "feature_name = feature_value"
+    :add_feature_names: if true, then each entry will have the format "feature_name = feature_value"
+    :returns: a 2d numpy array of strings
     """
     with _csv_file(csv_file) as csv_file:
         # load csv as a pandas dataframe
@@ -164,17 +165,9 @@ def tmp_csv_file(df, dataset_name):
 
 
 def load_samples(csv_file, add_feature_names=True):
-    """
-    Returns: description, samples where description is a string and samples is a list of strings.
+    """Load a csv file as a list of ''Feature name = Feature value'' strings.
 
-    Description:
-    =======
-    Dataset: adult
-    Feature Names: Age, WorkClass, fnlwgt, Education, EducationNum, MaritalStatus, Occupation, Relationship, Race, Gender, CapitalGain, CapitalLoss, HoursPerWeek, NativeCountry, Income
-
-    Samples:
-    ========
-    ['Age = 39, , Income = <=50K', ..., 'Age = 54, , Income = >50K']
+    :returns: description, samples
     """
     # load the relevant information from the csv file
     dataset_name = get_dataset_name(csv_file)
@@ -271,22 +264,6 @@ def load_cond_samples_target(
     return prefixes, suffixes
 
 
-# DEPRECATED
-def load_prefix_suffix_feature_completion_data(
-    csv_file, num_prefix_features, use_feature_names=False
-):
-    """Returns a list of (prefix, suffix)-pairs for each row in the csv file.
-
-    If use_feature_names is true, then all entries will have the format "feature_name = feature_value"
-    """
-    return load_cond_samples(
-        csv_file,
-        get_feature_names(csv_file)[:num_prefix_features],
-        add_description=False,
-        add_feature_names=use_feature_names,
-    )
-
-
 #################################################################
 # parsing of model responses
 #################################################################
@@ -295,7 +272,7 @@ def load_prefix_suffix_feature_completion_data(
 def parse_feature_string(
     s, feature_names, as_dict=False, in_list=False, final_delimiter=","
 ):
-    """parse a string of the form "feature_name = feature_value, feature_name = feature_value, ..." into a pandas dataframe"""
+    """Parse a string (model response) of the form "feature_name = feature_value, feature_name = feature_value, ..." into a pandas dataframe."""
     feature_dict = {}
     # we use the magic strings 'feature_name = '
     magic_strings = [name + " = " for name in feature_names]
@@ -342,7 +319,7 @@ def parse_feature_string(
 
 
 def parse_feature_stings(strings, feature_names, **kwargs):
-    """parse a list of features strings into a pandas dataframe"""
+    """Parse a list of features strings into a pandas dataframe."""
     parsed = []
     for s in strings:
         s_df = parse_feature_string(s, feature_names, **kwargs)
@@ -543,13 +520,13 @@ def levenshtein_html(a: str, b: str):
         a_pos = opcode["i"]
         b_pos = opcode["j"]
         if op == "match":
-            html_string += f'<span style="background-color:#aaffaa">{b[b_pos]}</span>'
+            html_string += f'<span style="background-color:#7CFC00">{b[b_pos]}</span>'
         elif op == "insertion":
-            html_string += f'<span style="background-color:#ffaaaa">{b[b_pos]}</span>'
+            html_string += f'<span style="background-color:#EE4B2B">{b[b_pos]}</span>'
         elif op == "substitution":
-            html_string += f'<span style="background-color:#ffaaaa">{b[b_pos]}</span>'
+            html_string += f'<span style="background-color:#EE4B2B">{b[b_pos]}</span>'
         elif op == "deletion":
-            html_string += f'<span style="background-color:#CBC3E3">{a[a_pos]}</span>'
+            html_string += f'<span style="background-color:#BF40BF">{a[a_pos]}</span>'
         if op != "deletion" and b[b_pos] == "\n":
             html_string += "<br>"
     return html_string

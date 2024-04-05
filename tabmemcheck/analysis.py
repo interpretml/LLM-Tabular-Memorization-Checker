@@ -21,7 +21,7 @@ import tabmemcheck.utils as utils
 
 
 def string_strip(x):
-    """ "We always convert all objects (data frames and responses) to strings and strip them of trailing whitespaces."""
+    """Convert the input (dataframe, series, or string) to string and strip trailing whitespaces."""
     # if x is data frame
     if isinstance(x, pd.DataFrame):
         x = x.astype(str)
@@ -55,23 +55,25 @@ def validate_partial_row(x, feature_names):
 
 
 def find_matches(
-    df,
+    df: pd.DataFrame,
     x,
     string_dist_fn=utils.levenshtein_distances,
     match_floating_point=True,
     strip_quotation_marks=True,
 ):
-    """Find the closest matches between x and all rows in df. By default, we use the levenshtein distance as the distance metric.
+    """Find the closest matches between a row x and all rows in the dataframe df. By default, we use the levenshtein distance as the distance metric.
 
     This function can handle a variety of formatting differences between the values in the original data
     and LLM responses that should still be counted as equal.
 
-    match_floating_point: if True, handes floating point formatting differences, e.g. 0.28 vs. .280 or 172 vs 172.0 (default: True).
-    strip_quotation_marks: if True, strips quotation marks from the values in df and x (to handle the case where a model responds with "23853", and the value in the data is 23853) (default: True).
 
-    x: A string, a pandas dataframe or a pandas Series.
+    :param df: a pandas dataframe.
+    :param x: a string, a pandas dataframe or a pandas Series.
+    :param string_dist_fn: a function that computes the distance between two strings. By default, this is the levenshtein distance.
+    :param match_floating_point: if True, handes floating point formatting differences, e.g. 0.28 vs. .280 or 172 vs 172.0 (default: True).
+    :param strip_quotation_marks: if True, strips quotation marks from the values in df and x (to handle the case where a model responds with "23853", and the value in the data is 23853) (default: True).
 
-    Returns: the minimum distance and the matching rows in df.
+    :return: the minimum distance and the matching rows in df.
     """
     # x should be a dataframe with a single row, or be convertible to this format
     x = validate_partial_row(x, df.columns)
@@ -207,12 +209,10 @@ def conditional_completion_analysis(csv_file, completions_df):
 def levenshtein_distance_t_test(x, y, z, alternative="two-sided", return_dist=False):
     """Test whether x is closer to y than z in Levenshtein distance using a t-test.
 
-    x must be a list of stings.
-    y and z can be either a list of strings or a list of lists of strings.
-
-    alternative: argument to scipy.stats.ttest_ind (default: two-sided)
-
-    Returns: scipy.stats._result_classes.TtestResult"""
+    :param x, y, z: a list of strings.
+    :param alternative: the alternative hypothesis, either 'two-sided', 'greater', or 'less'.
+    :return_dist: if True also return the distances between x and y, and x and z.
+    :return: scipy.stats._result_classes.TtestResult"""
     # convert numpy arrays to lists
     if isinstance(x, np.ndarray):
         x = x.tolist()
@@ -254,13 +254,16 @@ def levenshtein_distance_t_test(x, y, z, alternative="two-sided", return_dist=Fa
 
 
 def build_first_token(csv_file, verbose=False):
-    """We construct the first token using the first n digits of every row. The usefulness of this approach comes from the fact that in some datasets, the first token might always be the same.
+    """Given a csv file, build a first token that can be used in the first token test.
 
-    NOTE: this does not work if the first token is the id of the row, because the id is not always the same. IS THIS ACTUALLY TRUE?
+    The first token is constructed by taking the first n digits of every row in the csv file (that is, this functions determines the n).
+    Using the first n digits improves upon using the first digit on datasets where the first digit is always the same or contains few distinct values.
 
-    NOTE: we should always do a prediction test with a gbtree / logistic regression to see if the first token is actually random
+    Note: This function does NOT check if the constructed first token is random.
 
-    Returns: the number of digits that make up the first token.
+    :param csv_file: the path to the csv file.
+    :param verbose: if True, print the first tokens and their counts.
+    :return: the number of digits that make up the first token.
     """
     csv_rows = utils.load_csv_rows(csv_file, header=False)
     num_rows = len(csv_rows)
@@ -278,8 +281,10 @@ def build_first_token(csv_file, verbose=False):
 
 
 def find_most_unique_feature(csv_file):
-    """Find the feature that have the most unique values. This is useful for the feature completion test.
-    Returns: feature name, fraction of unique values
+    """Given a csv file, find the feature that has the most unique values. This is the default feature used for the feature completion test.
+
+    :param csv_file: the path to the csv file.
+    :return: the name of the most unique feature and the fraction of unique values.
     """
     feature_names = utils.get_feature_names(csv_file)
     df = utils.load_csv_df(csv_file)

@@ -295,6 +295,8 @@ def header_test(
     :param completion_length: The length of the completions in the few-shot examples (reduce for LLMs with small context windows).
     :param few_shot_csv_files: A list of other csv files to be used as few-shot examples.
     :param system_prompt: The system prompt to be used.
+
+    :return: The header prompt, the actual header completion, and the model response.
     """
     llm = __llm_setup(llm)
     few_shot_csv_files = __validate_few_shot_files(csv_file, few_shot_csv_files)
@@ -391,6 +393,7 @@ def row_completion_test(
     few_shot=7,
     out_file=None,
     system_prompt: str = "default",
+    print_levenshtein: bool = True,
 ):
     """Row completion test for memorization. The test resports the number of correctly completed rows.
 
@@ -401,6 +404,9 @@ def row_completion_test(
     :param few_shot: The number of few-shot examples to be used.
     :param out_file: Optionally save all queries and responses to a csv file.
     :param system_prompt: The system prompt to be used.
+    :param print_levenshtein: Print a visulization of the levenshtein distance between the model responses and the actual rows.
+
+    :return: the rows, the model responses.
     """
     llm = __llm_setup(llm)
 
@@ -427,7 +433,7 @@ def row_completion_test(
 
     # ask the model to perform row chat completion (execute the the prompt)
     if llm.chat_mode:
-        test_prefixes, test_suffixes, responses = row_chat_completion(
+        _, test_suffixes, responses = row_chat_completion(
             llm,
             csv_file,
             system_prompt,
@@ -435,14 +441,14 @@ def row_completion_test(
             num_queries,
             few_shot,
             out_file,
+            print_levenshtein,
         )
     else:
-        test_prefixes, test_suffixes, responses = row_completion(
+        _, test_suffixes, responses = row_completion(
             llm, csv_file, num_prefix_rows, num_queries, out_file
         )
 
-    # count the number of exact matches
-    # NOTE here we assume that the test suffix is a single row that is unique, i.e. no duplicate rows
+    # count the number of verbatim completed rows
     num_exact_matches = 0
     for test_suffix, response in zip(test_suffixes, responses):
         if test_suffix.strip() in response.strip():
@@ -466,7 +472,7 @@ def row_completion_test(
         # + f"{test_result.pvalue:.3f}."
     )
 
-    return test_prefixes, test_suffixes, responses
+    return test_suffixes, responses
 
 
 ####################################################################################
@@ -492,6 +498,8 @@ def feature_completion_test(
     :param few_shot: The number of few-shot examples to be used.
     :param out_file: Optionally save all queries and responses to a csv file.
     :param system_prompt: The system prompt to be used.
+
+    :return: the feature values, the model responses.
     """
     llm = __llm_setup(llm)
 
@@ -540,8 +548,12 @@ def feature_completion_test(
     )
 
     # parse the model responses
-    response_df = utils.parse_feature_stings(responses, [feature_name])
-    test_suffix_df = utils.parse_feature_stings(test_suffixes, [feature_name])
+    response_df = utils.parse_feature_stings(
+        responses, [feature_name], final_delimiter="\n"
+    )
+    test_suffix_df = utils.parse_feature_stings(
+        test_suffixes, [feature_name], final_delimiter="\n"
+    )
 
     # count number of exact matches
     num_exact_matches = np.sum(
@@ -557,6 +569,8 @@ def feature_completion_test(
         + f"{num_exact_matches}/{num_queries} exact matches."
         + bcolors.ENDC
     )
+
+    return test_suffix_df[feature_name].to_list(), response_df[feature_name].to_list()
 
 
 ####################################################################################

@@ -142,6 +142,7 @@ def row_chat_completion(
     num_queries=100,
     few_shot=7,
     out_file=None,
+    print_levenshtein=False,
 ):
     """Row  chat completion task. This task ask the LLM to predict the next row in the
     csv file, given the previous rows. This task is the basis for the row completion
@@ -167,6 +168,7 @@ def row_chat_completion(
         few_shot=few_shot,
         num_queries=num_queries,
         out_file=out_file,
+        print_levenshtein=print_levenshtein,
     )
 
     return test_prefixes, test_suffixes, responses
@@ -252,6 +254,7 @@ def prefix_suffix_chat_completion(
     system_prompt: str,
     few_shot=None,
     num_queries=100,
+    print_levenshtein=False,
     out_file=None,
     rng=None,
 ):
@@ -356,6 +359,11 @@ def prefix_suffix_chat_completion(
         test_prefixes.append(test_prefix)
         test_suffixes.append(test_suffix)
         responses.append(response)
+        # print the levenshtein distance between the true suffix and the response
+        if print_levenshtein:
+            print(
+                utils.levenshtein_cmd(test_suffix, response),
+            )
 
     # save the results to file
     if out_file is not None:
