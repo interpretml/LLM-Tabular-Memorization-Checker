@@ -29,7 +29,9 @@ Then use ```import tabmemcheck``` to import the Python package.
 
 # Overview
 
-The package provides four different tests for verbatim memorization of a tabular dataset (header test, row completion test, feature completion test, first token test).
+The package provides four different tests for verbatim memorization of a tabular dataset (header test, row completion test, feature completion test, first token test). 
+
+It also provides additional heuristics to assess what an LLM know about a tabular dataset (does the LLM know the names of the features in the dataset?).
 
 The header test asks the LLM to complete the initial rows of a CSV file.
 
