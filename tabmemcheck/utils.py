@@ -532,6 +532,11 @@ def levenshtein_html(a: str, b: str):
     return html_string
 
 
+def levenshtein_html_legend():
+    """HTML legend for the levenshtein visualization."""
+    return """'<b>Legend:</b> Prompt, <span style="background-color:#7CFC00">Correct</span>, <span style="background-color:#EE4B2B">Incorrect</span>, <span style="background-color:#BF40BF">Missing</span>'"""
+
+
 #################################################################
 # Levenshtein distance with edits
 # from  https://gist.github.com/curzona/9435822

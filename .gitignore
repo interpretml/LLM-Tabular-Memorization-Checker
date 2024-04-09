@@ -4,6 +4,7 @@
 
 docs_build/
 chatlogs/
+development/
 notebooks/figures/*
 notebooks/private
 

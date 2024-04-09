@@ -15,6 +15,7 @@ import openai
 from openai import OpenAI, AzureOpenAI
 
 import tiktoken
+import requests
 
 from tenacity import (
     retry,
@@ -163,7 +164,7 @@ class OpenAILLM(LLM_Interface):
 
 
 def openai_setup(model: str, azure: bool = False):
-    """Setup the OpenAI API and obtain an LLM_Interface object.
+    """Setup an OpenAI language model.
 
     :param model: The name of the model (e.g. "gpt-3.5-turbo-0613").
     :param azure: If true, use a model deployed on azure.
@@ -415,9 +416,9 @@ def send_completion(llm: LLM_Interface, prompt, max_tokens=None, logfile=None):
     log(prompt, response, logfile)
     # printing
     if config.print_prompts or config.print_next_prompt:
-        pretty_print_completion(prompt, response)
+        print_completion(prompt, response)
     elif config.print_responses:
-        pretty_print_response(response)
+        print_response(response)
     # reset print_next_prompt
     config.print_next_prompt = False
     # return string response
@@ -436,9 +437,9 @@ def send_chat_completion(llm: LLM_Interface, messages, max_tokens=None, logfile=
     log(messages, response, logfile)
     # printing
     if config.print_prompts or config.print_next_prompt:
-        pretty_print_messages(messages)
+        print_messages(messages)
     if config.print_prompts or config.print_responses or config.print_next_prompt:
-        pretty_print_response(response)
+        print_response(response)
     # reset print_next_prompt
     config.print_next_prompt = False
     # return string response
@@ -466,18 +467,18 @@ def num_tokens_from_string(string: str, model_name: str = None) -> int:
 
 
 #################################################################################################
-# pretty printing
+# printing
 #################################################################################################
 
 
-def pretty_print_completion(prompt, response):
+def print_completion(prompt, response):
     """Print a plain language model completion in a nice format"""
     print(
         bcolors.Blue + prompt + bcolors.ENDC + bcolors.Purple + response + bcolors.ENDC
     )
 
 
-def pretty_print_messages(messages):
+def print_messages(messages):
     """Prints openai chat messages in a nice format"""
     for message in messages:
         print(
@@ -491,7 +492,7 @@ def pretty_print_messages(messages):
         )
 
 
-def pretty_print_response(response):
+def print_response(response):
     """Prints openai chat response in a nice format"""
     print(
         bcolors.BOLD

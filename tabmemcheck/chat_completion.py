@@ -221,6 +221,7 @@ def chat_completion(
     system_prompt: str = "You are a helpful assistant that complets the user's input.",
     few_shot=5,
     num_queries=10,
+    print_levenshtein=False,
     out_file=None,
     rng=None,
 ):
@@ -235,7 +236,15 @@ def chat_completion(
         prefixes.append(s[:idx])
         suffixes.append(s[idx:])
     return prefix_suffix_chat_completion(
-        llm, prefixes, suffixes, system_prompt, few_shot, num_queries, out_file, rng
+        llm,
+        prefixes,
+        suffixes,
+        system_prompt,
+        few_shot,
+        num_queries,
+        print_levenshtein,
+        out_file,
+        rng,
     )
 
 
@@ -362,7 +371,8 @@ def prefix_suffix_chat_completion(
         # print the levenshtein distance between the true suffix and the response
         if print_levenshtein:
             print(
-                utils.levenshtein_cmd(test_suffix, response),
+                "RESPONSE:",
+                utils.levenshtein_cmd(test_suffix, response[: len(test_suffix) + 10]),
             )
 
     # save the results to file

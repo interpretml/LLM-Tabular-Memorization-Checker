@@ -760,7 +760,7 @@ def sample(
 
     if print_invalid_responses:
         for idx in nan_rows:
-            tabmem.llm.pretty_print_response(responses[idx])
+            tabmem.llm.print_response(responses[idx])
 
     if drop_invalid_responses:
         response_df.drop(nan_rows, axis=0, inplace=True)
