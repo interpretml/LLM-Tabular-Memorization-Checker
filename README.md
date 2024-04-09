@@ -1,10 +1,13 @@
-# 🐘 Testing Language Models for Memorization of Tabular Data
+# 🐘 Testing Language Models for Memorization of Tabular Datasets
 ![PyPI - Version](https://img.shields.io/pypi/v/tabmemcheck)
 ![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
 ![License](https://img.shields.io/github/license/interpretml/TalkToEBM.svg?style=flat-square)
 [![tests](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/actions/workflows/run_tests.yaml/badge.svg?branch=main)](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/actions/workflows/run_tests.yaml)
 [![Documentation](https://img.shields.io/badge/Documentation-View-blue)](http://interpret.ml/LLM-Tabular-Memorization-Checker/)
 
+<p align="center">
+  <img src="img/elephant.webp" width="800" alt="Header Test"/>
+</p>
 
 Tabmemcheck is an open-source Python library to test language models for memorization of tabular datasets. 
  
@@ -153,10 +156,19 @@ or use the option ```--debug``` with the CLI tool to see the specific prompts an
 
 # Citation
 
-If you find this code useful in your research, please consider to cite our paper.
+If you find this code useful in your research, please consider citing our research papers.
 
 ```
-@inproceedings{bordt2023elephants,
+@article{bordt2024memorization_learning,
+  title={Elephants Never Forget: Memorization and Learning of Tabular Data in
+  Large Language Models},
+  author={Sebastian Bordt, Harsha Nori, Vanessa Rodrigues, Besmira Nushi, Rich
+  Caruana},
+  booktitle={arXiv preprint},
+  year={2024}
+}
+
+@inproceedings{bordt2023testing,
   title={Elephants Never Forget: Testing Language Models for Memorization of Tabular Data},
   author={Bordt, Sebastian and Nori, Harsha and Caruana, Rich},
   booktitle={NeurIPS 2023 Second Table Representation Learning Workshop},
@@ -165,8 +177,6 @@ If you find this code useful in your research, please consider to cite our paper
 ```
 
 # References
-
-Here are some references that we found useful when developing this tool.
 
 Chang et al., ["Speak, Memory: An Archaeology of Books Known to ChatGPT/GPT-4"](https://arxiv.org/abs/2305.00118), EMNLP 2023
 
