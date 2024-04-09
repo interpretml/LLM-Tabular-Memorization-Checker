@@ -164,8 +164,7 @@ If you find this code useful in your research, please consider citing our resear
 @article{bordt2024memorization_learning,
   title={Elephants Never Forget: Memorization and Learning of Tabular Data in
   Large Language Models},
-  author={Sebastian Bordt, Harsha Nori, Vanessa Rodrigues, Besmira Nushi, Rich
-  Caruana},
+  author={Bordt, Sebastian and Nori, Harsha and Rodrigues, Vanessa and Nushi, Besmira and Caruana, Rich},
   booktitle={arXiv preprint},
   year={2024}
 }
