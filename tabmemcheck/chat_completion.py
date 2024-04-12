@@ -12,6 +12,8 @@
 import numpy as np
 import pandas as pd
 
+from typing import Union
+
 import tabmemcheck.utils as utils
 
 from tabmemcheck.llm import LLM_Interface, send_chat_completion, send_completion
@@ -250,7 +252,7 @@ def build_contiguous_query(
 
 def chat_completion(
     llm: LLM_Interface,
-    strings: str | list[str],
+    strings: Union[list[str], str],
     system_prompt: str = "You are a helpful assistant.",
     prefix_length: int = None,
     suffix_length: int = None,
