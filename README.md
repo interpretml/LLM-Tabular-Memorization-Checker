@@ -19,7 +19,7 @@ Features:
 
 The different tests are described in a Neurips'23 workshop [paper](https://arxiv.org/abs/2403.06644).
 
-The dataset transforms, and the consequences of memorization for few-shot learning are described in this [pre-print](https://arxiv.org/abs/2404.06209).
+The dataset transforms and the consequences of memorization for few-shot learning are discussed in this [pre-print](https://arxiv.org/abs/2404.06209).
 
 ### Installation
 
