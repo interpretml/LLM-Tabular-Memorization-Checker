@@ -108,13 +108,15 @@ class OpenAILLM(LLM_Interface):
     client: OpenAI = None
     model: str = None
 
-    def __init__(self, client, model=None):
+    def __init__(self, client, model, chat_mode=None):
         super().__init__()
         self.client = client
         self.model = model
         # auto-detect chat models
         if "gpt-3.5" in model or "gpt-4" in model:
             self.chat_mode = True
+        if chat_mode is not None:
+            self.chat_mode = chat_mode
 
     @retry(
         retry=retry_if_not_exception_type(openai.BadRequestError),
@@ -153,17 +155,20 @@ class OpenAILLM(LLM_Interface):
         )
         # we return the completion string or "" if there is an invalid response/query
         try:
-            response = response.choices[0].message.content
+            response_content = response.choices[0].message.content
         except:
             print(f"Invalid response {response}")
-            response = ""
-        return response
+            response_content = ""
+        if response_content is None:
+            print(f"Invalid response {response}")
+            response_content = ""
+        return response_content
 
     def __repr__(self) -> str:
         return f"{self.model}"
 
 
-def openai_setup(model: str, azure: bool = False):
+def openai_setup(model: str, azure: bool = False, *args, **kwargs):
     """Setup an OpenAI language model.
 
     :param model: The name of the model (e.g. "gpt-3.5-turbo-0613").
@@ -197,6 +202,8 @@ def openai_setup(model: str, azure: bool = False):
                 if "AZURE_OPENAI_VERSION" in os.environ
                 else None
             ),
+            *args,
+            **kwargs,
         )
     else:  # openai api
         client = OpenAI(
@@ -206,6 +213,8 @@ def openai_setup(model: str, azure: bool = False):
             organization=(
                 os.environ["OPENAI_API_ORG"] if "OPENAI_API_ORG" in os.environ else None
             ),
+            *args,
+            **kwargs,
         )
 
     # the llm
