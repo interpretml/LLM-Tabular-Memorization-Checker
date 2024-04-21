@@ -12,7 +12,7 @@
 import numpy as np
 import pandas as pd
 
-from typing import Union
+from typing import Union, Tuple
 
 import tabmemcheck.utils as utils
 
@@ -213,12 +213,50 @@ def row_completion(
 
 
 ####################################################################################
-# Basic completion with a list of strings.
+# General-purpose chat completion
 ####################################################################################
 
 
-def build_contiguous_query(
-    text: str, prefix_length: int, suffix_length: int, few_shot: int, rng
+def __split_prefix_suffix(
+    text: str,
+    prefix_length: Union[int, Tuple[int, int]],
+    prefix_offset: Union[int, str],
+    suffix_length: Union[int, Tuple[int, int]],
+    rng,
+):
+    """Split a string into a prefix and a suffix."""
+    # if prefix_length is a tuple, choose a random integer from the given range
+    if isinstance(prefix_length, tuple):
+        prefix_length = rng.integers(
+            low=prefix_length[0], high=prefix_length[1], size=1
+        )[0]
+    # same for suffix_length
+    if isinstance(suffix_length, tuple):
+        suffix_length = rng.integers(
+            low=suffix_length[0], high=suffix_length[1], size=1
+        )[0]
+    if prefix_offset == "random":
+        prefix_offset = rng.integers(
+            low=0, high=len(text) - prefix_length - suffix_length, size=1
+        )[0]
+    return (
+        text[prefix_offset : prefix_offset + prefix_length],
+        text[
+            prefix_offset
+            + prefix_length : prefix_offset
+            + prefix_length
+            + suffix_length
+        ],
+    )
+
+
+def __build_contiguous_query(
+    text: str,
+    prefix_length: int,  # TODO random prefix and suffix length
+    suffix_length: int,
+    position: Union[int, str],
+    few_shot: int,
+    rng,
 ):
     query_length = (prefix_length + suffix_length) * (1 + few_shot)
     # the length of the string must be at least (prefix_length + suffix_length) * (1 + few_shot)
@@ -226,8 +264,9 @@ def build_contiguous_query(
         len(text) >= query_length
     ), "The provided string is too short for the specified prefix and suffix lengths."
     # choose a random sub-string of length query_length
-    idx = rng.integers(low=0, high=len(text) - query_length)
-    s_query = text[idx : idx + query_length]
+    if position == "random":
+        position = rng.integers(low=0, high=len(text) - query_length)
+    s_query = text[position : position + query_length]
     # construct few-shot examples
     few_shot_examples = []
     for i_fs in range(few_shot):
@@ -252,29 +291,38 @@ def build_contiguous_query(
 
 def chat_completion(
     llm: LLM_Interface,
-    strings: Union[list[str], str],
+    text: str,
     system_prompt: str = "You are a helpful assistant.",
-    prefix_length: int = None,
-    suffix_length: int = None,
+    prefix_length: int = 300,
+    suffix_length: int = 300,
+    position: Union[int, str] = 0,
     few_shot=5,  # integer, or list [str, ..., str] or [[str,..,str], ..., [str,..,str]]
     contiguous=False,
-    num_queries=10,
+    num_queries=1,
     print_levenshtein=False,
     out_file=None,
     rng=None,
 ):
-    """General-purpose chat completion."""
+    """Prompt a chat model to (verbatim) complete a text.
+
+    Args:
+        llm (LLM_Interface): The LLM.
+        text (str): The text that we ask the model to complete.
+        system_prompt (str, optional): _description_. Defaults to "You are a helpful assistant.".
+        prefix_length (int, optional): _description_. Defaults to 300.
+        suffix_length (int, optional): _description_. Defaults to 300.
+        position (Union[int, str], optional): _description_. Defaults to 0.
+        few_shot (int, optional): _description_. Defaults to 5.
+        num_queries (int, optional): _description_. Defaults to 1.
+        print_levenshtein (bool, optional): _description_. Defaults to False.
+        out_file (_type_, optional): _description_. Defaults to None.
+        rng (_type_, optional): _description_. Defaults to None.
+
+    Returns:
+        _type_: _description_
+    """
     if rng is None:
         rng = np.random.default_rng()
-    if isinstance(strings, str):
-        strings = [strings]
-
-    def prefix_suffix_split(s):
-        if prefix_length is not None:
-            return s[:prefix_length], s[prefix_length:]
-        else:  # randomly split the string into prefix and suffix
-            idx = rng.integers(low=int(len(s) / 3), high=int(2 * len(s) / 3))
-            return s[:idx], s[idx:]
 
     if contiguous:
         # few-shot has to be an integer
@@ -288,8 +336,8 @@ def chat_completion(
         prefixes, suffixes, responses = [], [], []
         for _ in range(num_queries):
             # select a random string and build the query
-            few_shot_examples, prefix, suffix = build_contiguous_query(
-                rng.choice(strings), prefix_length, suffix_length, few_shot, rng
+            few_shot_examples, prefix, suffix = __build_contiguous_query(
+                text, prefix_length, suffix_length, position, few_shot, rng
             )
             # send query
             prefix, suffix, response = prefix_suffix_chat_completion(
@@ -309,32 +357,65 @@ def chat_completion(
         return prefixes, suffixes, responses
 
     # non-contiguous
-    prefixes = []
-    suffixes = []
-    for s_query in strings:  # fixed prefix length specified by the user
-        prefix, suffix = prefix_suffix_split(s_query)
+    prefixes, suffixes, responses = [], [], []
+    for _ in range(num_queries):
+        # choose prefix and suffix
+        prefix, suffix = __split_prefix_suffix(
+            text, prefix_length, position, suffix_length, rng
+        )
+        # construct few shot examples
+        if isinstance(few_shot, list):  # few_shot is list
+            if len(few_shot) > 0:
+                if isinstance(few_shot[0], list):  # few_shot is list of lists
+                    few_shot_examples = [
+                        [
+                            __split_prefix_suffix(
+                                s, prefix_length, "random", suffix_length, rng
+                            )
+                            for s in fs
+                        ]
+                        for fs in few_shot
+                    ]
+                    few_shot_examples = [
+                        ([x[0] for x in fs], [x[1] for x in fs])
+                        for fs in few_shot_examples
+                    ]
+                else:  # list of strings
+                    few_shot_examples = [
+                        __split_prefix_suffix(
+                            s, prefix_length, "random", suffix_length, rng
+                        )
+                        for s in few_shot
+                    ]
+                    few_shot_examples = [([fs[0]], [fs[1]]) for fs in few_shot_examples]
+        else:  # few_shot is integer
+            # remove the selected prefix and suffix from the text
+            remaining_text = text.replace(prefix, "")
+            remaining_text = remaining_text.replace(suffix, "")
+            # construct few-shot examples from the remaining text. not perfect but it works.
+            few_shot_examples = [
+                __split_prefix_suffix(
+                    remaining_text, prefix_length, "random", suffix_length, rng
+                )
+                for _ in range(few_shot)
+            ]
+            few_shot_examples = [([fs[0]], [fs[1]]) for fs in few_shot_examples]
+        # send query
+        prefix, suffix, response = prefix_suffix_chat_completion(
+            llm,
+            [prefix],
+            [suffix],
+            system_prompt,
+            few_shot_examples,
+            num_queries=1,
+            print_levenshtein=print_levenshtein,
+            out_file=out_file,
+            rng=rng,
+        )
         prefixes.append(prefix)
         suffixes.append(suffix)
-    # few shot list
-    if isinstance(few_shot, list):
-        if len(few_shot) > 0:
-            if isinstance(few_shot[0], list):  # list of lists
-                few_shot = [[prefix_suffix_split(s) for s in fs] for fs in few_shot]
-                few_shot = [([x[0] for x in fs], [x[1] for x in fs]) for fs in few_shot]
-            else:  # list of strings
-                few_shot = [prefix_suffix_split(s) for s in few_shot]
-                few_shot = [([fs[0]], [fs[1]]) for fs in few_shot]
-    return prefix_suffix_chat_completion(
-        llm,
-        prefixes,
-        suffixes,
-        system_prompt,
-        few_shot,
-        num_queries,
-        print_levenshtein,
-        out_file,
-        rng,
-    )
+        responses.append(response)
+    return prefixes, suffixes, responses
 
 
 ####################################################################################

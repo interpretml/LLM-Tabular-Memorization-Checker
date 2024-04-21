@@ -347,6 +347,26 @@ def guidance_llm_wrapper(llm):
 
 
 ####################################################################################
+# dummy for testing
+####################################################################################
+
+
+@dataclass
+class TestLLM(LLM_Interface):
+    def __init__(self, chat_mode: bool):
+        self.chat_mode = chat_mode
+
+    def chat_completion(self, messages, temperature, max_tokens):
+        return "Hi there, it's TestLLM."
+
+    def completion(self, prompt: str, temperature: float, max_tokens: int):
+        return "... it's TestLLM!"
+
+    def __repr__(self) -> str:
+        return f"{self.model}"
+
+
+####################################################################################
 # Send (chat) completion messages with retrying and logging.
 #
 # Logging works as follows. Either we specify a logfile, then we log to that file.
