@@ -1,0 +1,53 @@
+target: median_house_value
+
+perturbations: 
+  - name: [longitude, latitude]
+    type: integer
+    size: 1
+    scale: 0.01
+  - name: housing_median_age
+    type: integer
+    size: 1
+  - name: [total_rooms, population]
+    type: integer
+    size: 10
+  - name: [total_bedrooms, households]
+    type: integer
+    size: 5
+  - name: median_income
+    type: integer
+    size: 100
+    scale: 0.001
+
+transform: 
+  - name: median_income
+    type: scale
+    factor: 10000
+  - name: median_house_value
+    type: scale
+    factor: 0.01
+  - name: [housing_median_age,total_rooms,total_bedrooms,population,households,median_house_value,median_income,median_house_value]
+    type: astype
+    dtype: int
+
+
+rename:
+  longitude: Longitude
+  latitude: Latitude
+  housing_median_age: Median age
+  total_rooms: Total Rooms
+  total_bedrooms: Total Bedrooms
+  population: Population
+  households: Households
+  median_income: Median income
+  median_house_value: Median House Value
+  ocean_proximity: How close to the ocean?
+
+recode:
+  ocean_proximity:
+    '<1H OCEAN': Less than 1 hour to ocean
+    'INLAND': Inland, far from ocean
+    'ISLAND': Island
+    'NEAR BAY': Near San Francisco Bay
+    'NEAR OCEAN': Near the ocean
+    

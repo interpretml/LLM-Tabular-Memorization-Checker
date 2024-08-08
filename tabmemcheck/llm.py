@@ -151,7 +151,7 @@ class OpenAILLM(LLM_Interface):
             messages=messages,
             temperature=temperature,
             max_tokens=max_tokens,
-            timeout=90,
+            # timeout=90,
         )
         # we return the completion string or "" if there is an invalid response/query
         try:
@@ -436,7 +436,7 @@ def read_chatlog(taskname, root="chatlogs", min_files=-1):
 
 
 def send_completion(llm: LLM_Interface, prompt, max_tokens=None, logfile=None):
-    """Ask the LLM to perform a completion, but with additional bells and whistles (logging, printing)."""
+    """Ask the LLM to perform a completion, with additional bells and whistles (logging, printing)."""
     config = tabmem.config
     if max_tokens is None:
         max_tokens = config.max_tokens
@@ -455,7 +455,7 @@ def send_completion(llm: LLM_Interface, prompt, max_tokens=None, logfile=None):
 
 
 def send_chat_completion(llm: LLM_Interface, messages, max_tokens=None, logfile=None):
-    """Ask the LLM to perform a chat_completion, but with additional bells and whistles (logging, printing)."""
+    """Ask the LLM to perform a chat_completion, with additional bells and whistles (logging, printing)."""
     config = tabmem.config
     if max_tokens is None:
         max_tokens = config.max_tokens

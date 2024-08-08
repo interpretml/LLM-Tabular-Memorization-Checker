@@ -52,11 +52,20 @@ def __validate_few_shot_files(csv_file, few_shot_csv_files):
     dataset_name = utils.get_dataset_name(csv_file)
     few_shot_names = [utils.get_dataset_name(x) for x in few_shot_csv_files]
     if dataset_name in few_shot_names:
-        # replace the dataset_name with open-ml diabetes
+        # replace the dataset with iris or adult 
         few_shot_csv_files = [
             x for x in few_shot_csv_files if utils.get_dataset_name(x) != dataset_name
         ]
-        few_shot_csv_files.append("openml-diabetes.csv")
+        if 'iris' in dataset_name:
+            few_shot_csv_files.append("adult-train.csv")
+        else:
+            few_shot_csv_files.append("iris.csv")
+        print(
+                bcolors.BOLD
+                + "Info: "
+                + bcolors.ENDC
+                + f"Exchanged a few-shot datasets because its name is similar to the dataset being tested."
+            )
     # now test with difflib if the dataset contents are very similar
     for fs_file in few_shot_csv_files:
         if __difflib_similar(csv_file, fs_file):
@@ -445,7 +454,7 @@ def row_completion_test(
         )
     else:
         _, test_suffixes, responses = row_completion(
-            llm, csv_file, num_prefix_rows, num_queries, out_file
+            llm, csv_file, num_prefix_rows, num_queries, out_file, print_levenshtein=print_levenshtein
         )
 
     # count the number of verbatim completed rows

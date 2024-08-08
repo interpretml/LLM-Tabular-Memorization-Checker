@@ -182,6 +182,7 @@ def row_completion(
     num_prefix_rows=10,
     num_queries=100,
     out_file=None,  # TODO support out_file
+    print_levenshtein=False,
 ):
     """Plain language model variant of row_chat_completion"""
     # load the file as a list of strings
@@ -208,6 +209,12 @@ def row_completion(
         prefixes.append(prefix)
         suffixes.append(suffix)
         responses.append(response)
+
+        # print the levenshtein distance between the true suffix and the response
+        if print_levenshtein:
+            print(
+                utils.levenshtein_cmd(suffix, response[: len(suffix) + 10]),
+            )
 
     return prefixes, suffixes, responses
 
@@ -296,7 +303,7 @@ def chat_completion(
     prefix_length: int = 300,
     suffix_length: int = 300,
     position: Union[int, str] = 0,
-    few_shot=5,  # integer, or list [str, ..., str] or [[str,..,str], ..., [str,..,str]]
+    few_shot=5,  # integer, or list [str, ..., str]
     contiguous=False,
     num_queries=1,
     print_levenshtein=False,
@@ -359,35 +366,17 @@ def chat_completion(
     # non-contiguous
     prefixes, suffixes, responses = [], [], []
     for _ in range(num_queries):
-        # choose prefix and suffix
+        # test prefix and suffix
         prefix, suffix = __split_prefix_suffix(
             text, prefix_length, position, suffix_length, rng
         )
-        # construct few shot examples
-        if isinstance(few_shot, list):  # few_shot is list
-            if len(few_shot) > 0:
-                if isinstance(few_shot[0], list):  # few_shot is list of lists
-                    few_shot_examples = [
-                        [
-                            __split_prefix_suffix(
-                                s, prefix_length, "random", suffix_length, rng
-                            )
-                            for s in fs
-                        ]
-                        for fs in few_shot
-                    ]
-                    few_shot_examples = [
-                        ([x[0] for x in fs], [x[1] for x in fs])
-                        for fs in few_shot_examples
-                    ]
-                else:  # list of strings
-                    few_shot_examples = [
-                        __split_prefix_suffix(
-                            s, prefix_length, "random", suffix_length, rng
-                        )
-                        for s in few_shot
-                    ]
-                    few_shot_examples = [([fs[0]], [fs[1]]) for fs in few_shot_examples]
+        # few shot examples
+        if isinstance(few_shot, list):  # few_shot is list of strings
+            few_shot_examples = [
+                __split_prefix_suffix(s, prefix_length, "random", suffix_length, rng)
+                for s in few_shot
+            ]
+            few_shot_examples = [([fs[0]], [fs[1]]) for fs in few_shot_examples]
         else:  # few_shot is integer
             # remove the selected prefix and suffix from the text
             remaining_text = text.replace(prefix, "")
@@ -541,7 +530,6 @@ def prefix_suffix_chat_completion(
         # print the levenshtein distance between the true suffix and the response
         if print_levenshtein:
             print(
-                "RESPONSE:",
                 utils.levenshtein_cmd(test_suffix, response[: len(test_suffix) + 10]),
             )
 

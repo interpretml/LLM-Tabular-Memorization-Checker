@@ -1,0 +1,126 @@
+target: Income
+
+perturbations: 
+  - name: Age
+    type: integer
+    size: 1
+  - name: "Usual hours worked per week past 12 months"
+    type: swap
+    size: 1
+
+rename:
+  Age: Age
+  'Class of worker': Employment
+  'Educational attainment': Highest Education
+  'Marital status': Married
+  Occupation: Work
+  Sex: Self-reported sex
+  'Recoded race': Self-reported race
+  'Usual hours worked per week past 12 months': Hours worked
+  'Place of birth': Place of birth
+  Income: Yearly Income
+
+recode:
+  'Class of worker':
+    'Employee of a private for-profit company or business, or of an individual, for wages, salary, or commissions':  Private Sector
+    'Employee of a private not-for-profit, tax-exempt, or charitable organization':  Non-profit
+    'Local government employee (city, county, etc.)': 'Local government'
+    'State government employee': 'State government'
+    'Federal government employee': 'Federal government'
+    'Self-employed in own not incorporated business, professional practice, or farm': 'Self-employed and not incorporated'
+    'Self-employed in own incorporated business, professional practice or farm': 'Self-employed and incorporated'
+    'Working without pay in family business or farm': 'Working, but without pay'
+    'Unemployed and last worked 5 years ago or earlier or never worked': 'Not worked in the last 5 years'
+  'Marital status':
+    'Never married or under 15 years old': 'Never married'
+  'Place of birth':
+    'Alabama/AL': 'Alabama'
+    'Alaska/AK': 'Alaska'
+    'Arizona/AZ': 'Arizona'
+    'Arkansas/AR': 'Arkansas'
+    'California/CA': 'California'
+    'Colorado/CO': 'Colorado'
+    'Connecticut/CT': 'Connecticut'
+    'Delaware/DE': 'Delaware'
+    'District of Columbia/DC': 'District of Columbia'
+    'Florida/FL': 'Florida'
+    'Georgia/GA': 'Georgia'
+    'Hawaii/HI': 'Hawaii'
+    'Idaho/ID': 'Idaho'
+    'Illinois/IL': 'Illinois'
+    'Indiana/IN': 'Indiana'
+    'Iowa/IA': 'Iowa'
+    'Kansas/KS': 'Kansas'
+    'Kentucky/KY': 'Kentucky'
+    'Louisiana/LA': 'Louisiana'
+    'Maine/ME': 'Maine'
+    'Maryland/MD': 'Maryland'
+    'Massachusetts/MA': 'Massachusetts'
+    'Michigan/MI': 'Michigan'
+    'Minnesota/MN': 'Minnesota'
+    'Mississippi/MS': 'Mississippi'
+    'Missouri/MO': 'Missouri'
+    'Montana/MT': 'Montana'
+    'Nebraska/NE': 'Nebraska'
+    'Nevada/NV': 'Nevada'
+    'New Hampshire/NH': 'New Hampshire'
+    'New Jersey/NJ': 'New Jersey'
+    'New Mexico/NM': 'New Mexico'
+    'New York/NY': 'New York'
+    'North Carolina/NC': 'North Carolina'
+    'North Dakota/ND': 'North Dakota'
+    'Ohio/OH': 'Ohio'
+    'Oklahoma/OK': 'Oklahoma'
+    'Oregon/OR': 'Oregon'
+    'Pennsylvania/PA': 'Pennsylvania'
+    'Rhode Island/RI': 'Rhode Island'
+    'South Carolina/SC': 'South Carolina'
+    'South Dakota/SD': 'South Dakota'
+    'Tennessee/TN': 'Tennessee'
+    'Texas/TX': 'Texas'
+    'Utah/UT': 'Utah'
+    'Vermont/VT': 'Vermont'
+    'Virginia/VA': 'Virginia'
+    'Washington/WA': 'Washington'
+    'West Virginia/WV': 'West Virginia'
+    'Wisconsin/WI': 'Wisconsin'
+    'Wyoming/WY': 'Wyoming'
+  'Recoded race':
+    'White alone': 'White'
+    'Black or African American alone': 'Black'
+    'American Indian alone': 'American Indian'
+    'Alaska Native alone': 'Alaska Native'
+    'American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races': 'American Indian or Alaska Native or not specified'
+    'Asian alone': 'Asian'
+    'Native Hawaiian and Other Pacific Islander alone': 'Pacific Island'
+    'Some Other Race alone': 'Other'
+    'Two or More Races': 'Two or more'
+  'Educational attainment': 
+    'No schooling completed': 'No schooling'
+    'Nursery school, preschool': Preschool
+    'Kindergarten': Kindergarten
+    'Grade 1': 1st grade
+    'Grade 2': 2nd grade
+    'Grade 3': 3rd grade 
+    'Grade 4': 4th grade 
+    'Grade 5': 5th grade
+    'Grade 6': 6th grade
+    'Grade 7': 7th grade
+    'Grade 8': 8th grade
+    'Grade 9': 9th grade
+    'Grade 10': 10th grade
+    'Grade 11': 11th grade
+    '12th grade - no diploma': '12th grade, no diploma'
+    'Regular high school diploma': 'High school diploma'
+    'GED or alternative credential': 'GED'
+    'Some college, but less than 1 year': 'Less than 1 year of college'
+    '1 or more years of college credit, no degree': 'At least 1 year of college, no degree'
+    "Associate's degree": "Associate's degree"
+    "Bachelor's degree": "Bachelor's" 
+    "Master's degree": "Master's"
+    "Professional degree beyond a bachelor's degree": "Professional degree"
+    "Doctorate degree": Doctorate
+
+  Income:
+    'Less than $50,000 per year.': Less than 50K
+    'More than $50,000 per year.': More than 50K
