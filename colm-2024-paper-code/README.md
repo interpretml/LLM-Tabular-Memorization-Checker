@@ -1,25 +1,9 @@
-# 🐘 Testing Language Models for Memorization of Tabular Datasets
-![PyPI - Version](https://img.shields.io/pypi/v/tabmemcheck)
-![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
-![License](https://img.shields.io/github/license/interpretml/TalkToEBM.svg?style=flat-square)
-[![tests](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/actions/workflows/run_tests.yaml/badge.svg?branch=main)](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/actions/workflows/run_tests.yaml)
-[![Documentation](https://img.shields.io/badge/Documentation-View-blue)](http://interpret.ml/LLM-Tabular-Memorization-Checker/)
+# 🐘 Never Forget: Memorization and Learning of Tabular Data in Large Language Models
 
 <p align="center">
   <img src="img/elephant.webp" width="800" alt="Header Test"/>
 </p>
-
-Tabmemcheck is an open-source Python library to test language models for memorization of tabular datasets. 
- 
-Features:
-- [x] Test GPT-3.5, GPT-4, and other LLMs for memorization of tabular datasets.
-- [x] Supports chat models and (base) language models. In chat mode, the prompts are designed toward GPT-3.5 and GPT-4. We recommend testing the base models with other LLMs. 
-- [x] Based entirely on prompts (no access to the probability distribution over tokens ('logprobs') is required).
-- [x] The submodule ``tabmemcheck.datasets`` allows to load tabular datasets in perturbed form (``original``, ``perturbed``, ``task``, ``statistical``).
-
-The different tests are described in a Neurips'23 workshop [paper](https://arxiv.org/abs/2403.06644).
-
-The dataset transforms and the consequences of memorization for few-shot learning are discussed in this [pre-print](https://arxiv.org/abs/2404.06209).
+Here we provide the code to replicate the COLM'24 [paper](https://arxiv.org/abs/2404.06209) "Elephants Never Forget: Memorization and Learning of Tabular Data in Large Language Models".
 
 ### Installation
 

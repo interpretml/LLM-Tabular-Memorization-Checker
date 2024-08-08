@@ -4,7 +4,6 @@
 
 import pandas as pd
 
-import tabmemcheck
 import tabular_queries
 
 import yaml
