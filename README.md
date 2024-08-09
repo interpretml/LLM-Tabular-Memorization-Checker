@@ -9,7 +9,7 @@
   <img src="img/elephant.webp" width="800" alt="Header Test"/>
 </p>
 
-Tabmemcheck is an open-source Python library to test language models for memorization of tabular datasets. 
+Tabmemcheck is an open-source Python library that tests language models for the memorization of tabular datasets. 
  
 Features:
 - [x] Test GPT-3.5, GPT-4, and other LLMs for memorization of tabular datasets.
@@ -17,9 +17,7 @@ Features:
 - [x] Based entirely on prompts (no access to the probability distribution over tokens ('logprobs') is required).
 - [x] The submodule ``tabmemcheck.datasets`` allows to load tabular datasets in perturbed form (``original``, ``perturbed``, ``task``, ``statistical``).
 
-The different tests are described in a Neurips'23 workshop [paper](https://arxiv.org/abs/2403.06644).
-
-The dataset transforms and the consequences of memorization for few-shot learning are discussed in this [pre-print](https://arxiv.org/abs/2404.06209).
+The different tests are described in a Neurips'23 workshop [paper](https://arxiv.org/abs/2403.06644). We also used this package for our COLM'24 [paper](https://arxiv.org/abs/2404.06209) "Elephants Never Forget: Memorization and Learning of Tabular data in Large Language Models". 
 
 ### Installation
 
@@ -163,11 +161,11 @@ or use the option ```--debug``` with the CLI tool to see the specific prompts an
 If you find this code useful in your research, please consider citing our research papers.
 
 ```
-@article{bordt2024memorization_learning,
+@article{bordt2024colm,
   title={Elephants Never Forget: Memorization and Learning of Tabular Data in
   Large Language Models},
   author={Bordt, Sebastian and Nori, Harsha and Rodrigues, Vanessa and Nushi, Besmira and Caruana, Rich},
-  journal={arXiv preprint},
+  journal={Conference on Language Modeling (COLM)},
   year={2024}
 }
 
