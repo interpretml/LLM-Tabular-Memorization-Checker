@@ -13,11 +13,15 @@ Tabmemcheck is an open-source Python library that tests language models for the 
  
 Features:
 - [x] Test GPT-3.5, GPT-4, and other LLMs for memorization of tabular datasets.
-- [x] Supports chat models and (base) language models. In chat mode, the prompts are designed toward GPT-3.5 and GPT-4. We recommend testing the base models with other LLMs. 
-- [x] Based entirely on prompts (no access to the probability distribution over tokens ('logprobs') is required).
-- [x] The submodule ``tabmemcheck.datasets`` allows to load tabular datasets in perturbed form (``original``, ``perturbed``, ``task``, ``statistical``).
+- [x] Supports chat models and (base) language models. In chat mode, we use few-shot learning to condition the model on the desired behavior.
+- [x] The submodule ``tabmemcheck.datasets`` allows to load popular tabular datasets in perturbed form (``original``, ``perturbed``, ``task``, ``statistical``).
+- [x] The package is based entirely on prompts.
 
-The different tests are described in a Neurips'23 workshop [paper](https://arxiv.org/abs/2403.06644). We also used this package for our COLM'24 [paper](https://arxiv.org/abs/2404.06209) "Elephants Never Forget: Memorization and Learning of Tabular data in Large Language Models". 
+The different tests are described in a Neurips'23 workshop [paper](https://arxiv.org/abs/2403.06644). 
+
+To see what can be done with this package, take a look at our COLM'24 [paper](https://arxiv.org/abs/2404.06209) *"Elephants Never Forget: Memorization and Learning of Tabular data in Large Language Models"*. 
+
+The API documentation is available [here](http://interpret.ml/LLM-Tabular-Memorization-Checker/).
 
 ### Installation
 
@@ -88,13 +92,10 @@ There is also a simple way to run all the different tests and generate a small r
 ```python
 tabmemcheck.run_all_tests("adult-test.csv", "gpt-4-0613")
 ```
-# Documentation
 
-The API documentation of the package is available [here](http://interpret.ml/LLM-Tabular-Memorization-Checker/).
+# Using the package with your own LLM
 
-# Testing your own LLM
-
-To test your own LLM, simply implement ```tabmemcheck.LLM_Interface```.
+To test your own LLM, simply implement ```tabmemcheck.LLM_Interface```. We use the OpenAI message format.
 
 ```python
 @dataclass
