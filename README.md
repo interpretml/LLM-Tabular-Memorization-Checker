@@ -162,11 +162,11 @@ or use the option ```--debug``` with the CLI tool to see the specific prompts an
 If you find this code useful in your research, please consider citing our research papers.
 
 ```
-@article{bordt2024colm,
+@inproceedings{bordt2024colm,
   title={Elephants Never Forget: Memorization and Learning of Tabular Data in
   Large Language Models},
   author={Bordt, Sebastian and Nori, Harsha and Rodrigues, Vanessa and Nushi, Besmira and Caruana, Rich},
-  journal={Conference on Language Modeling (COLM)},
+  booktitle={Conference on Language Modeling (COLM)},
   year={2024}
 }
 
