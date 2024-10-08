@@ -19,7 +19,7 @@ Features:
 
 The different tests are described in a Neurips'23 workshop [paper](https://arxiv.org/abs/2403.06644). 
 
-To see what can be done with this package, take a look at our COLM'24 [paper](https://arxiv.org/abs/2404.06209) *"Elephants Never Forget: Memorization and Learning of Tabular data in Large Language Models"*. 
+To see what can be done with this package, take a look at our COLM'24 [paper](https://arxiv.org/abs/2404.06209) *"Elephants Never Forget: Memorization and Learning of Tabular data in Large Language Models"*. The code to replicate the results in the paper is [here](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/tree/main/colm-2024-paper-code).
 
 The API documentation is available [here](http://interpret.ml/LLM-Tabular-Memorization-Checker/).
 
@@ -31,7 +31,7 @@ pip install tabmemcheck
 
 Then use ```import tabmemcheck``` to import the Python package.
 
-# Overview
+# Overview of the memorization tests
 
 The package provides four different tests for verbatim memorization of a tabular dataset (header test, row completion test, feature completion test, first token test). 
 
@@ -92,6 +92,18 @@ There is also a simple way to run all the different tests and generate a small r
 ```python
 tabmemcheck.run_all_tests("adult-test.csv", "gpt-4-0613")
 ```
+
+# How should the results of the tests be interpreted?
+
+We have often been asked how the results of the different tests should be interpreted. For example, do 3 out of 25 correctly completed rows in the row completion test mean the dataset is memorized?  The key point in interpreting the test results is that one has to consider the amount of entropy in the dataset. 
+
+At a high level, we want to say that a dataset is memorized if an LLM can consistently generate it. However, this only makes sense if the dataset is not a (deterministic) string sequence that can simply be predicted by the LLM. In most tabular datasets, we don't have to worry about this too much. This is because they contain random variables, and it is impossible to consistently reproduce the realizations of random variables unless the values of the random variables have been seen before (that is, during training).
+
+When we judge the test results, we have to consider the completion rate of the LLM and the amount of entropy in the dataset. For example, the OpenML Diabetes dataset contains an individual's glucose level, blood pressure, and BMI, as well as other measurements that are at least in part random. Now, if an LLM can consistently generate even a few rows of this unique dataset, this is fairly strong evidence of memorization (see [Carlini et al. 2019](https://arxiv.org/abs/1802.08232) and [Carlini et al. 2021](https://arxiv.org/abs/2012.07805) if you are interested in details). To give a contrary example, the Iris dataset contains many rows that are near-duplicates. This means that an LLM might also achieve a non-zero row completion rate by chance or prediction, and one could not conclude that the dataset was seen during pre-training from the fact that an LLM can generate a few rows.
+
+Because one needs to weight the completions of the LLM against the entropy in the dataset, it is unfortunately impossible to give a general ratio such as "X out of 100 completed rows imply memorization". 
+
+While this all sounds very complex (and in a sense it is), in the experiments that we have conducted with this package, the evidence for memorization (if present) was usually very clear. This is because LLMs, when they decide to regurgitate training data, have the remarkable property of regurgitating quite long and complex strings, providing quite unambiguous evidence.
 
 # Using the package with your own LLM
 
