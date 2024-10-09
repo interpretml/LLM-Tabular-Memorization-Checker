@@ -103,7 +103,15 @@ When we judge the test results, we have to consider the completion rate of the L
 
 Because one needs to weight the completions of the LLM against the entropy in the dataset, it is unfortunately impossible to give a general ratio such as "X out of 100 completed rows imply memorization". 
 
-While this all sounds very complex (and in a sense it is), in the experiments that we have conducted with this package, the evidence for memorization (if present) was usually very clear. This is because LLMs, when they decide to regurgitate training data, have the remarkable property of regurgitating quite long and complex strings, providing quite unambiguous evidence.
+While this all sounds very complex, the practical evidence for memorization is often very clear. This can also be seen in the examples above.
+
+# How do the tests work?
+
+We use few-shot learning to condition chat models on the task of regurgitating their training data. This works well for GPT-3.5 and GPT-4, and also for many other LLMs (but not necessarily for all LLMs). 
+
+You can set ```tabmemcheck.config.print_prompts = True``` to see the prompts.
+
+You can set ```tabmemcheck.config.print_responses = True``` to print the LLM responses, a useful sanity check.
 
 # Using the package with your own LLM
 
