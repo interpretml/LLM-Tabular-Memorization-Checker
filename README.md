@@ -93,6 +93,15 @@ There is also a simple way to run all the different tests and generate a small r
 tabmemcheck.run_all_tests("adult-test.csv", "gpt-4-0613")
 ```
 
+# How do the tests work?
+
+We use few-shot learning to condition chat models on the task of regurgitating their training data. This works well for GPT-3.5 and GPT-4, and also for many other LLMs (but not necessarily for all LLMs). 
+
+You can set ```tabmemcheck.config.print_prompts = True``` to see the prompts.
+
+You can set ```tabmemcheck.config.print_responses = True``` to print the LLM responses, a useful sanity check.
+
+
 # How should the results of the tests be interpreted?
 
 We have often been asked how the results of the different tests should be interpreted. For example, do 3 out of 25 correctly completed rows in the row completion test mean the dataset is memorized?  The key point in interpreting the test results is that one has to consider the amount of entropy in the dataset. 
@@ -104,14 +113,6 @@ When we judge the test results, we have to consider the completion rate of the L
 Because one needs to weight the completions of the LLM against the entropy in the dataset, it is unfortunately impossible to give a general ratio such as "X out of 100 completed rows imply memorization". 
 
 While this all sounds very complex, the practical evidence for memorization is often very clear. This can also be seen in the examples above.
-
-# How do the tests work?
-
-We use few-shot learning to condition chat models on the task of regurgitating their training data. This works well for GPT-3.5 and GPT-4, and also for many other LLMs (but not necessarily for all LLMs). 
-
-You can set ```tabmemcheck.config.print_prompts = True``` to see the prompts.
-
-You can set ```tabmemcheck.config.print_responses = True``` to print the LLM responses, a useful sanity check.
 
 # Using the package with your own LLM
 
