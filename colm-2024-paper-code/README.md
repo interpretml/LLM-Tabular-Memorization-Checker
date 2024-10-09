@@ -10,7 +10,7 @@ The code is organized as follows.
 - The ```datasets``` folder contains CSV files.
 - The ```preprocessing``` folder contains notebooks that create the ACS Income, ACS Travel and ICU datasets.
 - The ```config``` folder contains prompt configurations and YAML files that specify the different dataset transforms.
-- The environment used to run the experiments is given in ``'environment.yml```
+- The environment used to run the experiments is given in ```environment.yml```
 
 # Citation
 
