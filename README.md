@@ -21,7 +21,7 @@ The different tests are described in a Neurips'23 workshop [paper](https://arxiv
 
 To see what can be done with this package, take a look at our COLM'24 [paper](https://arxiv.org/abs/2404.06209) *"Elephants Never Forget: Memorization and Learning of Tabular data in Large Language Models"*. The code to replicate the results in the paper is [here](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/tree/main/colm-2024-paper-code).
 
-The API documentation is available [here](http://interpret.ml/LLM-Tabular-Memorization-Checker/).
+The API reference is available [here](http://interpret.ml/LLM-Tabular-Memorization-Checker/api_reference.html).
 
 ### Installation
 
