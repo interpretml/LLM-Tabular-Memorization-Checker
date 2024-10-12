@@ -64,7 +64,7 @@ Here, we see that ```gpt-4-0125-preview``` can complete random rows of the Iris 
 The feature completion test asks the LLM to complete the values of a specific feature in the dataset.
 
 ```python
-feature_values, responses = tabmemcheck.feature_completion_test('/home/sebastian/Downloads/titanic-train.csv', 'gpt-3.5-turbo-0125', feature_name='Name', num_queries=25)
+feature_values, responses = tabmemcheck.feature_completion_test('titanic-train.csv', 'gpt-3.5-turbo-0125', feature_name='Name', num_queries=25)
 ```
 
 <p align="left">
