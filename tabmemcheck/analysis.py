@@ -63,9 +63,7 @@ def find_matches(
 ):
     """Find the closest matches between a row x and all rows in the dataframe df. By default, we use the levenshtein distance as the distance metric.
 
-    This function can handle a variety of formatting differences between the values in the original data
-    and LLM responses that should still be counted as equal.
-
+    This function can handle some formatting differences between the values in the original data and LLM responses that should still be counted as equal.
 
     :param df: a pandas dataframe.
     :param x: a string, a pandas dataframe or a pandas Series.

@@ -6,6 +6,7 @@ import pandas as pd
 import jellyfish
 import difflib
 import tempfile
+import itertools
 
 import csv
 
@@ -80,14 +81,23 @@ def get_feature_names(csv_file):
         return df.columns.tolist()
 
 
+CSV_MAX_ROWS_WARNING_PRINTED = False
 def load_csv_df(csv_file, header=True, delimiter="auto", **kwargs):
+    global CSV_MAX_ROWS_WARNING_PRINTED
     """Load a csv file as a pandas data frame."""
     with _csv_file(csv_file) as csv_file:
         # auto detect the delimiter from the csv file
         if delimiter == "auto":
             delimiter = get_delimiter(csv_file)
         # load the csv file
-        df = pd.read_csv(csv_file, delimiter=delimiter, **kwargs)
+        max_rows = tabmem.config.csv_max_rows
+        df = pd.read_csv(csv_file, delimiter=delimiter, nrows=max_rows+1, **kwargs)
+        # Check if the file has more rows than n
+        if len(df) > max_rows and not CSV_MAX_ROWS_WARNING_PRINTED:
+            print(f'Info: Found a CSV file with more than {max_rows} rows. Note that tabmemcheck is configured to use only the first {max_rows} rows. Set tabmemcheck.config.csv_max_rows to change this behavior.')
+            CSV_MAX_ROWS_WARNING_PRINTED = True
+        # Truncate the dataframe to the first n rows
+        df = df.head(max_rows)
         # optionally, remove the header
         if not header:
             df = df.iloc[1:]
@@ -96,9 +106,15 @@ def load_csv_df(csv_file, header=True, delimiter="auto", **kwargs):
 
 def load_csv_rows(csv_file, header=True):
     """Load a csv file as a list of strings, with one string per row."""
+    global CSV_MAX_ROWS_WARNING_PRINTED
     with _csv_file(csv_file) as csv_file:
         with open(csv_file, "r") as f:
-            data = f.readlines()
+            data = list(itertools.islice(f, tabmem.config.csv_max_rows+1))
+        # check if the file has more rows than n, if yes print warning and reduce to n
+        if len(data) > tabmem.config.csv_max_rows and not CSV_MAX_ROWS_WARNING_PRINTED:
+            print(f'Info: Found a CSV file with more than {tabmem.config.csv_max_rows} rows. Note that tabmemcheck is configured to use only the first {tabmem.config.csv_max_rows} rows. Set tabmemcheck.config.csv_max_rows to change this behavior.')
+            CSV_MAX_ROWS_WARNING_PRINTED = True
+        data = data[:tabmem.config.csv_max_rows]
         # remove all trailing newlines
         data = [line.rstrip("\n") for line in data]
         # remove all empty rows
@@ -109,12 +125,12 @@ def load_csv_rows(csv_file, header=True):
         return data
 
 
-def load_csv_string(csv_file, header=True):
+def load_csv_string(csv_file, header=True, size=10000000):
     """Load a csv file as a single string."""
     with _csv_file(csv_file) as csv_file:
         # load the csv file into a single string
         with open(csv_file, "r") as f:
-            data = f.read()
+            data = f.read(size)
         # remove header TODO, this currently only works if header does not contain "\n"
         if not header:
             data = data.split("\n")[1:]

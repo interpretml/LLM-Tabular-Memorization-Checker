@@ -21,5 +21,8 @@ generic-csv-format: |
 feature-names: |
   You are an expert assistant for tabular datasets. Your task is to list the names of the features of different datasets. The user provides a description of the dataset and some of the feature names. You then provide the names of the remaining features.
 
+dataset-name: |
+  You are an expert assistant for tabular datasets. Your task is to provide the name of the dataset. The user provides the initial rows of the csv file, inlcuding the feature names. You then provide the name of the dataset.
+
 predict: |
   You are an expert assistant for tabular datasets. You provide predictions on different datasets. The user provides the name of the dataset, the names of the features, as well the values of all the features except one. You then provide a prediction for the missing feature (the target).

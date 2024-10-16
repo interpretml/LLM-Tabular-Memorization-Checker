@@ -38,9 +38,9 @@ DEFAULT_FEW_SHOT_CSV_FILES = [
 ]
 
 
-def __difflib_similar(csv_file_1, csv_file_2):
+def __difflib_similar(csv_file_1, csv_file_2, max_length=5000):
     sm = SequenceMatcher(
-        None, utils.load_csv_string(csv_file_1), utils.load_csv_string(csv_file_2)
+        None, utils.load_csv_string(csv_file_1, size=max_length)[:max_length], utils.load_csv_string(csv_file_2, size=max_length)[:max_length]
     )
     if sm.quick_ratio() > 0.9:
         return sm.ratio() > 0.9
@@ -49,33 +49,19 @@ def __difflib_similar(csv_file_1, csv_file_2):
 
 def __validate_few_shot_files(csv_file, few_shot_csv_files):
     """check if the csv_file is contained in the few_shot_csv_files."""
-    dataset_name = utils.get_dataset_name(csv_file)
-    few_shot_names = [utils.get_dataset_name(x) for x in few_shot_csv_files]
-    if dataset_name in few_shot_names:
-        # replace the dataset with iris or adult 
-        few_shot_csv_files = [
-            x for x in few_shot_csv_files if utils.get_dataset_name(x) != dataset_name
-        ]
-        if 'iris' in dataset_name:
-            few_shot_csv_files.append("adult-train.csv")
-        else:
-            few_shot_csv_files.append("iris.csv")
-        print(
-                bcolors.BOLD
-                + "Info: "
-                + bcolors.ENDC
-                + f"Exchanged a few-shot datasets because its name is similar to the dataset being tested."
-            )
-    # now test with difflib if the dataset contents are very similar
+    validated_few_shot_files = []
+    # test with difflib if the dataset contents are very similar
     for fs_file in few_shot_csv_files:
         if __difflib_similar(csv_file, fs_file):
             print(
                 bcolors.BOLD
-                + "Warning: "
+                + "Info: "
                 + bcolors.ENDC
-                + f"The dataset is very similar to the few-shot dataset {utils.get_dataset_name(fs_file)}."
+                + f"Removed the few-shot dataset {fs_file} because it is similar to the dataset being tested."
             )
-    return few_shot_csv_files
+        else:
+            validated_few_shot_files.append(fs_file)
+    return validated_few_shot_files
 
 
 def __llm_setup(llm: Union[LLM_Interface, str]):
@@ -193,9 +179,6 @@ def feature_names_test(
     if num_prefix_features is None:
         num_prefix_features = max(1, len(feature_names) // 4)
 
-    # remove the current csv file from the few-shot csv files should it be present there
-    few_shot_csv_files = [x for x in few_shot_csv_files if not dataset_name in x]
-
     # setup for the few-shot examples
     fs_dataset_names = [utils.get_dataset_name(x) for x in few_shot_csv_files]
     fs_feature_names = [
@@ -265,13 +248,17 @@ def feature_names_test(
 
     print(
         bcolors.BOLD
-        + "Feature Names Test\nFeature Names:    "
+        + "Dataset: "
         + bcolors.ENDC
-        + ", ".join(feature_names[num_prefix_features:])
+        + os.path.basename(csv_file)
         + bcolors.BOLD
-        + "\nModel Generation: "
+        + "\nFeature Names: "
         + bcolors.ENDC
-        + response
+        + ", ".join(feature_names)
+        + bcolors.BOLD
+        + "\nFeature Names Test: "
+        + bcolors.ENDC
+        + utils.levenshtein_cmd(", ".join(feature_names[num_prefix_features:]), response) 
     )
 
 
@@ -279,6 +266,128 @@ def feature_names_test(
 # Feature Values
 ####################################################################################
 
+
+def feature_values_test(
+    csv_file: str,
+    llm: Union[LLM_Interface, str],
+    few_shot_csv_files=DEFAULT_FEW_SHOT_CSV_FILES,
+    system_prompt: str = "default",
+):
+    """Test if the model knows valid feature values for the features in a csv file. Asks the model to provide samples, then compares the sampled feature values to the values in the csv file.
+
+    :param csv_file: The path to the csv file.
+    :param llm: The language model to be tested.
+    :param few_shot_csv_files: A list of other csv files to be used as few-shot examples.
+    :param system_prompt: The system prompt to be used.
+    """
+
+    # first, sample 3 observations at temperature zero
+    samples_df = sample(csv_file, llm, num_queries=3, temperature=0.0, few_shot_csv_files=few_shot_csv_files, system_prompt=system_prompt)
+
+     # check that there is at least one valid sample
+    if samples_df.empty:
+        print("Error: The LLM was not able to provide valid samples.")
+        return
+    
+    # choose the first sample
+    sample_row = samples_df.iloc[0]
+    _, row = analysis.find_matches(utils.load_csv_df(csv_file), sample_row)
+
+    # Set pandas display options for better formatting
+    pd.set_option('display.max_columns', None)  # Show all columns
+    pd.set_option('display.width', 1000)        # Set the width to avoid wrapping
+
+    print(
+        bcolors.BOLD
+        + "Feature Values Test"
+        + "\nDataset: "
+        + bcolors.ENDC
+        + os.path.basename(csv_file)
+    )
+    print_df = pd.concat([pd.DataFrame(sample_row).T.head(1), pd.DataFrame(row).head(1)])
+    print_df.reset_index(drop=True, inplace=True)
+    print_df.rename(index={0: bcolors.BOLD + "Model Sample" + bcolors.ENDC, 1: bcolors.BOLD + "Dataset Match"  + bcolors.ENDC}, inplace=True)
+    print(print_df)
+
+
+####################################################################################
+# Dataset Name (from the first rows of the csv file)
+####################################################################################
+
+
+def dataset_name_test(
+    csv_file: str,
+    llm: Union[LLM_Interface, str],
+    few_shot_csv_files=DEFAULT_FEW_SHOT_CSV_FILES,
+    few_shot_dataset_names=None,
+    num_rows = 5,
+    header=True,
+    system_prompt: str = "default",
+):
+    """Test if the model knows the names of the features in a csv file.
+
+    :param csv_file: The path to the csv file.
+    :param llm: The language model to be tested.
+    :param num_prefix_features: The number of features given to the model as part of the prompt (defaults to 1/4 of the features).
+    :param few_shot_csv_files: A list of other csv files to be used as few-shot examples.
+    :param few_shot_dataset_names: A list of dataset names to be used as few-shot examples. If None, the dataset names are are the file names of the few-shot csv files.
+    :num_rows: The number of dataset rows to be given to the model as part of the prompt.
+    :header: If True, the first row of the csv file is included in the prompt (it usually contains the feature names).
+    :param system_prompt: The system prompt to be used.
+    """
+
+    llm = __llm_setup(llm)
+    few_shot_csv_files = __validate_few_shot_files(csv_file, few_shot_csv_files)
+
+    # default system prompt?
+    if system_prompt == "default":
+        system_prompt = tabmem.config.system_prompts["dataset-name"]
+
+    if few_shot_dataset_names is None:
+        few_shot_dataset_names = [utils.get_dataset_name(x) for x in few_shot_csv_files]
+
+    if llm.chat_mode:
+        # construt the prompt
+        prefixes = [
+            "\n".join(utils.load_csv_rows(csv_file, header=header)[:num_rows])
+        ]
+        suffixes = [utils.get_dataset_name(csv_file)]
+
+        few_shot = []
+        for fs_csv_file, dataset_name in zip(few_shot_csv_files, few_shot_dataset_names):
+            few_shot.append(
+                (
+                    [
+                        "\n".join(utils.load_csv_rows(fs_csv_file, header=header)[:num_rows])
+                    ],
+                    [dataset_name],
+                )
+            )
+
+        # execute the the prompt
+        _, _, responses = prefix_suffix_chat_completion(
+            llm,
+            prefixes,
+            suffixes,
+            system_prompt,
+            few_shot=few_shot,
+            num_queries=1,
+        )
+        response = responses[0]
+    else:
+        raise NotImplementedError # TODO
+
+    print(
+        bcolors.BOLD
+        + "Dataset: "
+        + bcolors.ENDC
+        + os.path.basename(csv_file)
+        + bcolors.BOLD
+        + "\nGenerated Dataset Name: "
+        + bcolors.ENDC
+        + response
+    )
+        
 
 ####################################################################################
 # Header Test
@@ -366,7 +475,11 @@ def header_test(
     if verbose:  # print test result to console
         print(
             bcolors.BOLD
-            + "Header Test: "
+            + "Dataset: "
+            + bcolors.ENDC
+            + os.path.basename(csv_file)
+            + bcolors.BOLD
+            + "\nHeader Test: "
             + bcolors.ENDC
             + bcolors.Black
             + header_prompt
@@ -421,6 +534,13 @@ def row_completion_test(
 
     if system_prompt == "default":  # default system prompt?
         system_prompt = tabmem.config.system_prompts["row-completion"]
+
+    print(
+        bcolors.BOLD
+        + "Dataset: "
+        + bcolors.ENDC
+        + os.path.basename(csv_file)
+    )
 
     # what fraction of the rows are duplicates?
     rows = utils.load_csv_rows(csv_file)
@@ -717,6 +837,7 @@ def sample(
     csv_file: str,
     llm: Union[LLM_Interface, str],
     num_queries: int,
+    temperature: float = 0.7,
     few_shot_csv_files: list[str] = DEFAULT_FEW_SHOT_CSV_FILES,
     cond_feature_names: list[str] = [],
     drop_invalid_responses: bool = True,
@@ -742,6 +863,10 @@ def sample(
     if not llm.chat_mode:  # wrap base model to take chat queries
         llm = ChatWrappedLLM(llm, build_sample_prompt, ends_with="\n\n")
 
+    # store the temperature
+    temp = tabmem.config.temperature
+    tabmem.config.temperature = temperature
+
     # run the test
     _, _, responses = feature_values_chat_completion(
         llm,
@@ -753,6 +878,9 @@ def sample(
         add_description=True,
         out_file=None,
     )
+
+    # reset the temperature
+    tabmem.config.temperature = temp
 
     if len(cond_feature_names) > 0:
         raise NotImplementedError("Conditional sampling not yet supported.")

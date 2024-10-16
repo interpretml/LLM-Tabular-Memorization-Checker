@@ -15,6 +15,8 @@ from .functions import (
     run_all_tests,
     header_test,
     feature_names_test,
+    feature_values_test,
+    dataset_name_test,
     row_completion_test,
     feature_completion_test,
     first_token_test,
@@ -59,8 +61,11 @@ config.system_prompts = __load_default_system_prompts()
 
 # default llm options
 config.temperature = 0
-config.max_tokens = 500
+config.max_tokens = 1000
 config.sleep = 0.0  # amount of time to sleep after each query to the llm
+
+# csv file loading options
+config.csv_max_rows = 100000        # maximum number of rows to load from a csv file
 
 # default: no prompt/response logging
 config.current_logging_task = None
