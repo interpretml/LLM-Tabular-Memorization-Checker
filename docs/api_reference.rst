@@ -5,7 +5,14 @@ Tests for tabular datasets (based on csv files)
 -----------------------------------------------
 
 .. automodule:: tabmemcheck
-   :members: run_all_tests, header_test, feature_names_test, row_completion_test, feature_completion_test, first_token_test, sample
+   :members: run_all_tests, header_test, row_completion_test, feature_completion_test, first_token_test, feature_names_test, feature_values_test, dataset_name_test, sample
+   :show-inheritance:
+
+Generic chat-completion
+-----------------------
+
+.. automodule:: tabmemcheck
+   :members: prefix_suffix_chat_completion
    :show-inheritance:
 
 Tabular dataset loading (original, perturbed, task, statistical)
