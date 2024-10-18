@@ -35,6 +35,7 @@ def feature_values_chat_completion(
     fs_cond_feature_names=[],  # a list of lists of conditional feature names for each few-shot example
     add_description=True,
     out_file=None,
+    rng=None,
 ):
     """Feature chat completion task. This task asks the LLM to complete the feature values of observations in the dataset.
 
@@ -124,6 +125,7 @@ def feature_values_chat_completion(
         few_shot=few_shot_prefixes_suffixes,
         num_queries=num_queries,
         out_file=out_file,
+        rng=rng,
     )
 
     return test_prefixes, test_suffixes, responses
@@ -145,6 +147,7 @@ def row_chat_completion(
     few_shot=7,
     out_file=None,
     print_levenshtein=False,
+    rng=None,
 ):
     """Row  chat completion task. This task ask the LLM to predict the next row in the
     csv file, given the previous rows. This task is the basis for the row completion
@@ -171,6 +174,7 @@ def row_chat_completion(
         num_queries=num_queries,
         out_file=out_file,
         print_levenshtein=print_levenshtein,
+        rng=rng,
     )
 
     return test_prefixes, test_suffixes, responses
@@ -183,6 +187,7 @@ def row_completion(
     num_queries=100,
     out_file=None,  # TODO support out_file
     print_levenshtein=False,
+    rng=None,
 ):
     """Plain language model variant of row_chat_completion"""
     # load the file as a list of strings
@@ -192,7 +197,11 @@ def row_completion(
     prefixes = []
     suffixes = []
     responses = []
-    for idx in np.random.choice(
+
+    if rng is None:
+        rng = np.random.default_rng()
+
+    for idx in rng.choice(
         len(rows) - num_prefix_rows, num_queries, replace=False
     ):
         # prepare query
@@ -408,9 +417,7 @@ def chat_completion(
 
 
 ####################################################################################
-# Almost all of the different tests that we perform
-# can be cast in the prompt structue of
-# 'prefix-suffix chat completion'.
+# Many tests can be cast in the prompt structue of 'prefix-suffix chat completion'.
 # This is implemented by the following function.
 ####################################################################################
 
@@ -426,8 +433,7 @@ def prefix_suffix_chat_completion(
     out_file=None,
     rng=None,
 ):
-    """A basic chat completion function. Takes a list of prefixes and suffixes and a system prompt.
-    Sends {num_queries} prompts of the format
+    """A general-purpose chat completion function. Given prefixes, suffixes, and few-shot examples, this function sends {num_queries} LLM queries of the format
 
     System: <system_prompt>
         User: <prefix>          |
@@ -438,13 +444,27 @@ def prefix_suffix_chat_completion(
     User: <prefix>
     Assistant: <response> (=  test suffix?)
 
-    The num_queries prefixes and suffixes are randomly selected from the respective lists.
-    The function guarantees that the test suffix (as a complete string) is not contained in any of the few-shot prefixes or suffixes.
+    The prefixes, suffixes are and few-shot examples are randomly selected.
+    
+    This function guarantees that the test suffix (as a complete string) is not contained in any of the few-shot prefixes or suffixes (a useful sanity check, we don't want to provide the desired response anywhere in the context).
 
-    Stores the results in a csv file.
+    Args:
+        llm (LLM_Interface): The LLM.
+        prefixes (list[str]): A list of prefixes.
+        suffixes (list[str]): A list of suffixes.
+        system_prompt (str): The system prompt.
+        few_shot (_type_, optional): Either an integer, to select the given number of few-shot examples from the list of prefixes and suffixes. Or a list [([prefixes], [suffixes]), ..., ([prefixes], [suffixes])] to select one few-shot example from each list. Defaults to None.
+        num_queries (int, optional): The number of queries. Defaults to 100.
+        print_levenshtein (bool, optional): Visualize the Levenshtein string distance between test suffixes and LLM responses. Defaults to False.
+        out_file (_type_, optional): Save all queries to a CSV file. Defaults to None.
+        rng (_type_, optional): _description_. Defaults to None.
 
-    Returns: the test prefixes, test suffixes, and responses
-    """
+    Raises:
+        Exception: It an error occurs.
+
+    Returns:
+        tuple: A tuple of test prefixes, test suffixes, and responses.
+    """    
     assert len(prefixes) == len(
         suffixes
     ), "prefixes and suffixes must have the same length"

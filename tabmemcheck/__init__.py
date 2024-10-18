@@ -67,6 +67,9 @@ config.sleep = 0.0  # amount of time to sleep after each query to the llm
 # csv file loading options
 config.csv_max_rows = 100000        # maximum number of rows to load from a csv file
 
+# how to display test output. "cmd" or "html" for jupyter notebook html display
+config.display = "cmd"
+
 # default: no prompt/response logging
 config.current_logging_task = None
 config.current_logging_folder = None

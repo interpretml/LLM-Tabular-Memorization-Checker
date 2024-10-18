@@ -95,7 +95,7 @@ tabmemcheck.run_all_tests("adult-test.csv", "gpt-4-0613")
 
 # How do the tests work?
 
-We use few-shot learning to condition chat models on the task of regurgitating their training data. This works well for GPT-3.5 and GPT-4, and also for many other LLMs (but not necessarily for all LLMs). 
+We use few-shot learning to condition chat models on the desired task. This works well for GPT-3.5 and GPT-4, and also for many other LLMs (but not necessarily for all LLMs). 
 
 You can set ```tabmemcheck.config.print_prompts = True``` to see the prompts.
 
@@ -113,6 +113,17 @@ When we judge the test results, we have to consider the completion rate of the L
 Because one needs to weight the completions of the LLM against the entropy in the dataset, it is unfortunately impossible to give a general ratio such as "X out of 100 completed rows imply memorization". 
 
 While this all sounds very complex, the practical evidence for memorization is often very clear. This can also be seen in the examples above.
+
+
+# Can I uses this package to write my own tests?
+
+This package provides two fairly general functions
+
+- ```tabmemcheck.chat_completion```
+- ```tabmemcheck.prefix_suffix_chat_completion```
+
+
+
 
 # Using the package with your own LLM
 

@@ -473,7 +473,7 @@ def strip_strings_in_dataframe(df: pd.DataFrame):
 
 
 #################################################################
-# Printing and html output
+# Display test results in colored print or as and html
 #################################################################
 
 
@@ -550,7 +550,60 @@ def levenshtein_html(a: str, b: str):
 
 def levenshtein_html_legend():
     """HTML legend for the levenshtein visualization."""
-    return """'<b>Legend:</b> Prompt, <span style="background-color:#7CFC00">Correct</span>, <span style="background-color:#EE4B2B">Incorrect</span>, <span style="background-color:#BF40BF">Missing</span>'"""
+    return """<b>Legend:</b> Prompt, <span style="background-color:#7CFC00">Correct</span>, <span style="background-color:#EE4B2B">Incorrect</span>, <span style="background-color:#BF40BF">Missing</span>"""
+
+
+def display_test_result(prompt, 
+                        content, 
+                        response, 
+                        test_name="", 
+                        csv_file=""):
+    if tabmem.config.display == "cmd":
+        if len(csv_file) > 0:
+            print(
+                bcolors.BOLD
+                + "Dataset: "
+                + bcolors.ENDC
+                + f"{os.path.basename(csv_file)}"
+            )
+        print(("" if len(test_name) == 0 else bcolors.BOLD + test_name + ": " + bcolors.ENDC)
+            + bcolors.Black
+            + prompt
+            + levenshtein_cmd(content, response)
+            + bcolors.ENDC
+            + bcolors.BOLD
+            + "\nLegend:  "
+            + bcolors.ENDC
+            + "Prompt "
+            + bcolors.Green
+            + "Correct "
+            + bcolors.Red
+            + "Incorrect "
+            + bcolors.ENDC
+            + bcolors.Purple
+            + "Missing"
+            + bcolors.ENDC
+        )
+    elif tabmem.config.display == "html":
+        from IPython.display import display, HTML
+
+        html_string = prompt.replace('\n', '<br>') + levenshtein_html(content, response)
+        html_string += "<br>" + levenshtein_html_legend()
+        if len(test_name) > 0:
+            html_string = f"""<b>{test_name}: </b>""" + html_string
+        if len(csv_file) > 0:
+            html_string = f"""<b>Dataset: </b> {os.path.basename(csv_file)}<br>""" + html_string
+        display(HTML(html_string))
+    else:
+        raise ValueError("Unknown display option {tabmem.config.display} set in tabmem.config.display.")
+
+
+def test_levenstein_html(prompt, content, response):
+    """Visualize the Levenshtein distance for a test using HTML, given the prompt, actual dataset content, and model response.
+    """
+    html_string = prompt.replace('\n', '<br>') + levenshtein_html(content, response)
+    html_string += "<br>" + levenshtein_html_legend()    
+    return html_string
 
 
 #################################################################
@@ -560,7 +613,7 @@ def levenshtein_html_legend():
 
 
 def levenshtein(s1, s2, key=hash):
-    """Levenshtein distance with edits."""
+    """Levenshtein string distance with edits."""
 
     # Based on http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#Python
     # Generate the cost matrix for the two strings

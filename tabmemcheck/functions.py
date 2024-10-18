@@ -14,7 +14,6 @@ import tabmemcheck.utils as utils
 from tabmemcheck.llm import (
     LLM_Interface,
     ChatWrappedLLM,
-    send_chat_completion,
     send_completion,
     bcolors,
 )
@@ -69,6 +68,15 @@ def __llm_setup(llm: Union[LLM_Interface, str]):
     if isinstance(llm, str):
         llm = tabmem.openai_setup(llm)
     return llm
+
+
+def __print_file_name(csv_file):
+    print(
+        bcolors.BOLD
+        + "File: "
+        + bcolors.ENDC
+        + f"{os.path.basename(csv_file)}"
+    )
 
 
 def __print_info(csv_file, llm, few_shot_csv_files):
@@ -155,6 +163,8 @@ def feature_names_test(
     num_prefix_features: int = None,
     few_shot_csv_files=DEFAULT_FEW_SHOT_CSV_FILES,
     system_prompt: str = "default",
+    verbose: bool = True,
+    return_result = False,
 ):
     """Test if the model knows the names of the features in a csv file.
 
@@ -246,20 +256,13 @@ def feature_names_test(
         if idx != -1:
             response = response[:idx]
 
-    print(
-        bcolors.BOLD
-        + "Dataset: "
-        + bcolors.ENDC
-        + os.path.basename(csv_file)
-        + bcolors.BOLD
-        + "\nFeature Names: "
-        + bcolors.ENDC
-        + ", ".join(feature_names)
-        + bcolors.BOLD
-        + "\nFeature Names Test: "
-        + bcolors.ENDC
-        + utils.levenshtein_cmd(", ".join(feature_names[num_prefix_features:]), response) 
-    )
+    # prompt, continuation, response
+    test_triplet = ", ".join(feature_names[:num_prefix_features]) + ", ", ", ".join(feature_names[num_prefix_features:]), response
+    if verbose:
+        utils.display_test_result(*test_triplet, "Feature Names Test", csv_file)
+
+    if return_result:
+        return test_triplet
 
 
 ####################################################################################
@@ -297,12 +300,11 @@ def feature_values_test(
     pd.set_option('display.max_columns', None)  # Show all columns
     pd.set_option('display.width', 1000)        # Set the width to avoid wrapping
 
+    __print_file_name(csv_file)
     print(
         bcolors.BOLD
         + "Feature Values Test"
-        + "\nDataset: "
         + bcolors.ENDC
-        + os.path.basename(csv_file)
     )
     print_df = pd.concat([pd.DataFrame(sample_row).T.head(1), pd.DataFrame(row).head(1)])
     print_df.reset_index(drop=True, inplace=True)
@@ -311,7 +313,7 @@ def feature_values_test(
 
 
 ####################################################################################
-# Dataset Name (from the first rows of the csv file)
+# Dataset Name
 ####################################################################################
 
 
@@ -377,13 +379,10 @@ def dataset_name_test(
     else:
         raise NotImplementedError # TODO
 
+    __print_file_name(csv_file)
     print(
         bcolors.BOLD
-        + "Dataset: "
-        + bcolors.ENDC
-        + os.path.basename(csv_file)
-        + bcolors.BOLD
-        + "\nGenerated Dataset Name: "
+        + "Generated Dataset Name: "
         + bcolors.ENDC
         + response
     )
@@ -402,6 +401,8 @@ def header_test(
     few_shot_csv_files: list[str] = DEFAULT_FEW_SHOT_CSV_FILES,
     system_prompt: str = "default",
     verbose: bool = True,
+    return_result = False,
+    rng = None,
 ):
     """Header test for memorization.
 
@@ -423,6 +424,10 @@ def header_test(
     if system_prompt == "default":
         system_prompt = tabmem.config.system_prompts["header"]
 
+    # rng
+    if rng is None:
+        rng = np.random.default_rng()
+
     # load the csv file as a single contiguous string. also load the rows to determine offsets within the string
     data = utils.load_csv_string(csv_file, header=True)
     csv_rows = utils.load_csv_rows(csv_file, header=True)
@@ -438,7 +443,7 @@ def header_test(
     header_prompt, llm_completion = None, None
     for i_row in split_rows:
         offset = np.sum([len(row) for row in csv_rows[: i_row - 1]])
-        offset += np.random.randint(
+        offset += rng.integers(
             len(csv_rows[i_row]) // 3, 2 * len(csv_rows[i_row]) // 3
         )
         prefixes = [data[:offset]]
@@ -451,7 +456,7 @@ def header_test(
         # chat mode: use few-shot examples
         if llm.chat_mode:
             _, _, response = prefix_suffix_chat_completion(
-                llm, prefixes, suffixes, system_prompt, few_shot=few_shot, num_queries=1
+                llm, prefixes, suffixes, system_prompt, few_shot=few_shot, num_queries=1, rng=rng
             )
             response = response[0]
         else:  # otherwise, plain completion
@@ -472,34 +477,12 @@ def header_test(
             llm_completion = response
             header_completion = data[offset : offset + len(llm_completion)]
 
+    test_triplet = header_prompt, header_completion, llm_completion
     if verbose:  # print test result to console
-        print(
-            bcolors.BOLD
-            + "Dataset: "
-            + bcolors.ENDC
-            + os.path.basename(csv_file)
-            + bcolors.BOLD
-            + "\nHeader Test: "
-            + bcolors.ENDC
-            + bcolors.Black
-            + header_prompt
-            + utils.levenshtein_cmd(header_completion, llm_completion)
-            + bcolors.ENDC
-            + bcolors.BOLD
-            + "\nHeader Test Legend:  "
-            + bcolors.ENDC
-            + "Prompt "
-            + bcolors.Green
-            + "Correct "
-            + bcolors.Red
-            + "Incorrect "
-            + bcolors.ENDC
-            + bcolors.Purple
-            + "Missing"
-            + bcolors.ENDC
-        )
+        utils.display_test_result(*test_triplet, "Header Test", csv_file)
 
-    return header_prompt, header_completion, llm_completion
+    if return_result:
+        return test_triplet
 
 
 ####################################################################################
@@ -516,6 +499,7 @@ def row_completion_test(
     out_file=None,
     system_prompt: str = "default",
     print_levenshtein: bool = True,
+    rng=None,
 ):
     """Row completion test for memorization. The test resports the number of correctly completed rows.
 
@@ -571,10 +555,11 @@ def row_completion_test(
             few_shot,
             out_file,
             print_levenshtein,
+            rng=rng,
         )
     else:
         _, test_suffixes, responses = row_completion(
-            llm, csv_file, num_prefix_rows, num_queries, out_file, print_levenshtein=print_levenshtein
+            llm, csv_file, num_prefix_rows, num_queries, out_file, print_levenshtein=print_levenshtein, rng=rng
         )
 
     # count the number of verbatim completed rows
@@ -617,6 +602,7 @@ def feature_completion_test(
     few_shot=5,
     out_file=None,
     system_prompt: str = "default",
+    rng=None,
 ):
     """Feature completion test for memorization. The test resports the number of correctly completed features.
 
@@ -674,6 +660,7 @@ def feature_completion_test(
         cond_feature_names,
         add_description=False,
         out_file=out_file,
+        rng=rng,
     )
 
     # parse the model responses
@@ -715,6 +702,7 @@ def first_token_test(
     few_shot=7,
     out_file=None,
     system_prompt: str = "default",
+    rng=None,
 ):
     """First token test for memorization. We ask the model to complete the first token of the next row of the csv file, given the previous rows. The test resports the number of correctly completed tokens.
 
@@ -781,6 +769,7 @@ def first_token_test(
             num_queries,
             few_shot,
             out_file,
+            rng=rng,
         )
     else:
         _, test_suffixes, responses = row_completion(

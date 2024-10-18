@@ -286,66 +286,6 @@ def gemini_setup(model: str = None, api_key: str = None):
     return None
 
 
-#################################################################################################
-# huggingface transformers
-#################################################################################################
-
-"""
-from transformers import AutoTokenizer, pipeline
-
-HF_TOKENIZER = None
-HF_PIPE = None
-
-
-def hf_setup(model=None):
-    global HF_ACCESS_TOKEN, HF_TOKENIZER, HF_PIPE
-    os.environ["HF_ACCESS_TOKEN"] = "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"
-    HF_TOKENIZER = AutoTokenizer.from_pretrained(model)
-    HF_PIPE = pipeline(
-        "text-generation", model=model, torch_dtype="auto", device_map="auto"
-    )
-
-
-def hf_completion(prompt, temperature, max_tokens):
-    global HF_TOKENIZER, HF_PIPE
-
-
-def hf_chat_completion(messages, temperature, max_tokens):
-    global HF_TOKENIZER, HF_PIPE
-    prompt = HF_TOKENIZER.apply_chat_template(
-        messages, tokenize=False, add_generation_prompt=True
-    )
-    if temperature > 0.0:  # sampling
-        outputs = HF_PIPE(
-            prompt,
-            max_new_tokens=max_tokens,
-            do_sample=True,
-            temperature=temperature,
-            top_k=50,
-            top_p=0.95,
-            eos_token_id=HF_TOKENIZER.eos_token_id,
-        )
-    else:  # no sampling
-        outputs = HF_PIPE(
-            prompt,
-            max_new_tokens=max_tokens,
-            do_sample=False,
-            eos_token_id=HF_TOKENIZER.eos_token_id,
-        )
-    return outputs[0]["generated_text"][
-        len(prompt) :
-    ].strip()  # remove leading whitespaces
-"""
-
-#################################################################################################
-# guidance
-#################################################################################################
-
-
-def guidance_llm_wrapper(llm):
-    raise NotImplementedError
-
-
 ####################################################################################
 # dummy for testing
 ####################################################################################
@@ -496,7 +436,7 @@ def num_tokens_from_string(string: str, model_name: str = None) -> int:
 
 
 #################################################################################################
-# printing
+# prompt and response printing
 #################################################################################################
 
 
