@@ -9,19 +9,25 @@
   <img src="img/elephant.webp" width="800" alt="Header Test"/>
 </p>
 
-Tabmemcheck is an open-source Python library that tests language models for the memorization of tabular datasets. 
+Tabmemcheck is an open-source Python library to test language models for memorization of tabular datasets. 
+
+The package provides four different tests for verbatim memorization of a tabular dataset (header test, row completion test, feature completion test, first token test).
+
+It also provides additional heuristics to test what an LLM knows about a tabular dataset (feature names test, feature values test, dataset name test, and sampling).
  
 Features:
-- [x] Test GPT-3.5, GPT-4, and other LLMs for memorization of tabular datasets.
+- [x] Test GPT-3.5, GPT-4, and other LLMs for prior exposure with tabular datasets.
 - [x] Supports chat models and (base) language models. In chat mode, we use few-shot learning to condition the model on the desired behavior.
-- [x] The submodule ``tabmemcheck.datasets`` allows to load popular tabular datasets in perturbed form (``original``, ``perturbed``, ``task``, ``statistical``).
-- [x] The package is based entirely on prompts.
+- [x] The submodule ``tabmemcheck.datasets`` allows to load popular tabular datasets in perturbed form (``original``, ``perturbed``, ``task``, and ``statistical``), as used in our COLM'24 [paper](https://arxiv.org/abs/2404.06209).
+- [x] The [code](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/tree/main/colm-2024-paper-code) to replicate the COLM'24 paper allows to perform few-shot learning with LLMs and tabular data.
 
-The different tests are described in a Neurips'23 workshop [paper](https://arxiv.org/abs/2403.06644). 
+The different memorization tests were first described in a Neurips'23 workshop [paper](https://arxiv.org/abs/2403.06644). 
 
 To see what can be done with this package, take a look at our COLM'24 [paper](https://arxiv.org/abs/2404.06209) *"Elephants Never Forget: Memorization and Learning of Tabular data in Large Language Models"*. The code to replicate the results in the paper is [here](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/tree/main/colm-2024-paper-code).
 
 The API reference is available [here](http://interpret.ml/LLM-Tabular-Memorization-Checker/api_reference.html).
+
+There are example notebooks for [traditional tabular datasets](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/blob/main/examples/tabular-datasets.ipynb) and the datasets used in OpenAI's [MLE-bench](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/blob/main/examples/MLE-bench-contamination.ipynb) [paper](https://arxiv.org/abs/2410.07095).
 
 ### Installation
 
@@ -31,11 +37,7 @@ pip install tabmemcheck
 
 Then use ```import tabmemcheck``` to import the Python package.
 
-# Overview of the memorization tests
-
-The package provides four different tests for verbatim memorization of a tabular dataset (header test, row completion test, feature completion test, first token test). 
-
-It also provides additional heuristics to assess what an LLM know about a tabular dataset (does the LLM know the names of the features in the dataset?).
+# Tests for Verbatim Memorization
 
 The header test asks the LLM to complete the initial rows of a CSV file.
 
@@ -93,13 +95,48 @@ There is also a simple way to run all the different tests and generate a small r
 tabmemcheck.run_all_tests("adult-test.csv", "gpt-4-0613")
 ```
 
-# How do the tests work?
+# Other contamination tests
 
-We use few-shot learning to condition chat models on the desired task. This works well for GPT-3.5 and GPT-4, and also for many other LLMs (but not necessarily for all LLMs). 
+The feature names test asks the LLM to complete the feature names of a dataset.
 
-You can set ```tabmemcheck.config.print_prompts = True``` to see the prompts.
+```python
+tabmemcheck.feature_names_test('Kaggle Tabular Playground Series Dec 2021.csv.csv', 'gpt-4o-2024-08-06')
+```
 
-You can set ```tabmemcheck.config.print_responses = True``` to print the LLM responses, a useful sanity check.
+<p align="left">
+  <img src="img/feature_names.png" width="500" alt="Header Test"/>
+</p>
+
+The feature values test asks the LLM to provide a typical observation from the dataset.
+
+```python
+tabmemcheck.feature_values_test('OSIC Pulmonary Fibrosis Progression.csv', 'gpt-4o-2024-08-06')
+```
+
+<p align="left">
+  <img src="img/feature_values.png" width="500" alt="Header Test"/>
+</p>
+
+More generally, you can use ```sample``` to ask the LLM to provide samples from the dataset.
+
+```python
+tabmemcheck.sample('OSIC Pulmonary Fibrosis Progression.csv', 'gpt-4o-2024-08-06')
+```
+
+<p align="left">
+  <img src="img/samples.png" width="500" alt="Header Test"/>
+</p>
+
+
+The dataset name test asks the LLM to provide the name of the dataset, given the initial rows of the CSV file.
+
+```python
+tabmemcheck.dataset_name_test('spooky author identification train.csv', 'gpt-4o-2024-08-06')
+```
+
+<p align="left">
+  <img src="img/dataset_name.png" width="500" alt="Header Test"/>
+</p>
 
 
 # How should the results of the tests be interpreted?
@@ -114,16 +151,21 @@ Because one needs to weight the completions of the LLM against the entropy in th
 
 While this all sounds very complex, the practical evidence for memorization is often very clear. This can also be seen in the examples above.
 
+# How do the tests work?
 
-# Can I uses this package to write my own tests?
+We use few-shot learning to condition chat models on the desired task. This works well for GPT-3.5 and GPT-4, and also for many other LLMs (but not necessarily for all LLMs). 
 
-This package provides two fairly general functions
+You can set ```tabmemcheck.config.print_prompts = True``` to see the prompts.
 
-- ```tabmemcheck.chat_completion```
-- ```tabmemcheck.prefix_suffix_chat_completion```
+You can set ```tabmemcheck.config.print_responses = True``` to print the LLM responses, a useful sanity check.
 
+# Can I use this package to write my own tests?
 
+Yes. The module [chat_completion.py](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/blob/main/tabmemcheck/chat_completion.py) provides the general-purpose function ```prefix_suffix_chat_completion``` which is used to implement most of the different tests. 
 
+You can see how ```prefix_suffix_chat_completion``` is being used by reading the implementations of the different tests in [functions.py](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/blob/main/tabmemcheck/functions.py).
+
+We also provide the general-purpose function ```chat_completion```, which again relies on ```prefix_suffix_chat_completion```.
 
 # Using the package with your own LLM
 

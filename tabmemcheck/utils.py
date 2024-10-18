@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 
 import jellyfish
-import difflib
 import tempfile
 import itertools
 
@@ -437,7 +436,7 @@ def adjust_num_prefix_features(original_csv_file, num_prefix_features, new_csv_f
 def get_prefix_features(csv_file, p: float):
     """Returns the names of the first p percent of features in a csv file.
 
-    IMPORTANT: this function always returns a true prefix, i.e. at most 1 and at least len(feature_names) - 1 features.
+    This function always returns a true prefix, i.e. at most 1 and at least len(feature_names) - 1 features.
     """
     assert 0 <= p <= 1, "p must be between 0 and 1"
     feature_names = get_feature_names(csv_file)

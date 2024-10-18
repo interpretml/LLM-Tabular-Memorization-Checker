@@ -1,10 +1,9 @@
 ####################################################################################
-# This file contains different chat completion functions.
+# This file implements different chat completion functions.
 #
 # The functions in this file generate, format and send prompts, based on
 # the provided csv files. They return the raw model responses, and do not
-# perform any tests or analysis. Different tests make use
-# of the same chat completion functions.
+# perform any analysis. The concrete tests are implemented in functions.py.
 #
 # In the end, almost everything is based on prefix_suffix_chat_completion.
 ####################################################################################
@@ -60,10 +59,9 @@ def feature_values_chat_completion(
         - target & fs_targets: if target is not None, then the LLM is asked to complete only the value of the target feature.
 
     The feature names are ordered in the prompt as they are ordered in the csv file. In the future we might want to relax this.
-
-    TODO test and debug this function
     """
-    # TODO assert that all the given feature names are valid (i.e. occur in the dataset, otherwise throw exception)
+    # TODO assert that all the given feature names are valid (i.e. occur in the dataset, otherwise raise exception)
+    # TODO test conditional completion and prediction, not currently implemented in the package
 
     dataset_name = utils.get_dataset_name(csv_file)
     conditional_sampling = (

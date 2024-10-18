@@ -1,3 +1,7 @@
+####################################################################################
+# This file implements the different exposure tests for LLMs and tabular data.
+####################################################################################
+
 import os
 from typing import Any, Union
 
@@ -121,9 +125,8 @@ def run_all_tests(
     __print_info(csv_file, llm, few_shot_csv_files)
 
     feature_names_test(csv_file, llm, few_shot_csv_files=few_shot_csv_files)
-
-    # todo feature values
-
+    feature_values_test(csv_file, llm, few_shot_csv_files=few_shot_csv_files)
+    dataset_name_test(csv_file, llm, few_shot_csv_files)
     header_test(csv_file, llm, few_shot_csv_files=few_shot_csv_files)
 
     # draw 10 zero-knowledge samples
@@ -164,7 +167,7 @@ def feature_names_test(
     few_shot_csv_files=DEFAULT_FEW_SHOT_CSV_FILES,
     system_prompt: str = "default",
     verbose: bool = True,
-    return_result = False,
+    return_result = True,
 ):
     """Test if the model knows the names of the features in a csv file.
 
@@ -324,7 +327,9 @@ def dataset_name_test(
     few_shot_dataset_names=None,
     num_rows = 5,
     header=True,
+    random_rows=False,
     system_prompt: str = "default",
+    rng=None,
 ):
     """Test if the model knows the names of the features in a csv file.
 
@@ -335,11 +340,17 @@ def dataset_name_test(
     :param few_shot_dataset_names: A list of dataset names to be used as few-shot examples. If None, the dataset names are are the file names of the few-shot csv files.
     :num_rows: The number of dataset rows to be given to the model as part of the prompt.
     :header: If True, the first row of the csv file is included in the prompt (it usually contains the feature names).
+    :random_rows: If True, the rows are selected at random from the dataset.
     :param system_prompt: The system prompt to be used.
     """
 
     llm = __llm_setup(llm)
     few_shot_csv_files = __validate_few_shot_files(csv_file, few_shot_csv_files)
+
+    # if random_rows is True, set header to false
+    if random_rows and header:
+        print("Info: Dataset name test with random rows will not include the header.")
+        header = False
 
     # default system prompt?
     if system_prompt == "default":
@@ -348,19 +359,29 @@ def dataset_name_test(
     if few_shot_dataset_names is None:
         few_shot_dataset_names = [utils.get_dataset_name(x) for x in few_shot_csv_files]
 
+    # rng
+    if rng is None:
+        rng = np.random.default_rng()
+
     if llm.chat_mode:
         # construt the prompt
+        rows = utils.load_csv_rows(csv_file, header=header)
+        if random_rows:
+            rows = rng.choice(rows, num_rows, replace=False)
         prefixes = [
-            "\n".join(utils.load_csv_rows(csv_file, header=header)[:num_rows])
+            "\n".join(rows[:num_rows])
         ]
         suffixes = [utils.get_dataset_name(csv_file)]
 
         few_shot = []
-        for fs_csv_file, dataset_name in zip(few_shot_csv_files, few_shot_dataset_names):
+        few_shot_rows = [utils.load_csv_rows(fs_csv_file, header=header) for fs_csv_file in few_shot_csv_files]
+        if random_rows:
+            few_shot_rows = [rng.choice(rows, num_rows, replace=False) for rows in few_shot_rows]
+        for fs_rows, dataset_name in zip(few_shot_rows, few_shot_dataset_names):
             few_shot.append(
                 (
                     [
-                        "\n".join(utils.load_csv_rows(fs_csv_file, header=header)[:num_rows])
+                        "\n".join(fs_rows[:num_rows])
                     ],
                     [dataset_name],
                 )
@@ -401,7 +422,7 @@ def header_test(
     few_shot_csv_files: list[str] = DEFAULT_FEW_SHOT_CSV_FILES,
     system_prompt: str = "default",
     verbose: bool = True,
-    return_result = False,
+    return_result = True,
     rng = None,
 ):
     """Header test for memorization.
@@ -499,6 +520,7 @@ def row_completion_test(
     out_file=None,
     system_prompt: str = "default",
     print_levenshtein: bool = True,
+    return_result = True,
     rng=None,
 ):
     """Row completion test for memorization. The test resports the number of correctly completed rows.
@@ -586,7 +608,8 @@ def row_completion_test(
         # + f"{test_result.pvalue:.3f}."
     )
 
-    return test_suffixes, responses
+    if return_result:
+        return test_suffixes, responses
 
 
 ####################################################################################

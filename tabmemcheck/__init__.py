@@ -23,6 +23,9 @@ from .functions import (
     sample,
 )
 
+# general chat completion
+from .chat_completion import chat_completion, prefix_suffix_chat_completion
+
 # data loading and transform
 import tabmemcheck.datasets as datasets
 
