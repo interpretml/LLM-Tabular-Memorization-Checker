@@ -27,7 +27,7 @@ To see what can be done with this package, take a look at our COLM'24 [paper](ht
 
 The API reference is available [here](http://interpret.ml/LLM-Tabular-Memorization-Checker/api_reference.html).
 
-There are example notebooks for [traditional tabular datasets](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/blob/main/examples/tabular-datasets.ipynb) and the datasets used in OpenAI's [MLE-bench](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/blob/main/examples/MLE-bench-contamination.ipynb) [paper](https://arxiv.org/abs/2410.07095).
+There are example notebooks for [traditional tabular datasets](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/blob/main/examples/tabular-datasets.ipynb) and datasets used in OpenAI's [MLE-bench](https://github.com/interpretml/LLM-Tabular-Memorization-Checker/blob/main/examples/MLE-bench-contamination.ipynb).
 
 ### Installation
 
