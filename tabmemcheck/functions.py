@@ -335,7 +335,6 @@ def dataset_name_test(
 
     :param csv_file: The path to the csv file.
     :param llm: The language model to be tested.
-    :param num_prefix_features: The number of features given to the model as part of the prompt (defaults to 1/4 of the features).
     :param few_shot_csv_files: A list of other csv files to be used as few-shot examples.
     :param few_shot_dataset_names: A list of dataset names to be used as few-shot examples. If None, the dataset names are are the file names of the few-shot csv files.
     :num_rows: The number of dataset rows to be given to the model as part of the prompt.
