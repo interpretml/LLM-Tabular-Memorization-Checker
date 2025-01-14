@@ -12,6 +12,8 @@ The code is organized as follows.
 - The ```config``` folder contains prompt configurations and YAML files that specify the different dataset transforms.
 - The environment used to run the experiments is given in ```environment.yml```
 
+Replication data (LLM queries and responses) is available [here](https://doi.org/10.5281/zenodo.14644403).
+
 # Citation
 
 ```
