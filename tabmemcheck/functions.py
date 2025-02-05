@@ -473,7 +473,7 @@ def header_test(
         for fs_data in few_shot_data:
             fs_offset = min(offset, len(fs_data) // 2)
             few_shot.append(([fs_data[:fs_offset]],
-                            [fs_data[fs_offset : fs_offset + completion_length]]))
+                             [fs_data[fs_offset : fs_offset + completion_length]]))
 
         # chat mode: use few-shot examples
         if llm.chat_mode:
