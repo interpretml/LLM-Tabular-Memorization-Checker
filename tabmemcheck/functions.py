@@ -468,10 +468,12 @@ def header_test(
         )
         prefixes = [data[:offset]]
         suffixes = [data[offset : offset + completion_length]]
-        few_shot = [
-            ([fs_data[:offset]], [fs_data[offset : offset + completion_length]])
-            for fs_data in few_shot_data
-        ]
+
+        few_shot = []
+        for fs_data in few_shot_data:
+            fs_offset = min(offset, len(fs_data) // 2)
+            few_shot.append(([fs_data[:fs_offset]],
+                            [fs_data[fs_offset : fs_offset + completion_length]]))
 
         # chat mode: use few-shot examples
         if llm.chat_mode:
