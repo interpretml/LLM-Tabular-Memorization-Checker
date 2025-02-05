@@ -286,6 +286,87 @@ def gemini_setup(model: str = None, api_key: str = None):
     return None
 
 
+#################################################################################################
+# Anthropic (requires pip install anthropic)
+#################################################################################################
+
+
+@dataclass
+class ClaudeAnthropicLLM(LLM_Interface):
+    def __init__(self, model: str):
+        from anthropic import Anthropic
+
+        self.model = model
+        self.anthropic = Anthropic()
+        self.chat_mode = True
+
+    def chat_completion(self, messages, temperature, max_tokens):
+        print("Received messages:")
+        for msg in messages:
+            print(f"Role: {msg['role']}, Content: {repr(msg['content'])}")
+        # Extract system prompt if present
+        system_prompt = None
+        for message in messages:
+            if message["role"] == "system":
+                system_prompt = message["content"]
+                break
+
+        # Convert remaining messages from OpenAI format to Anthropic format
+        anthropic_messages = []
+        for message in messages:
+            if message["role"] == "system":
+                continue  # Skip system message as we handle it separately
+            elif message["role"] == "user":
+                anthropic_messages.append({
+                    "role": "user",
+                    "content": message["content"]
+                })
+            elif message["role"] == "assistant":
+                anthropic_messages.append({
+                    "role": "assistant",  
+                    "content": message["content"]
+                })
+            else:
+                raise ValueError(f"Unknown message role: {message['role']}")
+
+        try:
+            # Create message arguments
+            message_args = {
+                "model": self.model,
+                "messages": anthropic_messages,
+                "temperature": temperature,
+                "max_tokens": max_tokens
+            }
+
+            # Add system prompt if present
+            if system_prompt:
+                message_args["system"] = system_prompt
+
+            print(f"{message_args=}")
+            response = self.anthropic.messages.create(**message_args)
+            return response.content[0].text
+        except Exception as e:
+            print(f"Claude: Error during completion: {str(e)}")
+            return ""
+
+    def __repr__(self) -> str:
+        return f"{self.model}"
+
+
+def claude_setup(model: str = None, api_key: str = None):
+    from anthropic import Anthropic
+
+    if api_key:
+        Anthropic(api_key=api_key)
+    elif "ANTHROPIC_API_KEY" in os.environ:
+        Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"]) 
+    else:
+        raise ValueError("No API key provided and ANTHROPIC_API_KEY not found in environment variables")
+
+    if model is not None:
+        return ClaudeAnthropicLLM(model)
+    return None
+
 ####################################################################################
 # dummy for testing
 ####################################################################################

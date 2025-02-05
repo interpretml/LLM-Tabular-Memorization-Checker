@@ -3,6 +3,7 @@ from .llm import (
     LLM_Interface,
     openai_setup,
     gemini_setup,
+    claude_setup,
     send_chat_completion,
     send_completion,
 )
