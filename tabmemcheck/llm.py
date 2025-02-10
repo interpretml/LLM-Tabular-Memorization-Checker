@@ -301,9 +301,6 @@ class ClaudeAnthropicLLM(LLM_Interface):
         self.chat_mode = True
 
     def chat_completion(self, messages, temperature, max_tokens):
-        print("Received messages:")
-        for msg in messages:
-            print(f"Role: {msg['role']}, Content: {repr(msg['content'])}")
         # Extract system prompt if present
         system_prompt = None
         for message in messages:
@@ -342,7 +339,6 @@ class ClaudeAnthropicLLM(LLM_Interface):
             if system_prompt:
                 message_args["system"] = system_prompt
 
-            print(f"{message_args=}")
             response = self.anthropic.messages.create(**message_args)
             return response.content[0].text
         except Exception as e:
