@@ -1,0 +1,686 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference &mdash; tabmemcheck 0.1.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=307f7e4d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=6e0256f3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Tabmemcheck" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            tabmemcheck
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-tabmemcheck">Tests for tabular datasets (based on csv files)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.dataset_name_test"><code class="docutils literal notranslate"><span class="pre">dataset_name_test()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.feature_completion_test"><code class="docutils literal notranslate"><span class="pre">feature_completion_test()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.feature_names_test"><code class="docutils literal notranslate"><span class="pre">feature_names_test()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.feature_values_test"><code class="docutils literal notranslate"><span class="pre">feature_values_test()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.first_token_test"><code class="docutils literal notranslate"><span class="pre">first_token_test()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.header_test"><code class="docutils literal notranslate"><span class="pre">header_test()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.row_completion_test"><code class="docutils literal notranslate"><span class="pre">row_completion_test()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.run_all_tests"><code class="docutils literal notranslate"><span class="pre">run_all_tests()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.sample"><code class="docutils literal notranslate"><span class="pre">sample()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-0">Generic chat-completion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.prefix_suffix_chat_completion"><code class="docutils literal notranslate"><span class="pre">prefix_suffix_chat_completion()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tabmemcheck.datasets">Tabular dataset loading (original, perturbed, task, statistical)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.datasets.load_adult"><code class="docutils literal notranslate"><span class="pre">load_adult()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.datasets.load_dataset"><code class="docutils literal notranslate"><span class="pre">load_dataset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.datasets.load_housing"><code class="docutils literal notranslate"><span class="pre">load_housing()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.datasets.load_iris"><code class="docutils literal notranslate"><span class="pre">load_iris()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.datasets.load_openml_diabetes"><code class="docutils literal notranslate"><span class="pre">load_openml_diabetes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.datasets.load_wine"><code class="docutils literal notranslate"><span class="pre">load_wine()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-1">LLM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.LLM_Interface"><code class="docutils literal notranslate"><span class="pre">LLM_Interface</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tabmemcheck.LLM_Interface.chat_completion"><code class="docutils literal notranslate"><span class="pre">LLM_Interface.chat_completion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tabmemcheck.LLM_Interface.completion"><code class="docutils literal notranslate"><span class="pre">LLM_Interface.completion()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.openai_setup"><code class="docutils literal notranslate"><span class="pre">openai_setup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.send_chat_completion"><code class="docutils literal notranslate"><span class="pre">send_chat_completion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.send_completion"><code class="docutils literal notranslate"><span class="pre">send_completion()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tabmemcheck.analysis">Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.analysis.build_first_token"><code class="docutils literal notranslate"><span class="pre">build_first_token()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.analysis.find_matches"><code class="docutils literal notranslate"><span class="pre">find_matches()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.analysis.find_most_unique_feature"><code class="docutils literal notranslate"><span class="pre">find_most_unique_feature()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tabmemcheck.utils">Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.utils.get_dataset_name"><code class="docutils literal notranslate"><span class="pre">get_dataset_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.utils.get_delimiter"><code class="docutils literal notranslate"><span class="pre">get_delimiter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.utils.get_feature_names"><code class="docutils literal notranslate"><span class="pre">get_feature_names()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.utils.levenshtein_cmd"><code class="docutils literal notranslate"><span class="pre">levenshtein_cmd()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.utils.levenshtein_html"><code class="docutils literal notranslate"><span class="pre">levenshtein_html()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.utils.load_csv_array"><code class="docutils literal notranslate"><span class="pre">load_csv_array()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.utils.load_csv_rows"><code class="docutils literal notranslate"><span class="pre">load_csv_rows()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.utils.load_csv_string"><code class="docutils literal notranslate"><span class="pre">load_csv_string()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.utils.load_samples"><code class="docutils literal notranslate"><span class="pre">load_samples()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.utils.parse_feature_stings"><code class="docutils literal notranslate"><span class="pre">parse_feature_stings()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tabmemcheck.utils.parse_feature_string"><code class="docutils literal notranslate"><span class="pre">parse_feature_string()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">tabmemcheck</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api_reference.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
+<section id="module-tabmemcheck">
+<span id="tests-for-tabular-datasets-based-on-csv-files"></span><h2>Tests for tabular datasets (based on csv files)<a class="headerlink" href="#module-tabmemcheck" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.dataset_name_test">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">dataset_name_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tabmemcheck.LLM_Interface" title="tabmemcheck.llm.LLM_Interface"><span class="pre">LLM_Interface</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">few_shot_csv_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['iris.csv',</span> <span class="pre">'adult-train.csv',</span> <span class="pre">'openml-diabetes.csv',</span> <span class="pre">'uci-wine.csv',</span> <span class="pre">'california-housing.csv']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">few_shot_dataset_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.dataset_name_test" title="Link to this definition"></a></dt>
+<dd><p>Test if the model knows the names of the features in a csv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> – The path to the csv file.</p></li>
+<li><p><strong>llm</strong> – The language model to be tested.</p></li>
+<li><p><strong>few_shot_csv_files</strong> – A list of other csv files to be used as few-shot examples.</p></li>
+<li><p><strong>few_shot_dataset_names</strong> – A list of dataset names to be used as few-shot examples. If None, the dataset names are are the file names of the few-shot csv files.</p></li>
+<li><p><strong>system_prompt</strong> – The system prompt to be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Num_rows<span class="colon">:</span></dt>
+<dd class="field-even"><p>The number of dataset rows to be given to the model as part of the prompt.</p>
+</dd>
+<dt class="field-odd">Header<span class="colon">:</span></dt>
+<dd class="field-odd"><p>If True, the first row of the csv file is included in the prompt (it usually contains the feature names).</p>
+</dd>
+<dt class="field-even">Random_rows<span class="colon">:</span></dt>
+<dd class="field-even"><p>If True, the rows are selected at random from the dataset.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.feature_completion_test">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">feature_completion_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tabmemcheck.LLM_Interface" title="tabmemcheck.llm.LLM_Interface"><span class="pre">LLM_Interface</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_queries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">few_shot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.feature_completion_test" title="Link to this definition"></a></dt>
+<dd><p>Feature completion test for memorization. The test resports the number of correctly completed features.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> – The path to the csv file.</p></li>
+<li><p><strong>llm</strong> – The language model to be tested.</p></li>
+<li><p><strong>feature_name</strong> – The name of the feature to be used for the test.</p></li>
+<li><p><strong>num_queries</strong> – The number of feature values that we test the model on.</p></li>
+<li><p><strong>few_shot</strong> – The number of few-shot examples to be used.</p></li>
+<li><p><strong>out_file</strong> – Optionally save all queries and responses to a csv file.</p></li>
+<li><p><strong>system_prompt</strong> – The system prompt to be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the feature values, the model responses.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.feature_names_test">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">feature_names_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tabmemcheck.LLM_Interface" title="tabmemcheck.llm.LLM_Interface"><span class="pre">LLM_Interface</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_prefix_features</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">few_shot_csv_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['iris.csv',</span> <span class="pre">'adult-train.csv',</span> <span class="pre">'openml-diabetes.csv',</span> <span class="pre">'uci-wine.csv',</span> <span class="pre">'california-housing.csv']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_result</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.feature_names_test" title="Link to this definition"></a></dt>
+<dd><p>Test if the model knows the names of the features in a csv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> – The path to the csv file.</p></li>
+<li><p><strong>llm</strong> – The language model to be tested.</p></li>
+<li><p><strong>num_prefix_features</strong> – The number of features given to the model as part of the prompt (defaults to 1/4 of the features).</p></li>
+<li><p><strong>few_shot_csv_files</strong> – A list of other csv files to be used as few-shot examples.</p></li>
+<li><p><strong>system_prompt</strong> – The system prompt to be used.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.feature_values_test">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">feature_values_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tabmemcheck.LLM_Interface" title="tabmemcheck.llm.LLM_Interface"><span class="pre">LLM_Interface</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">few_shot_csv_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['iris.csv',</span> <span class="pre">'adult-train.csv',</span> <span class="pre">'openml-diabetes.csv',</span> <span class="pre">'uci-wine.csv',</span> <span class="pre">'california-housing.csv']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.feature_values_test" title="Link to this definition"></a></dt>
+<dd><p>Test if the model knows valid feature values for the features in a csv file. Asks the model to provide samples, then compares the sampled feature values to the values in the csv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> – The path to the csv file.</p></li>
+<li><p><strong>llm</strong> – The language model to be tested.</p></li>
+<li><p><strong>few_shot_csv_files</strong> – A list of other csv files to be used as few-shot examples.</p></li>
+<li><p><strong>system_prompt</strong> – The system prompt to be used.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.first_token_test">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">first_token_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tabmemcheck.LLM_Interface" title="tabmemcheck.llm.LLM_Interface"><span class="pre">LLM_Interface</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_prefix_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_queries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">few_shot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.first_token_test" title="Link to this definition"></a></dt>
+<dd><p>First token test for memorization. We ask the model to complete the first token of the next row of the csv file, given the previous rows. The test resports the number of correctly completed tokens.</p>
+<p>Note that the ‘’first token’’ is not actually the first token produced by the llm, but consists of the first n digits of the row. The number of digits is determined by the function build_first_token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> – The path to the csv file.</p></li>
+<li><p><strong>llm</strong> – The language model to be tested.</p></li>
+<li><p><strong>num_prefix_rows</strong> – The number of rows given to the model as part of the prompt.</p></li>
+<li><p><strong>num_queries</strong> – The number of rows that we test the model on.</p></li>
+<li><p><strong>few_shot</strong> – The number of few-shot examples to be used.</p></li>
+<li><p><strong>out_file</strong> – Optionally save all queries and responses to a csv file.</p></li>
+<li><p><strong>system_prompt</strong> – The system prompt to be used.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.header_test">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">header_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tabmemcheck.LLM_Interface" title="tabmemcheck.llm.LLM_Interface"><span class="pre">LLM_Interface</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[2,</span> <span class="pre">4,</span> <span class="pre">6,</span> <span class="pre">8]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">completion_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">few_shot_csv_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['iris.csv',</span> <span class="pre">'adult-train.csv',</span> <span class="pre">'openml-diabetes.csv',</span> <span class="pre">'uci-wine.csv',</span> <span class="pre">'california-housing.csv']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_result</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.header_test" title="Link to this definition"></a></dt>
+<dd><p>Header test for memorization.</p>
+<p>We split the csv file at random positions in rows split_rows and performs 1 query for each split. Then we compare the best completion with the actual header.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> – The path to the csv file.</p></li>
+<li><p><strong>llm</strong> – The language model to be tested.</p></li>
+<li><p><strong>split_rows</strong> – The rows at which the csv file is split for the test.</p></li>
+<li><p><strong>completion_length</strong> – The length of the completions in the few-shot examples (reduce for LLMs with small context windows).</p></li>
+<li><p><strong>few_shot_csv_files</strong> – A list of other csv files to be used as few-shot examples.</p></li>
+<li><p><strong>system_prompt</strong> – The system prompt to be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The header prompt, the actual header completion, and the model response.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.row_completion_test">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">row_completion_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tabmemcheck.LLM_Interface" title="tabmemcheck.llm.LLM_Interface"><span class="pre">LLM_Interface</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_prefix_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_queries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">few_shot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_levenshtein</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_result</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.row_completion_test" title="Link to this definition"></a></dt>
+<dd><p>Row completion test for memorization. The test resports the number of correctly completed rows.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> – The path to the csv file.</p></li>
+<li><p><strong>llm</strong> – The language model to be tested.</p></li>
+<li><p><strong>num_prefix_rows</strong> – The number of rows given to the model as part of the prompt.</p></li>
+<li><p><strong>num_queries</strong> – The number of rows that we test the model on.</p></li>
+<li><p><strong>few_shot</strong> – The number of few-shot examples to be used.</p></li>
+<li><p><strong>out_file</strong> – Optionally save all queries and responses to a csv file.</p></li>
+<li><p><strong>system_prompt</strong> – The system prompt to be used.</p></li>
+<li><p><strong>print_levenshtein</strong> – Print a visulization of the levenshtein distance between the model responses and the actual rows.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the rows, the model responses.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.run_all_tests">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">run_all_tests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tabmemcheck.LLM_Interface" title="tabmemcheck.llm.LLM_Interface"><span class="pre">LLM_Interface</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">few_shot_csv_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['iris.csv',</span> <span class="pre">'adult-train.csv',</span> <span class="pre">'openml-diabetes.csv',</span> <span class="pre">'uci-wine.csv',</span> <span class="pre">'california-housing.csv']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_feature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.run_all_tests" title="Link to this definition"></a></dt>
+<dd><p>Run different tests for memorization and prior experience with the content of the csv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> – The path to the csv file.</p></li>
+<li><p><strong>llm</strong> – The language model to be tested.</p></li>
+<li><p><strong>few_shot_csv_files</strong> – A list of other csv files to be used as few-shot examples.</p></li>
+<li><p><strong>unique_feature</strong> – The name of the feature to be used for the feature completion test.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.sample">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tabmemcheck.LLM_Interface" title="tabmemcheck.llm.LLM_Interface"><span class="pre">LLM_Interface</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_queries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">few_shot_csv_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['iris.csv',</span> <span class="pre">'adult-train.csv',</span> <span class="pre">'openml-diabetes.csv',</span> <span class="pre">'uci-wine.csv',</span> <span class="pre">'california-housing.csv']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cond_feature_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_invalid_responses</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_invalid_responses</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.sample" title="Link to this definition"></a></dt>
+<dd><p>Ask the model to provide random samples from the csv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> – The path to the csv file.</p></li>
+<li><p><strong>llm</strong> – The language model to be tested.</p></li>
+<li><p><strong>num_queries</strong> – The desired number of samples.</p></li>
+<li><p><strong>few_shot_csv_files</strong> – A list of other csv files to be used as few-shot examples.</p></li>
+<li><p><strong>out_file</strong> – Optionally save all queries and responses to a csv file.</p></li>
+<li><p><strong>system_prompt</strong> – The system prompt to be used.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-0">
+<span id="generic-chat-completion"></span><h2>Generic chat-completion<a class="headerlink" href="#module-0" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.prefix_suffix_chat_completion">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">prefix_suffix_chat_completion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tabmemcheck.LLM_Interface" title="tabmemcheck.llm.LLM_Interface"><span class="pre">LLM_Interface</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefixes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffixes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">few_shot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_queries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_levenshtein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.prefix_suffix_chat_completion" title="Link to this definition"></a></dt>
+<dd><p>A general-purpose chat completion function. Given prefixes, suffixes, and few-shot examples, this function sends {num_queries} LLM queries of the format</p>
+<dl class="simple">
+<dt>System: &lt;system_prompt&gt;</dt><dd><p>User: &lt;prefix&gt;          |
+Assistant: &lt;suffix&gt;     |
+…                     | {few_shot} times, or one example from each (prefixes, suffixes) pair in a {few_shot} list.
+User: &lt;prefix&gt;          | In the second case, few_shot = [([prefixes], [suffixes]), …, ([prefixes], [suffixes])]
+Assistant: &lt;suffix&gt;     |</p>
+</dd>
+</dl>
+<p>User: &lt;prefix&gt;
+Assistant: &lt;response&gt; (=  test suffix?)</p>
+<p>The prefixes, suffixes are and few-shot examples are randomly selected.</p>
+<p>This function guarantees that the test suffix (as a complete string) is not contained in any of the few-shot prefixes or suffixes (a useful sanity check, we don’t want to provide the desired response anywhere in the context).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>llm</strong> (<a class="reference internal" href="#tabmemcheck.LLM_Interface" title="tabmemcheck.LLM_Interface"><em>LLM_Interface</em></a>) – The LLM.</p></li>
+<li><p><strong>prefixes</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – A list of prefixes.</p></li>
+<li><p><strong>suffixes</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – A list of suffixes.</p></li>
+<li><p><strong>system_prompt</strong> (<em>str</em>) – The system prompt.</p></li>
+<li><p><strong>few_shot</strong> (<em>_type_</em><em>, </em><em>optional</em>) – Either an integer, to select the given number of few-shot examples from the list of prefixes and suffixes. Or a list [([prefixes], [suffixes]), …, ([prefixes], [suffixes])] to select one few-shot example from each list. Defaults to None.</p></li>
+<li><p><strong>num_queries</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of queries. Defaults to 100.</p></li>
+<li><p><strong>print_levenshtein</strong> (<em>bool</em><em>, </em><em>optional</em>) – Visualize the Levenshtein string distance between test suffixes and LLM responses. Defaults to False.</p></li>
+<li><p><strong>out_file</strong> (<em>_type_</em><em>, </em><em>optional</em>) – Save all queries to a CSV file. Defaults to None.</p></li>
+<li><p><strong>rng</strong> (<em>_type_</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – It an error occurs.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of test prefixes, test suffixes, and responses.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-tabmemcheck.datasets">
+<span id="tabular-dataset-loading-original-perturbed-task-statistical"></span><h2>Tabular dataset loading (original, perturbed, task, statistical)<a class="headerlink" href="#module-tabmemcheck.datasets" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.datasets.load_adult">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.datasets.</span></span><span class="sig-name descname"><span class="pre">load_adult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'adult-train.csv'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.datasets.load_adult" title="Link to this definition"></a></dt>
+<dd><p>Load the Adult Income dataset (<a class="reference external" href="http://www.cs.toronto.edu/~delve/data/adult/adultDetail.html">http://www.cs.toronto.edu/~delve/data/adult/adultDetail.html</a>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.datasets.load_dataset">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.datasets.</span></span><span class="sig-name descname"><span class="pre">load_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yaml_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'plain'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permute_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_stats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.datasets.load_dataset" title="Link to this definition"></a></dt>
+<dd><p>Load a dataset from a CSV file and apply transformations as specified in a YAML configuration file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> (<em>str</em>) – The path to the CSV file.</p></li>
+<li><p><strong>yaml_config</strong> (<em>str</em><em>, </em><em>optional</em>) – The path to the YAML configuration file. Defaults to None.</p></li>
+<li><p><strong>transform</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of transformation to apply (‘original’, ‘perturbed’, ‘task’, ‘statistical’).</p></li>
+<li><p><strong>permute_columns</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to permute the columns in the perturbed version. Defaults to False.</p></li>
+<li><p><strong>print_stats</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to print statistics about the transformation. Defaults to False.</p></li>
+<li><p><strong>seed</strong> (<em>optional</em>) – The seed for the numpy random number generator. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The transformed dataset.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.datasets.load_housing">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.datasets.</span></span><span class="sig-name descname"><span class="pre">load_housing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'california-housing.csv'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.datasets.load_housing" title="Link to this definition"></a></dt>
+<dd><p>Load the California Housing dataset (<a class="reference external" href="https://inria.github.io/scikit-learn-mooc/python_scripts/datasets_california_housing.html">https://inria.github.io/scikit-learn-mooc/python_scripts/datasets_california_housing.html</a>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.datasets.load_iris">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.datasets.</span></span><span class="sig-name descname"><span class="pre">load_iris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'iris.csv'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.datasets.load_iris" title="Link to this definition"></a></dt>
+<dd><p>Load the Iris dataset (<a class="reference external" href="https://archive.ics.uci.edu/ml/datasets/iris">https://archive.ics.uci.edu/ml/datasets/iris</a>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.datasets.load_openml_diabetes">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.datasets.</span></span><span class="sig-name descname"><span class="pre">load_openml_diabetes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'openml-diabetes.csv'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.datasets.load_openml_diabetes" title="Link to this definition"></a></dt>
+<dd><p>Load the OpenML Diabetes dataset (<a class="reference external" href="https://www.openml.org/d/37">https://www.openml.org/d/37</a>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.datasets.load_wine">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.datasets.</span></span><span class="sig-name descname"><span class="pre">load_wine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'iris.csv'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.datasets.load_wine" title="Link to this definition"></a></dt>
+<dd><p>Load the UCI Wine dataset (<a class="reference external" href="https://archive.ics.uci.edu/dataset/109/wine">https://archive.ics.uci.edu/dataset/109/wine</a>).</p>
+</dd></dl>
+
+</section>
+<section id="module-1">
+<span id="llm"></span><h2>LLM<a class="headerlink" href="#module-1" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tabmemcheck.LLM_Interface">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">LLM_Interface</span></span><a class="headerlink" href="#tabmemcheck.LLM_Interface" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Generic interface to a language model.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tabmemcheck.LLM_Interface.chat_completion">
+<span class="sig-name descname"><span class="pre">chat_completion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tokens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.LLM_Interface.chat_completion" title="Link to this definition"></a></dt>
+<dd><p>Send a query to a chat model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – The messages to send to the model. We use the OpenAI format.</p></li>
+<li><p><strong>temperature</strong> – The sampling temperature.</p></li>
+<li><p><strong>max_tokens</strong> – The maximum number of tokens to generate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The model response.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tabmemcheck.LLM_Interface.completion">
+<span class="sig-name descname"><span class="pre">completion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tokens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.LLM_Interface.completion" title="Link to this definition"></a></dt>
+<dd><p>Send a query to a language model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prompt</strong> – The prompt (string) to send to the model.</p></li>
+<li><p><strong>temperature</strong> – The sampling temperature.</p></li>
+<li><p><strong>max_tokens</strong> – The maximum number of tokens to generate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The model response.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.openai_setup">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">openai_setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.openai_setup" title="Link to this definition"></a></dt>
+<dd><p>Setup an OpenAI language model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – The name of the model (e.g. “gpt-3.5-turbo-0613”).</p></li>
+<li><p><strong>azure</strong> – If true, use a model deployed on azure.</p></li>
+</ul>
+</dd>
+</dl>
+<p>This function uses the following environment variables:</p>
+<ul class="simple">
+<li><p>OPENAI_API_KEY</p></li>
+<li><p>OPENAI_API_ORG</p></li>
+<li><p>AZURE_OPENAI_ENDPOINT</p></li>
+<li><p>AZURE_OPENAI_KEY</p></li>
+<li><p>AZURE_OPENAI_VERSION</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An LLM to work with!</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#tabmemcheck.LLM_Interface" title="tabmemcheck.LLM_Interface">LLM_Interface</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.send_chat_completion">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">send_chat_completion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tabmemcheck.LLM_Interface" title="tabmemcheck.llm.LLM_Interface"><span class="pre">LLM_Interface</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">messages</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tokens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.send_chat_completion" title="Link to this definition"></a></dt>
+<dd><p>Ask the LLM to perform a chat_completion, with additional bells and whistles (logging, printing).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.send_completion">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.</span></span><span class="sig-name descname"><span class="pre">send_completion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tabmemcheck.LLM_Interface" title="tabmemcheck.llm.LLM_Interface"><span class="pre">LLM_Interface</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tokens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.send_completion" title="Link to this definition"></a></dt>
+<dd><p>Ask the LLM to perform a completion, with additional bells and whistles (logging, printing).</p>
+</dd></dl>
+
+</section>
+<section id="module-tabmemcheck.analysis">
+<span id="analysis"></span><h2>Analysis<a class="headerlink" href="#module-tabmemcheck.analysis" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.analysis.build_first_token">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.analysis.</span></span><span class="sig-name descname"><span class="pre">build_first_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.analysis.build_first_token" title="Link to this definition"></a></dt>
+<dd><p>Given a csv file, build a first token that can be used in the first token test.</p>
+<p>The first token is constructed by taking the first n digits of every row in the csv file (that is, this functions determines the n).
+Using the first n digits improves upon using the first digit on datasets where the first digit is always the same or contains few distinct values.</p>
+<p>Note: This function does NOT check if the constructed first token is random.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> – the path to the csv file.</p></li>
+<li><p><strong>verbose</strong> – if True, print the first tokens and their counts.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the number of digits that make up the first token.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.analysis.find_matches">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.analysis.</span></span><span class="sig-name descname"><span class="pre">find_matches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df:</span> <span class="pre">~pandas.core.frame.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string_dist_fn=&lt;function</span> <span class="pre">levenshtein_distances&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_floating_point=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strip_quotation_marks=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.analysis.find_matches" title="Link to this definition"></a></dt>
+<dd><p>Find the closest matches between a row x and all rows in the dataframe df. By default, we use the levenshtein distance as the distance metric.</p>
+<p>This function can handle some formatting differences between the values in the original data and LLM responses that should still be counted as equal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> – a pandas dataframe.</p></li>
+<li><p><strong>x</strong> – a string, a pandas dataframe or a pandas Series.</p></li>
+<li><p><strong>string_dist_fn</strong> – a function that computes the distance between two strings. By default, this is the levenshtein distance.</p></li>
+<li><p><strong>match_floating_point</strong> – if True, handes floating point formatting differences, e.g. 0.28 vs. .280 or 172 vs 172.0 (default: True).</p></li>
+<li><p><strong>strip_quotation_marks</strong> – if True, strips quotation marks from the values in df and x (to handle the case where a model responds with “23853”, and the value in the data is 23853) (default: True).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the minimum distance and the matching rows in df.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.analysis.find_most_unique_feature">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.analysis.</span></span><span class="sig-name descname"><span class="pre">find_most_unique_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.analysis.find_most_unique_feature" title="Link to this definition"></a></dt>
+<dd><p>Given a csv file, find the feature that has the most unique values. This is the default feature used for the feature completion test.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>csv_file</strong> – the path to the csv file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the name of the most unique feature and the fraction of unique values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-tabmemcheck.utils">
+<span id="utilities"></span><h2>Utilities<a class="headerlink" href="#module-tabmemcheck.utils" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.utils.get_dataset_name">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.utils.</span></span><span class="sig-name descname"><span class="pre">get_dataset_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.utils.get_dataset_name" title="Link to this definition"></a></dt>
+<dd><p>Returns the name of the dataset.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.utils.get_delimiter">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.utils.</span></span><span class="sig-name descname"><span class="pre">get_delimiter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.utils.get_delimiter" title="Link to this definition"></a></dt>
+<dd><p>Returns the delimiter of a csv file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.utils.get_feature_names">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.utils.</span></span><span class="sig-name descname"><span class="pre">get_feature_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.utils.get_feature_names" title="Link to this definition"></a></dt>
+<dd><p>Returns the names of the features in a csv file (a list of strings).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.utils.levenshtein_cmd">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.utils.</span></span><span class="sig-name descname"><span class="pre">levenshtein_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.utils.levenshtein_cmd" title="Link to this definition"></a></dt>
+<dd><p>Visualization of the Levenshtein distance between a and b, using color codes to be printed in the console.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.utils.levenshtein_html">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.utils.</span></span><span class="sig-name descname"><span class="pre">levenshtein_html</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.utils.levenshtein_html" title="Link to this definition"></a></dt>
+<dd><p>HTML visualization of the Levenshtein distance between a and b.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.utils.load_csv_array">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.utils.</span></span><span class="sig-name descname"><span class="pre">load_csv_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_feature_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.utils.load_csv_array" title="Link to this definition"></a></dt>
+<dd><p>Load a csv file as a 2d numpy array where each entry is a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Add_feature_names<span class="colon">:</span></dt>
+<dd class="field-odd"><p>if true, then each entry will have the format “feature_name = feature_value”</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a 2d numpy array of strings</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.utils.load_csv_rows">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.utils.</span></span><span class="sig-name descname"><span class="pre">load_csv_rows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.utils.load_csv_rows" title="Link to this definition"></a></dt>
+<dd><p>Load a csv file as a list of strings, with one string per row.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.utils.load_csv_string">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.utils.</span></span><span class="sig-name descname"><span class="pre">load_csv_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.utils.load_csv_string" title="Link to this definition"></a></dt>
+<dd><p>Load a csv file as a single string.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.utils.load_samples">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.utils.</span></span><span class="sig-name descname"><span class="pre">load_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_feature_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.utils.load_samples" title="Link to this definition"></a></dt>
+<dd><p>Load a csv file as a list of ‘’Feature name = Feature value’’ strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>description, samples</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.utils.parse_feature_stings">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.utils.</span></span><span class="sig-name descname"><span class="pre">parse_feature_stings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_names</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.utils.parse_feature_stings" title="Link to this definition"></a></dt>
+<dd><p>Parse a list of features strings into a pandas dataframe.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tabmemcheck.utils.parse_feature_string">
+<span class="sig-prename descclassname"><span class="pre">tabmemcheck.utils.</span></span><span class="sig-name descname"><span class="pre">parse_feature_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_delimiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tabmemcheck.utils.parse_feature_string" title="Link to this definition"></a></dt>
+<dd><p>Parse a string (model response) of the form “feature_name = feature_value, feature_name = feature_value, …” into a pandas dataframe.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Tabmemcheck" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, InterpretML.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
